@@ -1,0 +1,1221 @@
+
+
+ 
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="utf-8" />
+    <link href="/INE/Logo_INE.svg" rel="icon">
+
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta property="og:type" content="website">
+    <meta property="og:title" />
+    <meta property="og:description" />
+    <meta property="og:url">
+    <meta property="og:image" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+
+    <title>
+        INE-Instituto Nacional De Estatísticas
+    </title>
+
+    <style>
+        body {
+            overflow-x: auto; /* Adiciona barra de rolagem horizontal conforme necessário */
+            /* Outros estilos conforme necessário */
+        }
+        /* Outros estilos para elementos específicos */
+        .exit-intent {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 300px;
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: none; /* escondido por padrão */
+            z-index: 1000;
+            font-family: Arial, sans-serif;
+        }
+
+            .exit-intent .close {
+                background: none;
+                border: none;
+                font-size: 18px;
+                cursor: pointer;
+            }
+
+     
+    </style>
+    
+    
+        <!-- Responsive -->
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+
+        <link href="/volunteer/css/revolution-slider.css" rel="stylesheet" />
+        <link href="/volunteer/css/style.css" rel="stylesheet" />
+        <link href="/volunteer/css/responsive.css" rel="stylesheet" />
+
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" integrity="sha512-tS3S5qG0BlhnQROyJXvNjeEM4UpMXHrQfTGmbQ1gKmelCxlSEBUaxhRBj/EFTzpbP4RVSrpEikbmdJobCvhE3g==" crossorigin="anonymous" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css" integrity="sha512-sMXtMNL1zRzolHYKEujM2AqCLUR9F2C4/05cdbxjjLSRvMQIciEPCQZo++nk7go3BtSuK9kfa/s+a4f4i5pLkw==" crossorigin="anonymous" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.css" integrity="sha512-/zs32ZEJh+/EO2N1b0PEdoA10JkdC3zJ8L5FTiQu82LR9S/rOQNfQN7U59U9BC12swNeRAz3HSzIL2vpp4fv3w==" crossorigin="anonymous" />
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    
+</head>
+<body>
+
+    <div class="page-wrapper">
+
+        <!-- Main Header -->
+        <header class="main-header fixed-top">
+            <!--Header Top-->
+            <div class="header-top">
+                <div class="container">
+                    <div class="row clearfix p-2">
+                        <!--Top Left-->
+                        
+
+
+
+
+        <div class="col-md-8 col-sm-8 col-xs-8 top-left ">
+            <div class="clearfix ">
+                <div class=" "><span class="icon flaticon-telephone51"></span>Telefone : <a href="#"> 924 354 015 </a> | <span class="icon flaticon-mail115"></span>Email : <a href="mailto:geral@ine.gov.ao">geral@ine.gov.ao</a> <a class="d-none" href="/Identity/Account/Login">Iniciar Sessão</a> </div>
+            </div>
+        </div>
+
+<style>
+    .btn-logout:hover {
+        background-color: transparent;
+        color: white;
+        text-decoration: none;
+        outline: none;
+    }
+</style>
+
+
+                        <!--Top Right-->
+                        <div class="col-12 col-md-4 d-none d-md-flex flex-column flex-md-row justify-content-md-end align-items-center text-md-right mb-2 mb-md-0 top-right">
+                            <!-- Seletor de idioma com bandeiras -->
+                            <form id="selectLanguage" method="get" class="mb-0 mb-md-0 mr-md-3" action="/inicio/SetLanguage">
+                                <select name="culture" class="form-control form-control-sm custom-language-select" onchange="this.form.submit()">
+                                    <option value="pt" selected="selected">🇦🇴 Português</option>
+                                    <option value="en">🇺🇸 English</option>
+                                           </select>
+                                <input type="hidden" name="returnUrl" value="/Diretorios/Ver" />
+                            </form>
+
+                            <!-- Redes sociais -->
+                            <div class="social-links">
+                                 
+                                <a href="/arquivos/geral/guia pratico.pdf" target="_blank" class="fa fa-mouse-pointer " title="GUIÃO DO UTILIZADOR"></a>
+                                <a href="https://www.facebook.com/INE-Angola-917797135010576" target="_blank" class="fab fa-facebook bg-primary"></a>
+                                <a href="https://www.tiktok.com/@ineangola?_t=ZM-8whoHqvWf8X&_r=1" class="fab fa-tiktok" target="_blank"></a>
+                                <a title="Calendário das publicações" style="background-color:deepskyblue" href=/Arquivos/imagensCarregadas//Carregados/Calendario_639238781351851456.pdf target="_blank" class="fa fa-calendar"></a>
+                                <a href="https://www.linkedin.com/in/ine-angola-3a559216b" target="_blank" class="fab fa-linkedin"></a>
+                                <a href="https://www.instagram.com/ine_angola/?igshid=cde0rapmnhpe" target="_blank" class="fab fa-instagram"></a>
+                            </div>
+                        </div>
+
+             
+
+                    </div>
+                </div>
+            </div>
+
+            <!--Header Lower-->
+            <div class="header-lower">
+                <div class="auto-container clearfix">
+                    <!--Logo-->
+                    <div class="mobile">
+                        <div class="desktop-hide">
+
+                            <div class="logo">
+                                <a href="/">
+                                     
+                                    <img src="/INE/Logo_INE.svg" height="90" />
+                                </a>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!--Right Container-->
+                    <div class=" clearfix">
+
+                        <!-- Main Menu -->
+                        <nav class="main-menu navbar navbar-expand-lg">
+                            <!-- Toggle Button -->
+                            <button type="button" class="navbar-toggle navbar-toggler" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                                <span class="navbar-toggler-icon"></span>
+                            </button>
+
+
+                            <div class="collapse navbar-collapse  clearfix" id="navbarSupportedContent">
+                                <ul class="navbar-nav navigation ">
+                                    <li>
+                                        <div class="logo">
+                                            <a href="/">
+
+
+                                                <img src="/INE/Logo_INE.svg" height="57" />
+                                            </a>
+                                        </div>
+                                    </li>
+                                    <!-- Menu INE com submenu -->
+                                    <li class="dropdown nav-item link1">
+                                        <a class="dropdown-toggle">INE</a>
+                                        <ul class="submenu ">
+                                             
+                                            <li><a class="text-first-cap" href="/Arquivos/Geral/Novo_Estatuto_Organico_do_INE_e_Regulamento_do_SEN_Actualizado2026.pdf" target="_blank">Estatuto Orgânico</a></li>
+                                            <li><a class="text-first-cap" href="/inicio/ine">Missão, Visão e Valores</a></li>
+                                            <li>
+                                                <a href="/inicio/ine/organizacao">
+                                                    <span class="text-first-cap">
+                                                        Organização do
+                                                    </span> <span class="no-transform">INE</span>
+                                                </a>
+                                            </li>
+
+                                           
+                                            <li><a class="text-first-cap" href=/Arquivos/imagensCarregadas//Carregados/Calendario_639238781351851456.pdf  target="_blank">Calendário de Publicações</a></li>
+                                            <li><a class="text-first-cap" href="/Arquivos/Geral/DConduta.pdf" target="_blank">Código de Conduta</a></li>
+                                            <li> <a href="/QuemEQuem"> Quem é Quem</a></li>
+                                            <li>
+                                                <a class="text-first-cap" href="/Arquivos/Geral/PRevisao.pdf" target="_blank">
+                                                    Política de revisão das estatísticas
+                                                </a>
+                                            </li>
+                                           
+
+                                        </ul>
+                                    </li>
+
+                                    <!-- Links principais -->
+                                    
+                                    
+<!-- Menu INE com submenu -->
+    <li class="dropdown nav-item link1">
+        <a class="dropdown-toggle text-first-cap" href="#" data-bs-toggle="dropdown">Estatísticas </a>
+
+        <ul class="dropdown-menu submenu">
+                    <li>
+
+                        <a class="dropdown-item text-first-cap" href="/Diretorios/Ver?caminho=CfDJ8MUwRPStJ4tBpiAAwXNh-s1Bf_mPaFjr7yty_S_vrKisVHOKxKO1a0Wexau02kkl_YpMNotCq7ST7mqoe8cN1jae2rT_k4mc-O0KydQZBG_iRWqpvuw6pFP9d92aPBJ18CuXq57lYyCvQsh1aIb7RthO4sXwCeuw8FyFlRWWFfUoJ9pbXEuSUg8QjFCdLqYKLA">
+Comércio Internacional
+                        </a>
+ 
+
+                    </li>
+                    <li>
+
+                        <a class="dropdown-item text-first-cap" href="/Diretorios/Ver?caminho=CfDJ8MUwRPStJ4tBpiAAwXNh-s2fCwJycTanhGEUbrH1FV0u4snhfbhSXsMMFJwPZB21urFAeptwEKkm5X1UWqyJyIMKaxJogCkNf3geCyk-Iu9u3aZoglUYzB9tbEeqBG5EUKloJyT-P5ooqnw_yRpgmr_WuaBwpM0OHP_2knVMAI_4nanfPO7_0VANeZc97fh9YA">
+Economia e Finanças
+                        </a>
+ 
+
+                    </li>
+                    <li>
+
+                        <a class="dropdown-item text-first-cap" href="/Diretorios/Ver?caminho=CfDJ8MUwRPStJ4tBpiAAwXNh-s35Xqa1xJpmbWFSO4nYroTuFZYU-GCAR_19h4MQ_gajbUltoLkARGZF49cF3TgBkDWKFMyruBnt4VtJZEqRlI_c_Z56E-mfevyYj9PCx7CZbUe3E5TuGBjslLcJAVEceTKR3Z6peC__Fyd5aeOO4Uw9Or89Mdq1D3CBfft5FcixdA">
+Notas Metodológicas
+                        </a>
+ 
+
+                    </li>
+                    <li>
+
+                        <a class="dropdown-item text-first-cap" href="/Diretorios/Ver?caminho=CfDJ8MUwRPStJ4tBpiAAwXNh-s0rLBa3Eya5a2ZXiuIc38CeFqRrOb1IQEue56uAPH9H2Rh58qeulNBYM-fXFATOHKvs499R1-HVLPzMR-0Z1MFCt546ZuLBjDbO0CFqJlATgH-zv0NffHZjRx1jdTVPZhokNekz1rFoX0nyCzrvOpDV5xQXXWJ5cFb0-pDk2N08PA">
+População e Sociedade
+                        </a>
+ 
+
+                    </li>
+        </ul>
+    </li>
+ 
+
+                                    <li class="nav-item"><a href="/Publicacoes/Todas">Publicações</a></li>
+                                    <li class="nav-item"><a href="/noticias/todas">Notícias</a></li>
+
+
+                                    <li class="nav-item linkSEN">
+                                        <a class="dropdown-toggle">SEN</a>
+                                        <ul class="submenu">
+                                            <li><a href="/inicio/sen/orgaos">Órgãos do SEN</a></li>
+                                            <li><a href="/inicio/sen/odines">ODINES</a></li>
+                                            <li><a href="/inicio/sen/ende">ENDE</a></li>
+                                            <li><a href="/inicio/sen/legislacao">Legislação</a></li>
+                                          
+                                            <li><a href="/inicio/Planos">Planos </a></li>
+
+                                            <li><a href="/inicio/Relatorios">Relatórios</a></li>
+                                            <li><a href="/Arquivos/Geral/PFEO.pdf" target="_blank">Princípios Fundamentais das Estatísticas Oﬁciais</a></li>
+                                        </ul>
+                                    </li>
+                                    <!-- Link para serviços -->
+                                    <!-- Menu Inquéritos com submenu -->
+                                      <li class=" nav-item linkInquerito">
+                                        <a class="dropdown-toggle">Censos</a>
+                                         
+                                         <ul class="submenu">
+                                            <li><a class="text-first-cap" href="https://www.ine.gov.ao/publicacoes/detalhes/ODI3Ng%3D%3D" target="_blank">Censo 2014</a></li>
+                                            <li><a class="text-first-cap" href="https://censo2024.ine.gov.ao/">Censo 2024</a></li>
+                                        </ul>  
+                                    </li>  
+                   <li class="nav-item linkServico">
+    <a class="dropdown-toggle" href="/pedido-de-dados/criar">
+        Serviços
+    </a>
+
+    <ul class="submenu">
+        <li>
+            <a class="text-first-cap" target="_blank"
+               href="https://forms.gle/o1s7VUyiT5fkfUNw9">
+                Inquerito de Satisfação
+            </a>
+        </li>
+
+        <li>
+            <a class="text-first-cap" href="/pedido-de-dados/criar">
+                Centro de Formação Profissional de Estatística
+            </a>
+        </li>
+
+        <li>
+            <a class="text-first-cap" href="/pedido-de-dados/criar">
+                Mecanismos de Reclamação e Resolução
+            </a>
+        </li>
+
+        <li>
+            <a class="text-first-cap" href="/pedido-de-dados/criar">
+                Pedidos de Dados
+            </a>
+        </li>
+
+        <li>
+            <a class="text-first-cap"
+               data-toggle="modal"
+               data-target="#newsletterModal">
+                Subscrever à newsletter
+            </a>
+        </li>
+                                            <li>
+                                                <a href="/CentroDocumentacao">
+                                                    Centro de Documentação do <span class="no-transform">INE</span>
+                                                </a>
+                                            </li>
+    </ul>
+</li>
+
+                                    <li class="dropdown">
+                                        <a data-toggle="modal" data-target="#PesquisaModal" class="footer-link">
+
+                                            <span class="fa fa-search"></span>
+                                        </a>
+                                    </li>
+                                </ul>
+
+                            </div>
+
+                        </nav>
+
+                    </div>
+                    <!--Header Lower End-->
+
+                </div>
+            </div>
+            <!--Header Lower End-->
+
+        </header>
+        <!--End Main Header -->
+        <!--Sidebar Navigation-->
+        <aside id="side-navigation">
+            <button type="button" class="toggle-nav" id="ChangeToggle">
+                <div class="d-flex flex-row m-0 p-0">
+                    <div id="toggle-show" class="mx-auto">
+                        <span class="fa fa-bars "></span>
+
+                    </div>
+                    <div id="toggle-close" class="mx-auto d-none">
+                        <span class="fa fa-times "></span>
+                    </div>
+                </div>
+            </button>
+
+            <div class="sidebar-inner" id="sidebar-inner">
+                <!--Logo-->
+                <div class="logo"><a href="/"><img src="/INE/Logo_INE.svg" width="179" height="28" alt=""></a></div>
+
+                <!--Main Navigation-->
+                <nav class="navigation ">
+                    <ul class="navbar-nav navigation ">
+
+                        <li class="dropdown nav-item link1">
+                            <a >INE</a>
+                            <ul class="submenu">
+                                
+                                <li><a class="text-first-cap" href="/Arquivos/Geral/Novo_Estatuto_Organico_do_INE_e_Regulamento_do_SEN_Actualizado2026.pdf" target="_blank">Estatuto Orgânico</a></li>
+                                <li><a class="text-first-cap" href="/inicio/ine">Missão, Visão e Valores</a></li>
+                                <li>
+                                    <a href="/inicio/ine/organizacao">
+                                        <span class="text-first-cap">Organização do</span> <span class="no-transform">INE</span>
+                                    </a>
+                                </li>
+
+                                <li><a class="text-first-cap" href="/Arquivos/Geral/DConduta.pdf" target="_blank">
+                                        Código de Conduta
+                                    </a>
+                                </li>
+                                <li><a class="text-first-cap" href=/Arquivos/imagensCarregadas//Carregados/Calendario_639238781351851456.pdf target="_blank">Calendário de Publicações</a></li>
+                                <li> <a href="/QuemEQuem">Quem é Quem </a> </li>
+                                <li>
+                                    <a class="text-first-cap" href="/Arquivos/Geral/PRevisao.pdf" target="_blank">
+                                        Política de revisão das
+                                        estatísticas
+                                    </a>
+                                </li>
+                                <li><a class="text-first-cap" data-toggle="modal" data-target="#newsletterModal">Subscrever à newsletter</a></li>
+                               
+                                <li> <a class="text-first-cap" href="/pedido-de-dados/criar">Serviços</a></li>
+                            </ul>
+                        </li>
+
+                        <!-- Links principais -->
+                        <!-- Itens dinâmicos: Diretórios do INE -->
+
+    <li class="dropdown nav-item linkSEN">
+                            <a >Estat&#xED;sticas</a>
+                            <ul class="submenu">
+
+                    <li>
+                        <a class="dropdown-item text-first-cap" href="/Diretorios/Ver?caminho=CfDJ8MUwRPStJ4tBpiAAwXNh-s1aM-98W_gaKIuPN94fRYz8zCNYcPVCxy9X2IgKtv9LANUigsqQ6uEMZzJZKqNX30tUKKbHlju4Pibk7XtZ5Nj6eCzucwrWAkUJCjqOMsw1BtG9oiu0a3mD72ITLBdEgQjx1lVUxDYclPvOFOFothvNaWfPSFaRcZIzvJ5jpkX1eA">
+Comércio Internacional
+                        </a>
+                      
+                    </li>
+                    <li>
+                        <a class="dropdown-item text-first-cap" href="/Diretorios/Ver?caminho=CfDJ8MUwRPStJ4tBpiAAwXNh-s0Xk69mKqMy_clAwP6JTUG_N4ZkpXT4cSfkfUfgUgvl2fkx1umVk7mluC6udN8Vs8XXYxLfbbU1gACUPlm0HpfNLm9lPteECTmcLQOiwE-NWbhtNjBginCiF5EFnBVzvDb_qRehde62UV05FfwGsnMbdP4MuyGH2FYHc2JWG4kiCw">
+Economia e Finanças
+                        </a>
+                      
+                    </li>
+                    <li>
+                        <a class="dropdown-item text-first-cap" href="/Diretorios/Ver?caminho=CfDJ8MUwRPStJ4tBpiAAwXNh-s30ZvaviOXYDErBKf8MkoSreNiURDQKpxGoUJk-95wVOc47hDeyPS2gsEsKpPAQdT5fFBd_d7_qPjBVN06aT_2yngBGhppdpx2cMu65w376V8G-Sr7w41MC1p379RTZ4QFcyON6HJxIaPiffmY23UZkFfCtHBc4Uxr9dy1fRwAziQ">
+Notas Metodológicas
+                        </a>
+                      
+                    </li>
+                    <li>
+                        <a class="dropdown-item text-first-cap" href="/Diretorios/Ver?caminho=CfDJ8MUwRPStJ4tBpiAAwXNh-s0g53g1eqmFsgtPuZUIG03HUvqb9BJwPghdRC3G43MYK0nKd1O6pLLq98RZMpkCgl05L_ZI4_iOFb2SMO0dUEg8N3b8AvApi6cGcFK9MLlKBydBpSoRrLBl3gxArcsnqKYZwEVNfixfJ6GztnN0cn2quyz0kfWtWUcE5xrWYqvn1g">
+População e Sociedade
+                        </a>
+                      
+                    </li>
+                            
+                            </ul>
+                        </li>
+
+                        <li class="nav-item"><a href="/Publicacoes/Todas">Publicações</a></li>
+                        <li class="nav-item"><a href="/noticias/todas">Notícias </a></li>
+
+                          <li class="dropdown nav-item linkSEN">
+                            <a >SEN</a>
+                            <ul class="submenu">
+                                <li><a href="/inicio/sen/orgaos">Órgãos do SEN</a></li>
+                                <li><a href="/inicio/sen/odines">ODINES</a></li>
+                                <li><a href="/inicio/sen/ende">ENDE</a></li>
+                                <li><a href="/inicio/sen/legislacao">Legislação</a></li>
+                                
+                                <li><a href="/inicio/Planos">Planos </a></li>
+
+                                <li><a href="/inicio/Relatorios">Relatórios</a></li>
+                                <li><a href="/Arquivos/Geral/PFEO.pdf" target="_blank">Princípios Fundamentais das Estatísticas Oﬁciais</a></li>
+                            </ul>
+                        </li>
+                        
+
+                         <li class="dropdown nav-item linkInquerito">
+                            <a>Censos</a>
+                            <ul class="submenu">
+                                <li><a class="text-first-cap" href="https://www.ine.gov.ao/publicacoes/detalhes/ODI3Ng%3D%3D" target="_blank">Censo 2014</a></li>
+                                <li><a class="text-first-cap" href="https://censo2024.ine.gov.ao/">Censo 2024</a></li>
+                            </ul>
+                        </li>  
+
+                        <li class="dropdown nav-item linkServices">
+                            <a href="/pedido-de-dados/criar">Serviços</a>
+                            <ul class="submenu">
+        <li>
+            <a class="text-first-cap" target="_blank"
+               href="https://forms.gle/o1s7VUyiT5fkfUNw9">
+                Inquerito de Satisfação
+            </a>
+        </li>
+
+        <li>
+            <a class="text-first-cap" href="/pedido-de-dados/criar">
+                Centro de Formação Profissional de Estatística
+            </a>
+        </li>
+
+        <li>
+            <a class="text-first-cap" href="/pedido-de-dados/criar">
+                Mecanismos de Reclamação e Resolução
+            </a>
+        </li>
+
+        <li>
+            <a class="text-first-cap" href="/pedido-de-dados/criar">
+                Pedidos de Dados
+            </a>
+        </li>
+                                <li>
+                                     
+                                        <a href="/CentroDocumentacao">
+                                        <span class="text-first-cap">  Centro de Documentação do</span> <span class="no-transform">INE</span>
+                                    </a>
+                                    
+
+                                </li>
+
+    </ul>
+                        </li>
+                        <li>
+
+                            <a id="searchMobile" class="footer-link">
+
+                                <span class="fa fa-search"></span>
+                            </a>
+                        </li>
+
+                    </ul>
+
+
+                </nav>
+            </div>
+        </aside>
+        <!--Sidebar Nav End-->
+        <!-- Main Slider -->
+         
+ 
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+<!-- Breadcrumb -->
+<div class="container-fluid bg-light py-6 mb-3">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0 bg-transparent px-0">
+                <li class="breadcrumb-item"><a href="/">Início</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Estatísticas</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+<div class="container mt-4">
+    <!-- Botão de voltar -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap mb-3">
+            <form method="get" class="d-inline-block mb-2 mb-sm-0" action="/Diretorios/Ver">
+                <input type="hidden" name="caminho" value="" />
+                <button type="submit" class="btn btn-sm btn-outline-secondary">⬅️ Voltar</button>
+            </form>
+    </div>
+
+    <!-- Barra de filtros -->
+    <div class="row align-items-center mb-3">
+        <div class="col-md-6 mb-2 mb-md-0">
+            <div class="form-inline">
+                <label class="mr-2" style="font-size: 12px;">Ordenar por</label>
+                <select class="form-control form-control-sm" style="font-size: 12px;">
+                    <option>Nome</option>
+                    <option>Data</option>
+                    <option>Tamanho</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <form class="w-100 w-md-auto" method="get" action="/Diretorios/Ver">
+                <input type="hidden" name="caminho" value="" />
+                <div class="input-group input-group-sm">
+                    <input type="text" name="search" class="form-control" style="font-size: 12px;" placeholder="Pesquisar por..." />
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="submit" style="font-size: 12px;">🔍</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+        </div>
+
+        <div class="col-md-6">
+        </div>
+    </div>
+
+ 
+    
+
+    <div class="row">
+        <div class="col-md-6">
+                <div class="mb-2">
+                    <a href="javascript:void(0);"
+                       class="text-decoration-none text-dark d-flex align-items-center"
+                       onclick="baixarArquivoPost('Popula&#xE7;&#xE3;o e Sociedade/Popula&#xE7;&#xE3;o/Estimativas da Popula&#xE7;&#xE3;o 2025 - 2027/00. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR PROV&#xCD;NCIA E GRUPO ET&#xC1;RIO, 2025-2027_Angola.xlsx', '00. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR PROV&#xCD;NCIA E GRUPO ET&#xC1;RIO, 2025-2027_Angola.xlsx')">
+                        <i class="bi bi-file-earmark-excel text-success text-primary me-2" style="font-size: 2rem;"></i>
+                        <span class="text-truncate  " title="00. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR PROV&#xCD;NCIA E GRUPO ET&#xC1;RIO, 2025-2027_Angola.xlsx" style="font-size: 12px;">00. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR PROV&#xCD;NCIA E GRUPO ET&#xC1;RIO, 2025-2027_Angola.xlsx</span>
+                    </a>
+                </div>
+                <div class="mb-2">
+                    <a href="javascript:void(0);"
+                       class="text-decoration-none text-dark d-flex align-items-center"
+                       onclick="baixarArquivoPost('Popula&#xE7;&#xE3;o e Sociedade/Popula&#xE7;&#xE3;o/Estimativas da Popula&#xE7;&#xE3;o 2025 - 2027/01. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027 Cabinda.xlsx', '01. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027 Cabinda.xlsx')">
+                        <i class="bi bi-file-earmark-excel text-success text-primary me-2" style="font-size: 2rem;"></i>
+                        <span class="text-truncate  " title="01. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027 Cabinda.xlsx" style="font-size: 12px;">01. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027 Cabinda.xlsx</span>
+                    </a>
+                </div>
+                <div class="mb-2">
+                    <a href="javascript:void(0);"
+                       class="text-decoration-none text-dark d-flex align-items-center"
+                       onclick="baixarArquivoPost('Popula&#xE7;&#xE3;o e Sociedade/Popula&#xE7;&#xE3;o/Estimativas da Popula&#xE7;&#xE3;o 2025 - 2027/02. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027_Zaire..xlsx', '02. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027_Zaire..xlsx')">
+                        <i class="bi bi-file-earmark-excel text-success text-primary me-2" style="font-size: 2rem;"></i>
+                        <span class="text-truncate  " title="02. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027_Zaire..xlsx" style="font-size: 12px;">02. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027_Zaire..xlsx</span>
+                    </a>
+                </div>
+                <div class="mb-2">
+                    <a href="javascript:void(0);"
+                       class="text-decoration-none text-dark d-flex align-items-center"
+                       onclick="baixarArquivoPost('Popula&#xE7;&#xE3;o e Sociedade/Popula&#xE7;&#xE3;o/Estimativas da Popula&#xE7;&#xE3;o 2025 - 2027/03. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025_2027_U&#xED;ge.xlsx', '03. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025_2027_U&#xED;ge.xlsx')">
+                        <i class="bi bi-file-earmark-excel text-success text-primary me-2" style="font-size: 2rem;"></i>
+                        <span class="text-truncate  " title="03. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025_2027_U&#xED;ge.xlsx" style="font-size: 12px;">03. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025_2027_U&#xED;ge.xlsx</span>
+                    </a>
+                </div>
+                <div class="mb-2">
+                    <a href="javascript:void(0);"
+                       class="text-decoration-none text-dark d-flex align-items-center"
+                       onclick="baixarArquivoPost('Popula&#xE7;&#xE3;o e Sociedade/Popula&#xE7;&#xE3;o/Estimativas da Popula&#xE7;&#xE3;o 2025 - 2027/04. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027_Bengo.xlsx', '04. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027_Bengo.xlsx')">
+                        <i class="bi bi-file-earmark-excel text-success text-primary me-2" style="font-size: 2rem;"></i>
+                        <span class="text-truncate  " title="04. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027_Bengo.xlsx" style="font-size: 12px;">04. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027_Bengo.xlsx</span>
+                    </a>
+                </div>
+                <div class="mb-2">
+                    <a href="javascript:void(0);"
+                       class="text-decoration-none text-dark d-flex align-items-center"
+                       onclick="baixarArquivoPost('Popula&#xE7;&#xE3;o e Sociedade/Popula&#xE7;&#xE3;o/Estimativas da Popula&#xE7;&#xE3;o 2025 - 2027/05. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027_Luanda.xlsx', '05. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027_Luanda.xlsx')">
+                        <i class="bi bi-file-earmark-excel text-success text-primary me-2" style="font-size: 2rem;"></i>
+                        <span class="text-truncate  " title="05. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027_Luanda.xlsx" style="font-size: 12px;">05. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027_Luanda.xlsx</span>
+                    </a>
+                </div>
+                <div class="mb-2">
+                    <a href="javascript:void(0);"
+                       class="text-decoration-none text-dark d-flex align-items-center"
+                       onclick="baixarArquivoPost('Popula&#xE7;&#xE3;o e Sociedade/Popula&#xE7;&#xE3;o/Estimativas da Popula&#xE7;&#xE3;o 2025 - 2027/06. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027_Cuanza Norte.xlsx', '06. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027_Cuanza Norte.xlsx')">
+                        <i class="bi bi-file-earmark-excel text-success text-primary me-2" style="font-size: 2rem;"></i>
+                        <span class="text-truncate  " title="06. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027_Cuanza Norte.xlsx" style="font-size: 12px;">06. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027_Cuanza Norte.xlsx</span>
+                    </a>
+                </div>
+                <div class="mb-2">
+                    <a href="javascript:void(0);"
+                       class="text-decoration-none text-dark d-flex align-items-center"
+                       onclick="baixarArquivoPost('Popula&#xE7;&#xE3;o e Sociedade/Popula&#xE7;&#xE3;o/Estimativas da Popula&#xE7;&#xE3;o 2025 - 2027/07. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027_Cuanza Sul.xlsx', '07. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027_Cuanza Sul.xlsx')">
+                        <i class="bi bi-file-earmark-excel text-success text-primary me-2" style="font-size: 2rem;"></i>
+                        <span class="text-truncate  " title="07. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027_Cuanza Sul.xlsx" style="font-size: 12px;">07. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027_Cuanza Sul.xlsx</span>
+                    </a>
+                </div>
+                <div class="mb-2">
+                    <a href="javascript:void(0);"
+                       class="text-decoration-none text-dark d-flex align-items-center"
+                       onclick="baixarArquivoPost('Popula&#xE7;&#xE3;o e Sociedade/Popula&#xE7;&#xE3;o/Estimativas da Popula&#xE7;&#xE3;o 2025 - 2027/08. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027 Malanje.xlsx', '08. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027 Malanje.xlsx')">
+                        <i class="bi bi-file-earmark-excel text-success text-primary me-2" style="font-size: 2rem;"></i>
+                        <span class="text-truncate  " title="08. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027 Malanje.xlsx" style="font-size: 12px;">08. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027 Malanje.xlsx</span>
+                    </a>
+                </div>
+                <div class="mb-2">
+                    <a href="javascript:void(0);"
+                       class="text-decoration-none text-dark d-flex align-items-center"
+                       onclick="baixarArquivoPost('Popula&#xE7;&#xE3;o e Sociedade/Popula&#xE7;&#xE3;o/Estimativas da Popula&#xE7;&#xE3;o 2025 - 2027/09. ESTIMATIVA DA POPULA&#xC7;&#xC3;O  POR GRUPOS ET&#xC1;RIOS 2025-2027_Lunda Norte.xlsx', '09. ESTIMATIVA DA POPULA&#xC7;&#xC3;O  POR GRUPOS ET&#xC1;RIOS 2025-2027_Lunda Norte.xlsx')">
+                        <i class="bi bi-file-earmark-excel text-success text-primary me-2" style="font-size: 2rem;"></i>
+                        <span class="text-truncate  " title="09. ESTIMATIVA DA POPULA&#xC7;&#xC3;O  POR GRUPOS ET&#xC1;RIOS 2025-2027_Lunda Norte.xlsx" style="font-size: 12px;">09. ESTIMATIVA DA POPULA&#xC7;&#xC3;O  POR GRUPOS ET&#xC1;RIOS 2025-2027_Lunda Norte.xlsx</span>
+                    </a>
+                </div>
+                <div class="mb-2">
+                    <a href="javascript:void(0);"
+                       class="text-decoration-none text-dark d-flex align-items-center"
+                       onclick="baixarArquivoPost('Popula&#xE7;&#xE3;o e Sociedade/Popula&#xE7;&#xE3;o/Estimativas da Popula&#xE7;&#xE3;o 2025 - 2027/10. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027_Lunda Sul.xlsx', '10. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027_Lunda Sul.xlsx')">
+                        <i class="bi bi-file-earmark-excel text-success text-primary me-2" style="font-size: 2rem;"></i>
+                        <span class="text-truncate  " title="10. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027_Lunda Sul.xlsx" style="font-size: 12px;">10. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027_Lunda Sul.xlsx</span>
+                    </a>
+                </div>
+        </div>
+
+        <div class="col-md-6">
+                <div class="mb-2">
+                    <a href="javascript:void(0);"
+                       class="text-decoration-none text-dark d-flex align-items-center"
+                       onclick="baixarArquivoPost('Popula&#xE7;&#xE3;o e Sociedade/Popula&#xE7;&#xE3;o/Estimativas da Popula&#xE7;&#xE3;o 2025 - 2027/11. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027_Moxico.xlsx', '11. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027_Moxico.xlsx')">
+                        <i class="bi bi-file-earmark-excel text-success text-primary me-2" style="font-size: 2rem;"></i>
+                        <span class="text-truncate " title="11. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027_Moxico.xlsx" style="font-size: 12px;">11. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027_Moxico.xlsx</span>
+                    </a>
+                </div>
+                <div class="mb-2">
+                    <a href="javascript:void(0);"
+                       class="text-decoration-none text-dark d-flex align-items-center"
+                       onclick="baixarArquivoPost('Popula&#xE7;&#xE3;o e Sociedade/Popula&#xE7;&#xE3;o/Estimativas da Popula&#xE7;&#xE3;o 2025 - 2027/12. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027 Bi&#xE9;.xlsx', '12. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027 Bi&#xE9;.xlsx')">
+                        <i class="bi bi-file-earmark-excel text-success text-primary me-2" style="font-size: 2rem;"></i>
+                        <span class="text-truncate " title="12. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027 Bi&#xE9;.xlsx" style="font-size: 12px;">12. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027 Bi&#xE9;.xlsx</span>
+                    </a>
+                </div>
+                <div class="mb-2">
+                    <a href="javascript:void(0);"
+                       class="text-decoration-none text-dark d-flex align-items-center"
+                       onclick="baixarArquivoPost('Popula&#xE7;&#xE3;o e Sociedade/Popula&#xE7;&#xE3;o/Estimativas da Popula&#xE7;&#xE3;o 2025 - 2027/13. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027_Huambo.xlsx', '13. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027_Huambo.xlsx')">
+                        <i class="bi bi-file-earmark-excel text-success text-primary me-2" style="font-size: 2rem;"></i>
+                        <span class="text-truncate " title="13. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027_Huambo.xlsx" style="font-size: 12px;">13. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027_Huambo.xlsx</span>
+                    </a>
+                </div>
+                <div class="mb-2">
+                    <a href="javascript:void(0);"
+                       class="text-decoration-none text-dark d-flex align-items-center"
+                       onclick="baixarArquivoPost('Popula&#xE7;&#xE3;o e Sociedade/Popula&#xE7;&#xE3;o/Estimativas da Popula&#xE7;&#xE3;o 2025 - 2027/14. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027_Benguela.xlsx', '14. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027_Benguela.xlsx')">
+                        <i class="bi bi-file-earmark-excel text-success text-primary me-2" style="font-size: 2rem;"></i>
+                        <span class="text-truncate " title="14. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027_Benguela.xlsx" style="font-size: 12px;">14. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027_Benguela.xlsx</span>
+                    </a>
+                </div>
+                <div class="mb-2">
+                    <a href="javascript:void(0);"
+                       class="text-decoration-none text-dark d-flex align-items-center"
+                       onclick="baixarArquivoPost('Popula&#xE7;&#xE3;o e Sociedade/Popula&#xE7;&#xE3;o/Estimativas da Popula&#xE7;&#xE3;o 2025 - 2027/15. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027 Namibe.xlsx', '15. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027 Namibe.xlsx')">
+                        <i class="bi bi-file-earmark-excel text-success text-primary me-2" style="font-size: 2rem;"></i>
+                        <span class="text-truncate " title="15. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027 Namibe.xlsx" style="font-size: 12px;">15. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027 Namibe.xlsx</span>
+                    </a>
+                </div>
+                <div class="mb-2">
+                    <a href="javascript:void(0);"
+                       class="text-decoration-none text-dark d-flex align-items-center"
+                       onclick="baixarArquivoPost('Popula&#xE7;&#xE3;o e Sociedade/Popula&#xE7;&#xE3;o/Estimativas da Popula&#xE7;&#xE3;o 2025 - 2027/16. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027_ Hu&#xED;la.xlsx', '16. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027_ Hu&#xED;la.xlsx')">
+                        <i class="bi bi-file-earmark-excel text-success text-primary me-2" style="font-size: 2rem;"></i>
+                        <span class="text-truncate " title="16. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027_ Hu&#xED;la.xlsx" style="font-size: 12px;">16. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027_ Hu&#xED;la.xlsx</span>
+                    </a>
+                </div>
+                <div class="mb-2">
+                    <a href="javascript:void(0);"
+                       class="text-decoration-none text-dark d-flex align-items-center"
+                       onclick="baixarArquivoPost('Popula&#xE7;&#xE3;o e Sociedade/Popula&#xE7;&#xE3;o/Estimativas da Popula&#xE7;&#xE3;o 2025 - 2027/17. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027_Cunene.xlsx', '17. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027_Cunene.xlsx')">
+                        <i class="bi bi-file-earmark-excel text-success text-primary me-2" style="font-size: 2rem;"></i>
+                        <span class="text-truncate " title="17. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027_Cunene.xlsx" style="font-size: 12px;">17. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027_Cunene.xlsx</span>
+                    </a>
+                </div>
+                <div class="mb-2">
+                    <a href="javascript:void(0);"
+                       class="text-decoration-none text-dark d-flex align-items-center"
+                       onclick="baixarArquivoPost('Popula&#xE7;&#xE3;o e Sociedade/Popula&#xE7;&#xE3;o/Estimativas da Popula&#xE7;&#xE3;o 2025 - 2027/18. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025_2027_Cubango.xlsx', '18. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025_2027_Cubango.xlsx')">
+                        <i class="bi bi-file-earmark-excel text-success text-primary me-2" style="font-size: 2rem;"></i>
+                        <span class="text-truncate " title="18. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025_2027_Cubango.xlsx" style="font-size: 12px;">18. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025_2027_Cubango.xlsx</span>
+                    </a>
+                </div>
+                <div class="mb-2">
+                    <a href="javascript:void(0);"
+                       class="text-decoration-none text-dark d-flex align-items-center"
+                       onclick="baixarArquivoPost('Popula&#xE7;&#xE3;o e Sociedade/Popula&#xE7;&#xE3;o/Estimativas da Popula&#xE7;&#xE3;o 2025 - 2027/19. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027_Icolo e Bengo.xlsx', '19. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027_Icolo e Bengo.xlsx')">
+                        <i class="bi bi-file-earmark-excel text-success text-primary me-2" style="font-size: 2rem;"></i>
+                        <span class="text-truncate " title="19. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027_Icolo e Bengo.xlsx" style="font-size: 12px;">19. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027_Icolo e Bengo.xlsx</span>
+                    </a>
+                </div>
+                <div class="mb-2">
+                    <a href="javascript:void(0);"
+                       class="text-decoration-none text-dark d-flex align-items-center"
+                       onclick="baixarArquivoPost('Popula&#xE7;&#xE3;o e Sociedade/Popula&#xE7;&#xE3;o/Estimativas da Popula&#xE7;&#xE3;o 2025 - 2027/20. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027_Moxico Leste.xlsx', '20. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027_Moxico Leste.xlsx')">
+                        <i class="bi bi-file-earmark-excel text-success text-primary me-2" style="font-size: 2rem;"></i>
+                        <span class="text-truncate " title="20. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027_Moxico Leste.xlsx" style="font-size: 12px;">20. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027_Moxico Leste.xlsx</span>
+                    </a>
+                </div>
+                <div class="mb-2">
+                    <a href="javascript:void(0);"
+                       class="text-decoration-none text-dark d-flex align-items-center"
+                       onclick="baixarArquivoPost('Popula&#xE7;&#xE3;o e Sociedade/Popula&#xE7;&#xE3;o/Estimativas da Popula&#xE7;&#xE3;o 2025 - 2027/21. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027 Cuando.xlsx', '21. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027 Cuando.xlsx')">
+                        <i class="bi bi-file-earmark-excel text-success text-primary me-2" style="font-size: 2rem;"></i>
+                        <span class="text-truncate " title="21. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027 Cuando.xlsx" style="font-size: 12px;">21. ESTIMATIVA DA POPULA&#xC7;&#xC3;O POR GRUPOS ET&#xC1;RIOS 2025-2027 Cuando.xlsx</span>
+                    </a>
+                </div>
+        </div>
+    </div>
+
+</div>
+
+ 
+
+<script>
+    function baixarArquivoPost(filepath, nomeArquivo) {
+        const formData = new FormData();
+        formData.append("filepath", filepath);
+        console.log("get",filepath);
+        fetch('/Diretorios/Download', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => {
+                if (!response.ok) throw new Error("Arquivo não encontrado");
+                return response.blob();
+            })
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = nomeArquivo;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            })
+            .catch(error => {
+                alert(error.message);
+            });
+    }
+</script>
+
+ 
+
+
+        <!-- Button trigger modal -->
+   <div id="exitIntent" class="exit-intent shadow">
+    <div class="d-flex justify-content-between align-items-start">
+        <div>
+            <h6 class="mb-1">Antes de sair 🔔  </h6>
+            <p class="mb-2 text-muted">
+                Pode avaliar o Inquérito Nacional de Satisfação dos Utilizadores dos Produtos Estatísticos do INE
+
+            </p>
+
+            <button class="btn btn-sm mr-2" style="background-color: #fc5a1b;
+    border-color: #fc5a1b; color:white"
+                    onclick="openSurvey()">
+                Avaliar agora 
+            </button>
+
+            <button class="btn btn-sm btn-outline-secondary"
+                    onclick="closeExitIntent()">
+                Agora não
+            </button>
+        </div>
+
+        <button class="close ml-2" onclick="closeExitIntent()">
+            <span>&times;</span>
+        </button>
+    </div>
+</div>
+
+        <!-- ModalPesquisa-->
+        <div class="modal fade" id="PesquisaModal" tabindex="-1" role="dialog" aria-labelledby="newsletterModalTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <img src="/images/subscribe.jpg" class="img-fluid" alt="Subscrever">
+                    </div>
+                    <div class="modal-body">
+                        <form method="post" action="/Inicio/Pesquisar">
+
+                            <div class="input-group">
+
+                                <select class="form-control w-100 mb-2" name="filtro" id="filtro">
+                                    <option> Tudo</option>
+                                    <option value="Publicacoes"> Publicações</option>
+                                    <option value="Noticias"> Notícias</option>
+                                </select>
+                                <input class="form-control" type="search" id="termo" name="termo" placeholder="o que procuras?" autocomplete="off">
+                                <span class="input-group-btn">
+                                    <button class="btn btn btn-outline-secondary" type="submit"><span class="fa fa-search"></span></button>
+                                </span>
+                            </div>
+                        <input name="__RequestVerificationToken" type="hidden" value="CfDJ8MUwRPStJ4tBpiAAwXNh-s1YCErFG1X-0W8wS4mZsndEdZ1sYy_-1l7oXM2iYNg18ESb8gRP__oUIXO8JvNIZ7nNPXGleNkSsGWrd8HxLtMMyekXDph_CsMk0IY9-DDs_eSalxKe-4Hl1ojk6TAMSxw" /></form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Modal -->
+        <div class="modal fade" id="newsletterModal" tabindex="-1" role="dialog" aria-labelledby="newsletterModalTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <img src="/images/subscribe.jpg" class="img-fluid" alt="Subscrever">
+                    </div>
+                    <div class="modal-body">
+                        <h3 class="text-center " style="font-family: 'Trebuchet MS', sans-serif;">Subscreva à newsletter </h3>
+                        <p class="text-justify">Fique ligado com a novidades do Instituto Nacional de Estatística. Saiba primeiro sobre as nossas publicações, eventos e notícias.</p>
+                        <form method="post" action="/newsletters/criar">
+                            
+                            <div class="form-group">
+                                <input name="email" type="email" placeholder="Coloque o seu email aqui" class="form-control " required />
+                                <input type="text" name="website" autocomplete="off" tabindex="-1" style="position:absolute; left:-9999px;" />
+                            </div>
+                            <div class="form-group">
+                                <input name="submit" class="btn w-100 form-control text-white" type="submit" value="Subscrever" style="color: #212529; background-color: #f06626; border-color: #f06626;" />
+                            </div>
+                            <div class="form-group">
+                                <button type="button" class="btn btn-secondary w-100" data-dismiss="modal">Agora não</button>
+                            </div>
+                        <input name="__RequestVerificationToken" type="hidden" value="CfDJ8MUwRPStJ4tBpiAAwXNh-s1YCErFG1X-0W8wS4mZsndEdZ1sYy_-1l7oXM2iYNg18ESb8gRP__oUIXO8JvNIZ7nNPXGleNkSsGWrd8HxLtMMyekXDph_CsMk0IY9-DDs_eSalxKe-4Hl1ojk6TAMSxw" /></form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!--Main Footer-->
+        <footer class="main-footer mx-auto">
+
+            <!--Footer Upper-->
+            <div class="footer-upper">
+                <div class="auto-container">
+                    <div class="clearfix">
+
+                        <!--Two 4th column-->
+                        <div class="row clearfix">
+
+                            <!--Footer Column-->
+                            <div class="col-md-3 col-sm-6 col-xs-12 column">
+                                <div class="footer-widget about-widget text-white">
+                                    <h2>SEN </h2>
+                                    <p><a class="footer-link" href="/inicio/sen/orgaos"> &gt; Órgãos do SEN</a></p>
+                                    <p><a class="footer-link" href="/inicio/sen/odines">&gt; ODINES</a></p>
+                                      <p><a class="footer-link" href="/inicio/sen/ende">&gt; ENDE</a></p>
+                                    <p><a class="footer-link" href="/inicio/sen/legislacao">&gt; Legislação</a></p>
+
+
+                                </div>
+                            </div>
+
+                            <!--Footer Column-->
+                            <div class="col-md-3 col-sm-6 col-xs-12 column">
+                                <div class="footer-widget about-widget text-white">
+                                    <h2>INE </h2>
+                                    <p><a class="footer-link" href="/inicio/ine">&gt; Missão, Visão e Valores</a></p>
+                                    <p><a class="footer-link" href="/inicio/ine/organizacao">&gt; Organização do INE</a></p>
+                                    <p><a href=/Arquivos/imagensCarregadas//Carregados/Calendario_639238781351851456.pdf target="_blank" class="footer-link">&gt; Calendário de Publicações </a></p>
+                                    <p><a data-toggle="modal" data-target="#newsletterModal" class="footer-link">&gt;Subscrever à newsletter</a></p>
+
+                                </div>
+                            </div>
+
+                            <div class="col-md-3 col-sm-6 col-xs-12 column">
+                                <div class="footer-widget about-widget text-white">
+                                    <h2>ACESSO RÁPIDO </h2>
+                                    <p><a class="footer-link" href="/publicacoes/todas">&gt; Publicações</a></p>
+                                    <p><a class="footer-link" href="/noticias/todas">&gt; Notícias</a></p>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3 col-sm-6 col-xs-12 column">
+                                <div class="footer-widget about-widget text-white">
+                                    <h2>REDES SOCIAIS</h2>
+                                    <p><a href="https://www.facebook.com/INE-Angola-917797135010576" target="_blank" class="footer-link"><span class="fab fa-facebook mr-1"></span> Facebook</a></p>
+                                    <p><a href="https://www.instagram.com/ine_angola/?igshid=cde0rapmnhpe" target="_blank" class="footer-link"><span class="fab fa-instagram  mr-1"></span>  Instagram</a></p>
+                                    <p><a href="https://www.linkedin.com/in/ine-angola-3a559216b" target="_blank" class="footer-link"><span class="fab fa-linkedin  mr-1"></span>  LinkedIn</a></p>
+                                    <p><a href="https://www.tiktok.com/@ineangola?_t=ZM-8whoHqvWf8X&_r=1" target="_blank" class="footer-link"><span class="fab fa-tiktok  mr-1"></span>  TikTok</a></p>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--Footer Bottom-->
+            <div class="footer-bottom">
+                <div class="auto-container">
+                    <!--Copyright-->
+                    <div class="copyright text-center">
+                        Copyright 2021 -
+                        <script>document.write(new Date().getFullYear())</script>  | <strong>Instituto Nacional de Estatística</strong> |  Todos os direitos reservados
+                    </div>
+                </div>
+            </div>
+
+        </footer>
+        <div class="scroll-to-top"><span class="fa fa-arrow-up"></span></div>
+
+        
+        
+            <script src="/volunteer/js/jquery.js"></script>
+            <script src="/volunteer/js/wow.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.6.0/umd/popper.min.js" integrity="sha512-BmM0/BQlqh02wuK5Gz9yrbe7VyIVwOzD1o40yi1IsTjriX/NGF37NyXHfmFzIlMmoSIBXgqDiG1VNU6kB5dBbA==" crossorigin="anonymous"></script>
+            <script src="/volunteer/js/rev-plugins.js"></script>
+            <script src="/volunteer/js/revolution.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js" integrity="sha512-0QbL0ph8Tc8g5bLhfVzSqxe9GERORsKhIn1IrpxDAgUsbBGz/V7iSav2zzW325XGd1OMLdL4UiqRJj702IeqnQ==" crossorigin="anonymous"></script>
+            <script src="/volunteer/js/jquery-parallax.js"></script>
+            <script src="/volunteer/js/scrollbar.js"></script>
+            <script src="/volunteer/js/validate.js"></script>
+
+            <script src="/volunteer/js/script.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js" integrity="sha512-AA1Bzp5Q0K1KanKKmvN/4d3IRKVlv9PYgwFPvm32nPO6QS8yH1HO7LbgB1pgiOxPtfeg5zEn2ba64MUcqJx6CA==" crossorigin="anonymous"></script>
+            <script src="/admin/js/alerts.js"></script>
+            <script src="/volunteer/js/menus.js"></script>
+            <script src="/volunteer/js/newsletter.js"></script>
+            <script src="/volunteer/js/menu-toggle.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js" integrity="sha512-bPs7Ae6pVvhOSiIcyUClR7/q2OAsRiovw4vAkX+zJbw3ShAeeqezq50RIIcIURq7Oa20rW2n2q+fyXBNcU9lrw==" crossorigin="anonymous"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js" integrity="sha512-d9xgZrVZpmmQlfonhQUvTR7lMPtO7NkZMkA0ABN3PHCbKA5nqylQ/yWlFAyY6hYgdF1Qh6nYiuADWwKB4C2WSw==" crossorigin="anonymous"></script>
+            <script>
+                let exitIntentShown = false;
+
+                document.addEventListener('mouseout', function(e) {
+                    if (!exitIntentShown && e.clientY < 10) { // mouse perto do topo
+                        document.getElementById('exitIntent').style.display = 'block';
+                        exitIntentShown = true;
+                    }
+                });
+
+                function closeExitIntent() {
+                    document.getElementById('exitIntent').style.display = 'none';
+                }
+
+                function openSurvey() {
+                    window.open('https://forms.gle/cRTYdXEdybU3vEPQ9', '_blank');
+                }
+            </script>
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    document.querySelectorAll(".text-first-cap").forEach(function (el) {
+                        let original = el.textContent.trim();
+                        let lower = original.toLowerCase();
+                        let capitalized = lower.charAt(0).toUpperCase() + lower.slice(1);
+                        el.textContent = capitalized;
+                    });
+                });
+            </script>
+
+
+            <script>
+                $(document).ready(function () {
+                    var todosDestaques = $("#todosDestaques");
+                    var noticiasDestaques = $("#noticiasDestaques");
+                    var eventosDestaques = $("#eventosDestaques");
+                    var linksSlider = $("#linksSlider");
+                    todosDestaques.owlCarousel({
+                        loop: true,
+                        margin: 20,
+                        smartSpeed: 900,
+                        nav: true,
+                        navText: ["<i class='fa fa-chevron-left'></i>", "<i class='fa fa-chevron-right'></i>"],
+                        autoplay: true,
+                        autoPlaySpeed: 3000,
+                        autoPlayTimeout: 3000,
+                        autoplayHoverPause: true,
+                        responsiveClass: true,
+                        responsive: {
+                            0: {
+                                items: 1,
+                                nav: true,
+                                loop: true,
+
+                            },
+                            480: {
+                                items: 2,
+                                nav: true,
+                                loop: true
+
+                            },
+                            800: {
+                                items: 3,
+                                nav: true,
+                                loop: true
+
+                            },
+                            1000: {
+                                items: 3,
+                                nav: true,
+                                loop: true
+                            }
+                        }
+                    });
+
+                    noticiasDestaques.owlCarousel({
+                        loop: true,
+                        margin: 20,
+                        smartSpeed: 900,
+                        nav: true,
+                        navText: ["<i class='fa fa-chevron-left'></i>", "<i class='fa fa-chevron-right'></i>"],
+                        autoplay: true,
+                        autoPlaySpeed: 3000,
+                        autoPlayTimeout: 3000,
+                        autoplayHoverPause: true,
+                        responsiveClass: true,
+                        responsive: {
+                            0: {
+                                items: 1,
+                                nav: true,
+                                loop: true,
+
+                            },
+                            480: {
+                                items: 2,
+                                nav: true,
+                                loop: true
+
+                            },
+                            800: {
+                                items: 3,
+                                nav: true,
+                                loop: true
+
+                            },
+                            1000: {
+                                items: 3,
+                                nav: true,
+                                loop: true
+                            }
+                        }
+                    });
+                    eventosDestaques.owlCarousel({
+                        loop: true,
+                        margin: 20,
+                        smartSpeed: 900,
+                        nav: true,
+                        navText: ["<i class='fa fa-chevron-left'></i>", "<i class='fa fa-chevron-right'></i>"],
+                        autoplay: true,
+                        autoPlaySpeed: 3000,
+                        autoPlayTimeout: 3000,
+                        autoplayHoverPause: true,
+                        responsiveClass: true,
+                        responsive: {
+                            0: {
+                                items: 1,
+                                nav: true,
+                                loop: true,
+
+                            },
+                            480: {
+                                items: 2,
+                                nav: true,
+                                loop: true
+
+                            },
+                            800: {
+                                items: 3,
+                                nav: true,
+                                loop: true
+
+                            },
+                            1000: {
+                                items: 3,
+                                nav: true,
+                                loop: true
+                            }
+                        }
+                    });
+                    linksSlider.owlCarousel({
+                        loop: true,
+                        margin: 20,
+                        smartSpeed: 900,
+                        nav: true,
+                        navText: ["<i class='fa fa-chevron-left'></i>", "<i class='fa fa-chevron-right'></i>"],
+                        autoplay: true,
+                        autoPlaySpeed: 2000,
+                        autoPlayTimeout: 2000,
+                        autoplayHoverPause: true,
+                        responsiveClass: true,
+                        responsive: {
+                            0: {
+                                items: 4,
+                                nav: true,
+                                loop: true,
+
+                            },
+                            480: {
+                                items: 4,
+                                nav: true,
+                                loop: true
+
+                            },
+                            800: {
+                                items: 4,
+                                nav: true,
+                                loop: true
+
+                            },
+                            1000: {
+                                items: 6,
+                                nav: true,
+                                loop: true
+                            }
+                        }
+                    });
+
+                    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+                        e.target // newly activated tab
+                        e.relatedTarget // previous active tab
+                        $(".owl-carousel").trigger('refresh.owl.carousel');
+                    });
+
+                });</script>
+
+            <!--Tempdata["Newsletter"] vem do controller Newsletter, para comunicar o estado da opercao> Erro, Sucesso, Aviso, Informacao -->
+            <script type="application/javascript" charset="utf-8">
+
+            </script>
+
+            <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+            <script>
+                $(document).ready(function () {
+                    $("#postTitulo").autocomplete({
+                        source: 'api/Pesquisa/search'
+                    });
+
+                    $('#searchMobile').click(function (e) {
+                        $('#toggle-show').toggleClass('d-none');
+                        $('#toggle-close').toggleClass('d-none');
+                        $("#side-navigation").toggleClass('toggled-sidebar')
+                        $('#PesquisaModal').modal('show')
+
+
+                    });
+
+
+
+                });</script>
+
+
+            <script>
+                $('.esconder-ao-carregar').addClass('d-none');
+                $(document).ready(function () {
+                    $('.spinner-card').hide();
+                    $('.esconder-ao-carregar').addClass('d-block');
+                });</script>
+
+
+            <!-- Global site tag (gtag.js) - Google Analytics -->
+            <script async src="https://www.googletagmanager.com/gtag/js?id=UA-126795520-1"></script>
+            <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag() { dataLayer.push(arguments); }
+                gtag('js', new Date());
+
+                gtag('config', 'UA-126795520-1');
+            </script>
+
+
+
+
+
+
+        
+
+        
+        
+    </div>
+
+</body>
+</html>

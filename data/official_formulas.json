@@ -1,0 +1,190 @@
+{
+  "metadata": {
+    "title": "Fórmulas Oficiais para Cálculo da População Afetada por El Niño e Secas em Angola",
+    "description": "Especificação matemática, parâmetros, fundamentação e ligações oficiais de agências da ONU, FEWS NET, SADC e Governo de Angola",
+    "version": "2026.1"
+  },
+  "household_size": {
+    "value": 5.2,
+    "fonte": "Instituto Nacional de Estatística de Angola (INE) - Censo Geral da População e Habitação (CGPH 2014 / Preliminares 2024)",
+    "descricao": "Dimensão média oficial do agregado familiar em Angola, adotada em avaliações de assistência humanitária pelo UNICEF, PAM e Protecção Civil.",
+    "url": "https://censo2024.ine.gov.ao/"
+  },
+  "formulas": {
+    "UNDRR_IPCC": {
+      "id": "UNDRR_IPCC",
+      "nome": "Equação Geral do Risco de Catástrofes (UNDRR / IPCC)",
+      "organizacao": "United Nations Office for Disaster Risk Reduction (UNDRR) & IPCC",
+      "formula_latex": "Risco = Perigo (H) \\times Exposição (E) \\times Vulnerabilidade (V)",
+      "formula_simplificada": "P_afetada = Pop_Oficial × E × V_clima",
+      "descricao": "Padrão internacional adotado no Quadro de Sendai para a Redução do Risco de Catástrofes 2015-2030. O risco e impacto populacional resultam da convolução entre o perigo climático (anomalia de precipitação do SARCOF-33), a exposição demográfica censitária do INE e a vulnerabilidade intrínseca.",
+      "parametros": {
+        "E": {
+          "nome": "Exposição Geográfica",
+          "valor_padrao": 1.0,
+          "descricao": "Proporção da população ou território contida na mancha de anomalia climática."
+        },
+        "V_fatores": {
+          "BN": {
+            "valor": 0.85,
+            "label": "Abaixo da Normal / Seca Severa",
+            "desc": "Alta vulnerabilidade em zonas agropastoris sob défice crítico."
+          },
+          "N_BN": {
+            "valor": 0.5,
+            "label": "Normal a Abaixo da Normal",
+            "desc": "Vulnerabilidade moderada com perturbação de ciclos agrícolas."
+          },
+          "N_AN": {
+            "valor": 0.15,
+            "label": "Normal a Acima da Normal",
+            "desc": "Vulnerabilidade residual e impactos localizados."
+          },
+          "AN": {
+            "valor": 0.0,
+            "label": "Acima da Normal",
+            "desc": "Sem vulnerabilidade de seca (risco nulo de estiagem)."
+          }
+        }
+      },
+      "links_oficiais": [
+        {
+          "nome": "UNDRR - Sendai Framework for Disaster Risk Reduction 2015–2030",
+          "url": "https://www.undrr.org/publication/sendai-framework-disaster-risk-reduction-2015-2030"
+        },
+        {
+          "nome": "UNDRR - Disaster Risk Terminology (Hazard, Exposure, Vulnerability)",
+          "url": "https://www.undrr.org/terminology/disaster-risk"
+        },
+        {
+          "nome": "IPCC AR6 WGII - Impacts, Adaptation and Vulnerability",
+          "url": "https://www.ipcc.ch/report/sixth-assessment-report-working-group-ii/"
+        }
+      ]
+    },
+    "IPC_FEWSNET": {
+      "id": "IPC_FEWSNET",
+      "nome": "População em Necessidade Humanitária - Fase 3+ (IPC / FEWS NET)",
+      "organizacao": "Famine Early Warning Systems Network (FEWS NET) & IPC Global Partnership",
+      "formula_latex": "PIN_{ElNiño} = Pop_{Total} \\times \\sum_{i=3}^{5} \\% IPC_i",
+      "formula_simplificada": "PIN = Pop_Oficial × (% Fase 3 Crise + % Fase 4 Emergência + % Fase 5 Catástrofe)",
+      "descricao": "Metodologia oficial da Classificação Integrada da Segurança Alimentar em Fases (IPC Manual 3.1) utilizada pela FEWS NET, FAO, PAM e parceiros. Define a 'População em Necessidade' (PIN) como os agregados que enfrentam desfechos de Crise (Fase 3), Emergência (Fase 4) ou Catástrofe (Fase 5), que exigem ação humanitária urgente.",
+      "parametros": {
+        "taxas_choque_el_nino": {
+          "BN": {
+            "ipc_phase3_plus": 0.45,
+            "fase3_crise": 0.32,
+            "fase4_emergencia": 0.13,
+            "label": "Abaixo da Normal (Seca Severa): 45% Pop em Fase 3+"
+          },
+          "N_BN": {
+            "ipc_phase3_plus": 0.2,
+            "fase3_crise": 0.17,
+            "fase4_emergencia": 0.03,
+            "label": "Normal a Abaixo da Normal: 20% Pop em Fase 3+"
+          },
+          "N_AN": {
+            "ipc_phase3_plus": 0.05,
+            "fase3_crise": 0.05,
+            "fase4_emergencia": 0.0,
+            "label": "Normal a Acima da Normal: 5% Pop em Fase 3+"
+          },
+          "AN": {
+            "ipc_phase3_plus": 0.0,
+            "fase3_crise": 0.0,
+            "fase4_emergencia": 0.0,
+            "label": "Acima da Normal: 0% Pop em Crise de Seca"
+          }
+        }
+      },
+      "links_oficiais": [
+        {
+          "nome": "IPC Global Platform - IPC Technical Manual Version 3.1",
+          "url": "https://www.ipcinfo.org/ipc-manual/"
+        },
+        {
+          "nome": "FEWS NET - Scenario Development & Population in Need (PIN)",
+          "url": "https://fews.net/about-us/how-we-work"
+        },
+        {
+          "nome": "FEWS NET - Angola Food Security Outlook Update",
+          "url": "https://fews.net/southern-africa/angola"
+        },
+        {
+          "nome": "SADC Regional Vulnerability Assessment and Analysis (RVAA) Programme",
+          "url": "https://www.sadc.int/programmes/disaster-risk-reduction"
+        }
+      ]
+    },
+    "WFP_FAO_SADC": {
+      "id": "WFP_FAO_SADC",
+      "nome": "Modelo Agropastoril & Preços de Alimentos (PAM / FAO / SADC)",
+      "organizacao": "Programa Alimentar Mundial (PAM/WFP VAM) & FAO GIEWS",
+      "formula_latex": "P_{afetada} = (Pop_{Rural} \\times \\alpha_{Agropastoril} \\times Défice) + (Pop_{Urbana} \\times \\beta_{Preços})",
+      "formula_simplificada": "P_afetada = (Pop_Rural × 0.70 × Choque_Chuva) + (Pop_Urbana × 0.20 × Inflacao_Alimentos)",
+      "descricao": "Modelo econométrico e de subsistência empregue pelo PAM (Vulnerability Analysis and Mapping - VAM) e pela FAO em países da África Austral. Reconhece que a população rural sofre impacto direto nas colheitas agrícolas e mortalidade pecuária (peso dominante), enquanto as periferias urbanas sofrem por transmissão de choque inflacionário e aumento do custo do cesto básico.",
+      "parametros": {
+        "pesos_por_categoria": {
+          "BN": {
+            "rural_impact": 0.75,
+            "urban_impact": 0.25,
+            "label": "BN: 75% Pop Rural + 25% Pop Urbana"
+          },
+          "N_BN": {
+            "rural_impact": 0.4,
+            "urban_impact": 0.12,
+            "label": "N-BN: 40% Pop Rural + 12% Pop Urbana"
+          },
+          "N_AN": {
+            "rural_impact": 0.1,
+            "urban_impact": 0.04,
+            "label": "N-AN: 10% Pop Rural + 4% Pop Urbana"
+          },
+          "AN": {
+            "rural_impact": 0.0,
+            "urban_impact": 0.0,
+            "label": "AN: Sem impacto de seca"
+          }
+        }
+      },
+      "links_oficiais": [
+        {
+          "nome": "WFP VAM - Vulnerability Analysis and Mapping / Hunger Monitoring",
+          "url": "https://vam.wfp.org/"
+        },
+        {
+          "nome": "FAO GIEWS - Global Information and Early Warning System on Food and Agriculture: Angola",
+          "url": "https://www.fao.org/giews/country-brief/country/AGO/en"
+        },
+        {
+          "nome": "SADC Climate Services Centre - SARCOF Statements",
+          "url": "https://www.sadc.int/themes/meteorology-climate/climate-services"
+        }
+      ]
+    },
+    "IPC_FIES_INE": {
+      "id": "IPC_FIES_INE",
+      "nome": "Matriz de Risco (1984-2025) & FIES INE (ODS 2.1.2)",
+      "organizacao": "INE Angola (Relatório FIES 2026) & Matriz de Tendências Históricas (1984-2025)",
+      "formula_latex": "Risco = Likelihood \\times Impact \\quad | \\quad P_{insegura} = Pop_{Total} \\times \\% FIES_{Severa}",
+      "formula_simplificada": "P_afetada = Pop_Oficial × % FIES Severa (INE) | Score = Likelihood (1-5) × Impact (1-5)",
+      "descricao": "Classificação baseada na matriz de risco histórico (1984-2025: Likelihood x Impact) cruzada com a taxa oficial de Insegurança Alimentar Severa (FIES) do Instituto Nacional de Estatística de Angola (INE / FAO, Fevereiro 2026, Indicador ODS 2.1.2).",
+      "parametros": {
+        "likelihood_scale": "1: Muito improvável (0-5%), 2: Improvável (5-15%), 3: Moderadamente provável (15-30%), 4: Provável (30-50%), 5: Muito provável (>50%)",
+        "impact_scale": "1: Negligenciável, 2: Baixo, 3: Moderado, 4: Significativo, 5: Crítico",
+        "risk_score_scale": "Baixo (1-7), Moderado (8-14), Alto (15-25)",
+        "fonte_ipc_fies": "Quadro 5 do Relatório FIES INE/FAO (Fevereiro 2026)"
+      },
+      "links_oficiais": [
+        {
+          "nome": "INE Angola - Relatório sobre a Escala de Experiência de Insegurança Alimentar (FIES) Fevereiro 2026",
+          "url": "https://www.ine.gov.ao/publicacoes/detalhes/NTA0Mzg%3D"
+        },
+        {
+          "nome": "Publicação Oficial PDF - INE FIES 2026",
+          "url": "https://www.ine.gov.ao/Arquivos/arquivosCarregados//Carregados/Publicacao_639070130147582882.pdf"
+        }
+      ]
+    }
+  }
+}

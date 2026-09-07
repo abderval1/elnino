@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>El Niño SADC & Angola WebGIS - Risco Climático & Modelo Dasimétrico</title>
+  
+  <!-- Google Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Local Leaflet CSS -->
+  <link rel="stylesheet" href="/vendor/leaflet.css">
+  
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- Top Header -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-icon">
+          <i class="fa-solid fa-earth-africa"></i>
+        </div>
+        <div class="brand-title">
+          <h1>El Niño WebGIS Portal</h1>
+          <p>Risco Climático El Niño & Base Demográfica Oficial INE Angola (Censo 2024 & Estimativas 2025–2027)</p>
+        </div>
+      </div>
+      
+      <div class="header-badges">
+        <div class="badge badge-live">
+          <span class="badge-dot"></span>
+          SARCOF-33 Active
+        </div>
+        <div class="badge" id="hdr-formula-badge" style="background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.4); color: #34d399;" title="Fórmula Oficial Selecionada">
+          <i class="fa-solid fa-square-root-variable"></i>
+          <span id="hdr-formula-name">UNDRR / IPCC</span>
+        </div>
+        <a href="https://censo2024.ine.gov.ao/" target="_blank" class="badge" style="background: rgba(225, 29, 72, 0.15); border-color: rgba(225, 29, 72, 0.4); color: #fb7185; text-decoration: none; cursor: pointer;" title="INE Angola — Censo 2024 & Estimativas 2025-2027">
+          <i class="fa-solid fa-users"></i>
+          INE Angola Oficial: <span id="hdr-pop-year">2024 (36.6M hab)</span>
+        </a>
+        <button class="btn-header" id="btn-open-fonte-modal" style="background: rgba(14, 165, 233, 0.15); border-color: rgba(14, 165, 233, 0.4); color: #38bdf8;">
+          <i class="fa-solid fa-graduation-cap"></i>
+          Fontes Clicáveis & Metodologia
+        </button>
+        <button class="btn-header" id="btn-quick-censo">
+          <i class="fa-solid fa-table-list"></i>
+          Tabela Censo / Projeções
+        </button>
+        <button class="btn-header" id="btn-quick-docs">
+          <i class="fa-solid fa-file-pdf"></i>
+          Relatórios PDF
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <div class="main-workspace">
+      
+      <!-- Sidebar Control Panel -->
+      <aside class="sidebar">
+        <div class="sidebar-tabs">
+          <button class="tab-btn active" data-tab="tab-layers">
+            <i class="fa-solid fa-layer-group"></i> Camadas
+          </button>
+          <button class="tab-btn" data-tab="tab-censo">
+            <i class="fa-solid fa-calculator"></i> Risco & Censo
+          </button>
+          <button class="tab-btn" data-tab="tab-analytics">
+            <i class="fa-solid fa-chart-pie"></i> Análise
+          </button>
+          <button class="tab-btn" data-tab="tab-docs">
+            <i class="fa-solid fa-file-lines"></i> Relatórios
+          </button>
+        </div>
+
+        <div class="sidebar-content">
+          
+          <!-- TAB 1: LAYERS & FILTERS -->
+          <div class="tab-pane active" id="tab-layers">
+            
+            <!-- Base Map Selection -->
+            <div class="control-group">
+              <div class="control-title">
+                <i class="fa-solid fa-map"></i> Mapa de Fundo (BaseMap)
+              </div>
+              <select id="select-basemap" class="select-control">
+                <option value="cartodark" selected>CartoDB Dark Matter (Escuro)</option>
+                <option value="osm">OpenStreetMap Standard</option>
+                <option value="esri-sat">Esri Satellite (Satélite HD)</option>
+                <option value="cartolight">CartoDB Positron (Claro)</option>
+              </select>
+            </div>
+
+            <!-- Demographic Base Year Selector -->
+            <div class="control-group" style="border-color: rgba(225,29,72,0.4); background: rgba(225,29,72,0.05);">
+              <div class="control-title" style="color:#fb7185;">
+                <i class="fa-solid fa-calendar-days"></i> Ano da Base Demográfica INE
+              </div>
+              <select id="select-demographic-year" class="select-control" style="border-color: rgba(225,29,72,0.5);">
+                <option value="2024" selected>Censo INE 2024 (Oficial: 36.604.682 hab)</option>
+                <option value="2025">Estimativa INE 2025 (Oficial: 37.513.168 hab)</option>
+                <option value="2026">Estimativa INE 2026 - OND (Oficial: 38.778.554 hab)</option>
+                <option value="2027">Estimativa INE 2027 - JFM (Oficial: 40.082.765 hab)</option>
+              </select>
+            </div>
+
+            <!-- Climate Season Layer Select -->
+            <div class="control-group">
+              <div class="control-title">
+                <i class="fa-solid fa-cloud-sun-rain"></i> Temporada Climática SARCOF
+              </div>
+              <select id="select-season" class="select-control">
+                <option value="OND" selected>Outubro - Dezembro 2026 (OND)</option>
+                <option value="JFM">Janeiro - Março 2027 (JFM)</option>
+              </select>
+            </div>
+
+            <!-- Multi-Layer Checkboxes (Simultaneous Layers) -->
+            <div class="control-group">
+              <div class="control-title">
+                <i class="fa-solid fa-layer-group"></i> Camadas de Angola DPA (Simultâneas)
+              </div>
+              
+              <div class="toggle-row">
+                <span class="toggle-label"><i class="fa-solid fa-draw-polygon" style="color:#0284c7;"></i> Zonas SARCOF-33 (SADC)</span>
+                <label class="switch">
+                  <input type="checkbox" id="chk-layer-sarcof" checked>
+                  <span class="slider"></span>
+                </label>
+              </div>
+
+              <div class="toggle-row">
+                <span class="toggle-label"><i class="fa-solid fa-map-location-dot" style="color:#e11d48;"></i> Angola - Províncias (21)</span>
+                <label class="switch">
+                  <input type="checkbox" id="chk-layer-provincias" checked>
+                  <span class="slider"></span>
+                </label>
+              </div>
+
+              <div class="toggle-row">
+                <span class="toggle-label"><i class="fa-solid fa-city" style="color:#f59e0b;"></i> Angola - Municípios (326)</span>
+                <label class="switch">
+                  <input type="checkbox" id="chk-layer-municipios">
+                  <span class="slider"></span>
+                </label>
+              </div>
+
+              <div class="toggle-row">
+                <span class="toggle-label"><i class="fa-solid fa-house-chimney-window" style="color:#10b981;"></i> Angola - Comunas (542)</span>
+                <label class="switch">
+                  <input type="checkbox" id="chk-layer-comunas">
+                  <span class="slider"></span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Map Labels On / Off Toggle -->
+            <div class="control-group">
+              <div class="control-title">
+                <i class="fa-solid fa-tags"></i> Rótulos no Mapa (Labels On/Off)
+              </div>
+              <div class="toggle-row">
+                <span class="toggle-label">Exibir Nomes Geográficos no Mapa</span>
+                <label class="switch">
+                  <input type="checkbox" id="toggle-labels">
+                  <span class="slider"></span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Precipitation Category Filter -->
+            <div class="control-group">
+              <div class="control-title">
+                <i class="fa-solid fa-filter"></i> Categoria de Precipitação
+              </div>
+              <select id="select-category" class="select-control">
+                <option value="ALL">Todas as Categorias</option>
+                <option value="1">Acima da Normal (AN)</option>
+                <option value="2">Normal a Acima da Normal (N-AN)</option>
+                <option value="3">Normal a Abaixo da Normal (N-BN)</option>
+                <option value="4">Abaixo da Normal / Seca (BN)</option>
+              </select>
+            </div>
+
+            <!-- Search & High Confidence Toggles -->
+            <div class="control-group">
+              <div class="control-title">
+                <i class="fa-solid fa-magnifying-glass"></i> Pesquisar Região / Município
+              </div>
+              <input type="text" id="input-search" class="input-control" placeholder="Ex: Namacunde, Gambos, Cunene, Huíla...">
+              
+              <div class="toggle-row" style="margin-top: 6px;">
+                <span class="toggle-label">Sobreposição de Alta Confiança</span>
+                <label class="switch">
+                  <input type="checkbox" id="toggle-confidence" checked>
+                  <span class="slider"></span>
+                </label>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- TAB 2: EQUAÇÃO DO RISCO & CENSO OFICIAL -->
+          <div class="tab-pane" id="tab-censo">
+            
+            <!-- Official Formula Selector -->
+            <div class="control-group" style="border-color: rgba(16,185,129,0.4); background: rgba(16,185,129,0.05);">
+              <div class="control-title" style="color:#34d399;">
+                <i class="fa-solid fa-square-root-variable"></i> Modelo Oficial de Cálculo
+              </div>
+              <select id="select-formula-model" class="select-control" style="border-color: rgba(16,185,129,0.5);">
+                <option value="IPC_FIES_INE" selected>⭐ Matriz de Risco (1984-2025) & FIES INE (ODS 2.1.2)</option>
+                <option value="UNDRR_IPCC">UNDRR / IPCC — Equação Geral do Risco (R = H × E × V)</option>
+                <option value="IPC_FEWSNET">IPC / FEWS NET — População em Necessidade (PIN / Fase 3+)</option>
+                <option value="WFP_FAO_SADC">PAM / FAO / SADC — Modelo Agropastoril & Preços</option>
+              </select>
+              <div id="formula-quick-desc" style="font-size: 0.72rem; color: #cbd5e1; margin-top: 8px; line-height: 1.45; background: rgba(11,15,25,0.7); padding: 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.08);">
+                <strong id="formula-org-title" style="color:#38bdf8;">UNDRR & IPCC (Quadro de Sendai)</strong><br/>
+                <code id="formula-equation-code" style="color:#fcd34d;">P_afetada = Pop_Oficial × E × V_clima</code><br/>
+                <span id="formula-summary-text" style="color:#94a3b8; font-size:0.7rem;">Padrão internacional de risco para desastres de seca climática.</span><br/>
+                <a id="formula-official-link" href="https://www.undrr.org/terminology/disaster-risk" target="_blank" class="formula-link-btn">
+                  <i class="fa-solid fa-arrow-up-right-from-square"></i> Consultar Norma Técnica Oficial da ONU
+                </a>
+              </div>
+            </div>
+
+            <div class="control-group">
+              <div class="control-title">
+                <i class="fa-solid fa-users"></i> Estimativas Globais (Ano <span class="lbl-year-active">2024</span>)
+              </div>
+              <div class="info-row">
+                <span class="info-label">População Oficial INE:</span>
+                <span class="info-val" style="color:#38bdf8;" id="stat-total-pop">36.604.682</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Pessoas Afetadas (Est.):</span>
+                <span class="info-val" style="color:#ef4444;" id="stat-bn-pop">Calculando...</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Famílias Afetadas (5,2/fam):</span>
+                <span class="info-val" style="color:#f59e0b;" id="stat-bn-families">Calculando...</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">% População Afetada:</span>
+                <span class="info-val" style="color:#a78bfa;" id="stat-pct-affected">-%</span>
+              </div>
+            </div>
+
+            <button class="btn-header" id="btn-open-censo-table" style="width: 100%; justify-content: center; background: linear-gradient(135deg, #e11d48, #be123c);">
+              <i class="fa-solid fa-table"></i> Abrir Tabela Censo & Projeções INE
+            </button>
+
+          </div>
+
+          <!-- TAB 3: ANALYTICS & CHARTS -->
+          <div class="tab-pane" id="tab-analytics">
+            
+            <div class="chart-card">
+              <div class="control-title">
+                <i class="fa-solid fa-chart-column"></i> Distribuição da Previsão SADC
+              </div>
+              <div class="chart-wrapper">
+                <canvas id="chart-forecast-dist"></canvas>
+              </div>
+            </div>
+
+            <div class="chart-card">
+              <div class="control-title">
+                <i class="fa-solid fa-chart-line"></i> Comparação Temporal (OND vs JFM)
+              </div>
+              <div class="chart-wrapper">
+                <canvas id="chart-temporal-comparison"></canvas>
+              </div>
+            </div>
+
+            <div class="chart-card">
+              <div class="control-title" style="color:#f59e0b;">
+                <i class="fa-solid fa-shield-halved"></i> IVC — Vulnerabilidade das 21 Províncias (Censo 2024)
+              </div>
+              <div style="font-size:0.7rem; color:#64748b; margin-bottom:6px; line-height:1.4;">
+                Índice Composto: água + saneamento + electricidade + habitação + estrutura etária
+                <a href="https://www.undrr.org/terminology/vulnerability" target="_blank" style="color:#38bdf8;"> ↗ UNDRR</a>
+              </div>
+              <div class="chart-wrapper" style="height: 280px;">
+                <canvas id="chart-vulnerability-ivc"></canvas>
+              </div>
+            </div>
+
+            <div class="chart-card">
+              <div class="control-title" style="color:#34d399;">
+                <i class="fa-solid fa-droplet"></i> Acesso à Água por Província (Censo 2024 INE)
+              </div>
+              <div style="font-size:0.7rem; color:#64748b; margin-bottom:6px;">
+                % Agregados sem acesso a fonte de água segura — Fonte: <a href="https://censo2024.ine.gov.ao/" target="_blank" style="color:#38bdf8;">INE Censo 2024</a>
+              </div>
+              <div class="chart-wrapper" style="height: 280px;">
+                <canvas id="chart-water-access"></canvas>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- TAB 4: DOCUMENTS & PDF MANAGER -->
+          <div class="tab-pane" id="tab-docs">
+            
+            <!-- Upload Dropzone -->
+            <div class="upload-dropzone" id="dropzone">
+              <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+              <p style="font-size: 0.85rem; font-weight: 600; color: var(--text-main);">Upload de Relatório PDF</p>
+              <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">Clique ou arraste ficheiros PDF para carregar</p>
+              <input type="file" id="file-input" accept=".pdf" style="display: none;">
+            </div>
+
+            <!-- Documents List -->
+            <div class="control-title" style="margin-top: 10px;">
+              <i class="fa-solid fa-folder-open"></i> Documentos Disponíveis (<span id="doc-count">0</span>)
+            </div>
+            <div class="doc-list" id="doc-list-container">
+              <!-- Dynamically populated -->
+            </div>
+
+          </div>
+
+        </div>
+      </aside>
+
+      <!-- Central Map View -->
+      <main class="map-view-container">
+        <div id="map"></div>
+
+        <!-- Floating Map Legend -->
+        <div class="map-legend-card" id="map-legend">
+          <div class="legend-title">Previsão Climática SARCOF-33</div>
+          <div class="legend-items">
+            <div class="legend-item">
+              <div class="legend-color" style="background: #0284c7;"></div>
+              <span>Acima da Normal (AN)</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background: #06b6d4;"></div>
+              <span>Normal a Acima da Normal (N-AN)</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background: #f59e0b;"></div>
+              <span>Normal a Abaixo da Normal (N-BN)</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background: #ef4444;"></div>
+              <span>Abaixo da Normal / Seca (BN)</span>
+            </div>
+            <div class="legend-item" style="margin-top: 4px; padding-top: 4px; border-top: 1px dashed rgba(255,255,255,0.1);">
+              <div class="legend-color" style="background: #e11d48; opacity: 0.7;"></div>
+              <span>Angola - Limites DPA (Prov/Mun/Com)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Detailed Region Inspector Card -->
+        <div class="inspector-card" id="inspector-card">
+          <div class="inspector-header">
+            <h3 class="inspector-title" id="insp-name">Região</h3>
+            <button class="btn-close" id="btn-close-inspector">&times;</button>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Tipo de Camada:</span>
+            <span class="info-val" id="insp-layer-type">Província</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Área Oficial DPA (ha):</span>
+            <span class="info-val" id="insp-area-ha" style="color:#38bdf8;">0 ha</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Área Oficial DPA (km²):</span>
+            <span class="info-val" id="insp-area-km2">0 km²</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Densidade Demográfica:</span>
+            <span class="info-val" id="insp-density" style="color:#6ee7b7;">0 hab/km²</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">População Total INE:</span>
+            <span class="info-val" id="insp-pop-censo" style="color:#f59e0b;">-</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Risco Climático (V):</span>
+            <span class="info-val" id="insp-category">-</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Pessoas Afetadas (Est.):</span>
+            <span class="info-val" id="insp-pop-affected" style="color:#ef4444; font-size:0.95rem;">-</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Famílias Afetadas (5,2/fam):</span>
+            <span class="info-val" id="insp-families-affected" style="color:#fcd34d; font-weight:700;">-</span>
+          </div>
+          
+          <!-- IVC Panel: Indicadores de Vulnerabilidade do Censo 2024 -->
+          <div id="insp-ivc-panel" style="background: rgba(15,23,42,0.8); border: 1px solid rgba(56,189,248,0.2); border-radius: 8px; padding: 10px; margin: 8px 0;">
+            <div style="color:#64748b; font-size:0.75rem; text-align:center; padding:4px;">Clique numa província para ver o IVC do Censo 2024</div>
+          </div>
+
+          <!-- Formula Box -->
+          <div class="calc-box" id="insp-calc-box">
+            <strong id="insp-calc-title" style="color:#38bdf8;">Cálculo Oficial:</strong><br/>
+            <span id="insp-calc-detail">P_afetada = 0 × 1.0 × 0.85</span><br/>
+            <a id="insp-calc-link" href="https://www.undrr.org/terminology/disaster-risk" target="_blank" class="formula-link-btn" style="margin-top:6px;">
+              <i class="fa-solid fa-arrow-up-right-from-square"></i> Ver Padrão Oficial da ONU / FEWS NET
+            </a>
+          </div>
+
+          <div style="display: flex; gap: 8px; margin-top: 12px;">
+            <button class="btn-header" id="btn-view-censo-row" style="flex: 1; justify-content: center; background: rgba(225,29,72,0.2); border-color: rgba(225,29,72,0.5); color: #fb7185;">
+              <i class="fa-solid fa-table-list"></i> Tabela Censo
+            </button>
+            <button class="btn-header" id="btn-view-region-pdf" style="flex: 1; justify-content: center;">
+              <i class="fa-solid fa-file-pdf"></i> PDF SARCOF
+            </button>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Scientific Sources & Methodology Modal -->
+  <div class="pdf-modal" id="fonte-modal">
+    <div class="pdf-modal-content" style="max-width: 950px; height: 85vh;">
+      <div class="pdf-modal-header">
+        <span class="pdf-modal-title">
+          <i class="fa-solid fa-graduation-cap" style="color:#38bdf8; margin-right: 8px;"></i>
+          Fundamentação Científica & Fontes Oficiais Clicáveis da Fórmula de Risco Climático
+        </span>
+        <button class="btn-close" id="btn-close-fonte-modal" style="font-size: 24px;">&times;</button>
+      </div>
+      <div style="padding: 20px; overflow-y: auto; flex: 1; font-size: 0.85rem; line-height: 1.6; color: #cbd5e1;">
+        
+        <h4 style="color: #38bdf8; font-family: 'Outfit', sans-serif; font-size: 1.05rem; margin-bottom: 8px;">
+          1. Fórmulas Oficiais para Cálculo de População Afetada por Seca e El Niño
+        </h4>
+        <p style="margin-bottom: 12px;">
+          O sistema disponibiliza os três modelos internacionais padronizados pelas Nações Unidas, comitês globais e governos para avaliação e monitoramento de impactos de secas provocadas pelo El Niño:
+        </p>
+
+        <!-- Model 1: IPC / FEWS NET -->
+        <div style="background: rgba(15,23,42,0.9); padding: 14px; border-radius: 8px; border: 1px solid rgba(16,185,129,0.3); margin-bottom: 16px;">
+          <h5 style="color: #34d399; font-size: 0.95rem; margin-bottom: 6px;">
+            <i class="fa-solid fa-square-root-variable"></i> Modelo IPC / FEWS NET — População em Necessidade Humanitária (PIN / Fase 3+)
+          </h5>
+          <p style="font-size: 0.8rem; margin-bottom: 8px;">
+            <strong>Fórmula:</strong> <code>PIN = Pop_Total × (% Fase 3 Crise + % Fase 4 Emergência + % Fase 5 Catástrofe)</code>
+          </p>
+          <p style="font-size: 0.8rem; color: #cbd5e1; margin-bottom: 8px;">
+            <strong>Fundamentação:</strong> O protocolo oficial da <em>Classificação Integrada da Segurança Alimentar em Fases (IPC Technical Manual Version 3.1)</em>, subscrito pela FAO, PAM, FEWS NET, UNICEF e SADC RVAA, define como população em necessidade de assistência alimentar urgente todos os indivíduos classificados na Fase 3 ou superior. Sob choque severo de El Niño no sul de Angola (Cunene, Huíla, Namibe, Cuando Cubango), as taxas históricas de IPC Fase 3+ situam-se entre 35% e 55% da população rural dependente da agricultura de sequeiro e pastorícia.
+          </p>
+          <div style="display: flex; gap: 12px; flex-wrap: wrap; font-size: 0.75rem;">
+            <a href="https://www.ipcinfo.org/ipc-manual/" target="_blank" style="color: #38bdf8; text-decoration: underline;">
+              ↗ IPC Technical Manual 3.1 (Norma Global)
+            </a>
+            <a href="https://fews.net/about-us/how-we-work" target="_blank" style="color: #38bdf8; text-decoration: underline;">
+              ↗ FEWS NET — Metodologia de Cenários & PIN
+            </a>
+            <a href="https://fews.net/southern-africa/angola" target="_blank" style="color: #38bdf8; text-decoration: underline;">
+              ↗ FEWS NET Angola — Relatórios de Segurança Alimentar
+            </a>
+          </div>
+        </div>
+
+        <!-- Model 2: UNDRR / IPCC -->
+        <div style="background: rgba(15,23,42,0.9); padding: 14px; border-radius: 8px; border: 1px solid rgba(14,165,233,0.3); margin-bottom: 16px;">
+          <h5 style="color: #38bdf8; font-size: 0.95rem; margin-bottom: 6px;">
+            <i class="fa-solid fa-square-root-variable"></i> Modelo UNDRR / IPCC — Equação Geral do Risco de Desastres
+          </h5>
+          <p style="font-size: 0.8rem; margin-bottom: 8px;">
+            <strong>Fórmula:</strong> <code>Risco = Perigo (H) × Exposição (E) × Vulnerabilidade (V) &nbsp;|&nbsp; P_afetada = Pop_Oficial × E × V</code>
+          </p>
+          <p style="font-size: 0.8rem; color: #cbd5e1; margin-bottom: 8px;">
+            <strong>Fundamentação:</strong> O <em>Quadro de Sendai para a Redução do Risco de Catástrofes 2015-2030</em> da ONU e o IPCC (AR6 WGII) definem o risco de impacto de secas como a convolução entre a anomalia climática (previsão SARCOF-33 Abaixo da Normal), a exposição da população censitária e a vulnerabilidade hídrica e agropastoril (V = 0,85 para Seca Severa; V = 0,50 para Seca Moderada).
+          </p>
+          <div style="display: flex; gap: 12px; flex-wrap: wrap; font-size: 0.75rem;">
+            <a href="https://www.undrr.org/publication/sendai-framework-disaster-risk-reduction-2015-2030" target="_blank" style="color: #38bdf8; text-decoration: underline;">
+              ↗ UNDRR — Quadro de Sendai 2015–2030 (ONU)
+            </a>
+            <a href="https://www.undrr.org/terminology/disaster-risk" target="_blank" style="color: #38bdf8; text-decoration: underline;">
+              ↗ UNDRR Terminology — Conceitos Oficiais de Risco e Perigo
+            </a>
+            <a href="https://www.ipcc.ch/report/sixth-assessment-report-working-group-ii/" target="_blank" style="color: #38bdf8; text-decoration: underline;">
+              ↗ IPCC AR6 WGII — Impactos, Adaptação e Vulnerabilidade
+            </a>
+          </div>
+        </div>
+
+        <!-- Model 3: WFP / FAO / SADC -->
+        <div style="background: rgba(15,23,42,0.9); padding: 14px; border-radius: 8px; border: 1px solid rgba(245,158,11,0.3); margin-bottom: 20px;">
+          <h5 style="color: #f59e0b; font-size: 0.95rem; margin-bottom: 6px;">
+            <i class="fa-solid fa-square-root-variable"></i> Modelo PAM / FAO / SADC — Choque Diferencial Agropastoril e Inflação de Alimentos
+          </h5>
+          <p style="font-size: 0.8rem; margin-bottom: 8px;">
+            <strong>Fórmula:</strong> <code>P_afetada = (Pop_Rural × α_Agropastoril) + (Pop_Urbana × β_Preços)</code>
+          </p>
+          <p style="font-size: 0.8rem; color: #cbd5e1; margin-bottom: 8px;">
+            <strong>Fundamentação:</strong> O PAM (VAM - Vulnerability Analysis and Mapping) e a FAO (GIEWS) modelam o impacto diferenciado: a população rural de subsistência sofre perda direta de safras e forragem (α = 75% em seca severa), enquanto as periferias urbanas são atingidas pela quebra da oferta regional de alimentos e consequente inflação dos preços de cereais básicos (β = 25%).
+          </p>
+          <div style="display: flex; gap: 12px; flex-wrap: wrap; font-size: 0.75rem;">
+            <a href="https://vam.wfp.org/" target="_blank" style="color: #38bdf8; text-decoration: underline;">
+              ↗ PAM / WFP VAM — Monitorização de Fome e Vulnerabilidade
+            </a>
+            <a href="https://www.fao.org/giews/country-brief/country/AGO/en" target="_blank" style="color: #38bdf8; text-decoration: underline;">
+              ↗ FAO GIEWS — Ficha de Informação sobre Angola
+            </a>
+            <a href="https://www.sadc.int/programmes/disaster-risk-reduction" target="_blank" style="color: #38bdf8; text-decoration: underline;">
+              ↗ SADC RVAA — Avaliação Regional de Vulnerabilidade
+            </a>
+          </div>
+        </div>
+
+        <h4 style="color: #38bdf8; font-family: 'Outfit', sans-serif; font-size: 1.05rem; margin-bottom: 8px;">
+          2. Dados Oficiais do Instituto Nacional de Estatística de Angola (INE)
+        </h4>
+        <ul style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; list-style: none;">
+
+          <li style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: 6px; border: 1px solid var(--border-color);">
+            <strong style="color: #f8fafc;">• Censo Geral da População e Habitação 2024 (CGPH 2024):</strong><br/>
+            População oficial recenseada de Angola: <strong>36.604.682 habitantes</strong>, com dados oficiais para as 21 províncias, indicadores de acesso a água potável, energia, condições de habitação e pirâmide etária.<br/>
+            👉 <a href="https://censo2024.ine.gov.ao/" target="_blank" style="color:#38bdf8; text-decoration: underline;">
+              Portal Oficial do Censo 2024 INE Angola (censo2024.ine.gov.ao)
+            </a>
+          </li>
+
+          <li style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: 6px; border: 1px solid var(--border-color);">
+            <strong style="color: #f8fafc;">• Estimativas e Projeções da População 2025–2027 (Nova DPA 2025):</strong><br/>
+            Projeções populacionais oficiais descarregadas diretamente do repositório de dados do INE:<br/>
+            — <strong>2025:</strong> 37.513.168 habitantes (com desagregação de 326 municípios)<br/>
+            — <strong>2026:</strong> 38.778.554 habitantes (com desagregação de 326 municípios)<br/>
+            — <strong>2027:</strong> 40.082.765 habitantes (com desagregação de 326 municípios)<br/>
+            👉 <a href="https://www.ine.gov.ao/Diretorios/Ver?caminho=CfDJ8NMpZBryiqVPuGc0gO8mewT47FR30gkYZWCJdAPTQxuDgwF_oD4PP3x_jkRBE3PKZAVioh_K-5Ge7iIxPbVrMX2CzX1DAQQIjAoJ0Uz2Hl_J5SOhC9erlW5yvsVtObOMgEXXgcZLd8LkuzZ0_CV0FbVm5txG3mnvvsUIX9xfgydIv8LZ0im1RsxNxLHLo188DdJNwtfvYv6vbcCrK9oC1hA" target="_blank" style="color:#38bdf8; text-decoration: underline;">
+              INE Angola — Estimativas da População 2025–2027 (Diretoria Oficial de Arquivos Excel)
+            </a>
+          </li>
+
+          <li style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: 6px; border: 1px solid var(--border-color);">
+            <strong style="color: #f8fafc;">• Dimensão Média do Agregado Familiar (5,2 pessoas por família):</strong><br/>
+            A dimensão média do agregado familiar oficial em Angola é de <strong>5,2 pessoas</strong>, conforme estabelecido pelo INE Angola e adotado nas operações humanitárias do UNICEF, OCHA e Cruz Vermelha:<br/>
+            <code>Famílias Afetadas = População Afetada ÷ 5,2</code><br/>
+            👉 <a href="https://www.unicef.org/angola/situacao-das-criancas" target="_blank" style="color:#38bdf8; text-decoration: underline;">
+              UNICEF Angola — Situação Demográfica das Crianças e Famílias
+            </a><br/>
+            👉 <a href="https://reliefweb.int/country/ago" target="_blank" style="color:#38bdf8; text-decoration: underline;">
+              ReliefWeb / OCHA — Relatórios Humanitários de Angola
+            </a>
+          </li>
+
+          <li style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: 6px; border: 1px solid var(--border-color);">
+            <strong style="color: #f8fafc;">• Previsões Sazonais SARCOF-33 (SADC CSC):</strong><br/>
+            Previsões sazonais de consenso para a época chuvosa 2026/2027 (Out-Dez 2026 e Jan-Mar 2027), emitidas pelo Centro de Serviços Climáticos da SADC (SARCOF-33).<br/>
+            👉 <a href="https://www.sadc.int/themes/meteorology-climate/climate-services" target="_blank" style="color:#38bdf8; text-decoration: underline;">
+              SADC Climate Services Centre — SARCOF Statements & Outlooks
+            </a>
+          </li>
+
+        </ul>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Censo 2024 & Projeções Interactive Table Modal -->
+  <div class="pdf-modal" id="censo-modal">
+    <div class="pdf-modal-content" style="max-width: 1300px;">
+      <div class="pdf-modal-header">
+        <span class="pdf-modal-title">
+          <i class="fa-solid fa-table-list" style="color:#e11d48; margin-right: 8px;"></i>
+          Base Demográfica Oficial INE Angola (Censo 2024 & Projeções 2025–2027) com Cálculo de Impacto
+        </span>
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <a href="https://censo2024.ine.gov.ao/" target="_blank" class="btn-header" style="padding: 4px 10px; font-size: 0.75rem; background: rgba(14,165,233,0.2); border-color:#0ea5e9; color:#38bdf8;">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i> Censo 2024 INE
+          </a>
+          <a href="https://www.ine.gov.ao/Diretorios/Ver?caminho=CfDJ8NMpZBryiqVPuGc0gO8mewT47FR30gkYZWCJdAPTQxuDgwF_oD4PP3x_jkRBE3PKZAVioh_K-5Ge7iIxPbVrMX2CzX1DAQQIjAoJ0Uz2Hl_J5SOhC9erlW5yvsVtObOMgEXXgcZLd8LkuzZ0_CV0FbVm5txG3mnvvsUIX9xfgydIv8LZ0im1RsxNxLHLo188DdJNwtfvYv6vbcCrK9oC1hA" target="_blank" class="btn-header" style="padding: 4px 10px; font-size: 0.75rem; background: rgba(225,29,72,0.2); border-color:#e11d48; color:#fb7185;">
+            <i class="fa-solid fa-file-excel"></i> Estimativas 2025-2027 INE
+          </a>
+          <button class="btn-close" id="btn-close-censo-modal" style="font-size: 24px;">&times;</button>
+        </div>
+      </div>
+      <div style="padding: 16px; overflow-y: auto; flex: 1;">
+        <div class="table-tabs">
+          <button class="table-tab-btn active" id="btn-tab-prov"><i class="fa-solid fa-map-location-dot"></i> 21 Províncias de Angola</button>
+          <button class="table-tab-btn" id="btn-tab-mun"><i class="fa-solid fa-city"></i> 326 Municípios (DPA 2025)</button>
+          <input type="text" class="table-filter-input" id="table-filter-input" placeholder="Pesquisar província ou município...">
+          <button class="btn-header" id="btn-export-csv" style="padding: 6px 12px; font-size: 0.78rem;">
+            <i class="fa-solid fa-file-csv"></i> Exportar Dados CSV
+          </button>
+        </div>
+        
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">
+          Dados oficiais do INE para o ano de <strong><span class="lbl-year-active">2024</span></strong> cruzados com a mancha de previsão SARCOF-33 e calculados pelo modelo <strong style="color:#34d399;" id="lbl-active-formula-title">UNDRR / IPCC</strong>.
+        </p>
+
+        <div style="overflow-x: auto;">
+          <table class="censo-table" id="censo-data-table">
+            <thead>
+              <tr id="censo-table-head-row">
+                <th>Unidade Administrativa</th>
+                <th>Província</th>
+                <th>Área DPA (km²)</th>
+                <th>Densidade (hab/km²)</th>
+                <th>População (<span class="lbl-year-active">2024</span>)</th>
+                <th>Urbana / Rural</th>
+                <th>Classificação SARCOF</th>
+                <th>Pessoas Afetadas</th>
+                <th>Famílias (5,2/fam)</th>
+                <th title="Índice de Vulnerabilidade Composto (IVC) — Censo 2024 INE: água + saneamento + electricidade + habitação">IVC Censo 2024 ⓘ</th>
+                <th title="Escala de Experiência de Insegurança Alimentar Severa — INE Angola / FAO Relatório Fev 2026 (ODS 2.1.2)">% FIES Severa (INE) ⓘ</th>
+                <th title="Matriz de Tendências Históricas 1984-2025: Likelihood (1-5) × Impact (1-5)">Score de Risco (1-25) ⓘ</th>
+                <th>Fonte Oficial</th>
+              </tr>
+            </thead>
+            <tbody id="censo-table-body">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PDF Modal Viewer -->
+  <div class="pdf-modal" id="pdf-modal">
+    <div class="pdf-modal-content">
+      <div class="pdf-modal-header">
+        <span class="pdf-modal-title" id="pdf-modal-title">Visualizador de Documento PDF</span>
+        <button class="btn-close" id="btn-close-pdf-modal" style="font-size: 24px;">&times;</button>
+      </div>
+      <iframe class="pdf-iframe" id="pdf-iframe" src=""></iframe>
+    </div>
+  </div>
+
+  <!-- Local Vendor Scripts -->
+  <script src="/vendor/turf.min.js"></script>
+  <script src="/vendor/leaflet.js"></script>
+  <script src="/vendor/chart.js"></script>
+  <!-- Main App Script -->
+  <script src="app.js"></script>
+</body>
+</html>

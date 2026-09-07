@@ -1,0 +1,3410 @@
+﻿<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Censo 2024 — Angola · INE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <style>
+ :root {
+      --r: #C0392B;
+      --rm: #E05A4A;
+      --rl: #F9ECEB;
+      --g: #B8860B;
+      --gl: #FBF6E7;
+      --t: #1A6E52;
+      --tl: #E4F3EE;
+      --b: #2459A0;
+      --bl: #EAF0FB;
+      --ink: #222A33;
+      --i7: #2E2820;
+      --i5: #7A736B;
+      --i2: #D5CFC8;
+      --cream: #FAF8F4;
+      --surf: #F0EDE7;
+      --wh: #FFFFFF;
+      --bd: rgba(22, 18, 14, .09);
+      --s1: 0 1px 4px rgba(199, 15, 15, 0.06);
+      --s2: 0 4px 20px rgba(0, 0, 0, .08);
+      --s3: 0 12px 48px rgba(0, 0, 0, .13);
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    html {
+      scroll-behavior: smooth
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      line-height: 1.6
+    }
+
+    .hdr {
+      background: var(--ink);
+      position: sticky;
+      top: 0;
+      z-index: 200
+    }
+
+    .hi {
+      max-width: 1380px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      flex-shrink: 0
+    }
+
+    .brand img {
+      height: 34px
+    }
+
+    .bn {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: .98rem;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.1
+    }
+
+    .bs {
+      font-size: .58rem;
+      font-weight: 500;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, .38)
+    }
+
+    .nav {
+      display: flex;
+      gap: 2px
+    }
+
+    .nb {
+      background: none;
+      border: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: .7rem;
+      font-weight: 500;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, .45);
+      cursor: pointer;
+      padding: .42rem .85rem;
+      border-radius: 5px;
+      transition: .18s;
+      white-space: nowrap
+    }
+
+    .nb:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, .08)
+    }
+
+    .nb.act {
+      color: #fff;
+      background: rgba(192, 57, 43, .4)
+    }
+
+    .bx {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: .7rem;
+      font-weight: 600;
+      color: #fff;
+      background: var(--r);
+      border: none;
+      border-radius: 6px;
+      padding: .42rem .9rem;
+      cursor: pointer;
+      transition: .18s;
+      white-space: nowrap
+    }
+
+    .bx:hover {
+      background: var(--rm)
+    }
+
+    .bx svg {
+      width: 12px;
+      height: 12px;
+      flex-shrink: 0
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      min-height: 520px;
+      display: flex;
+      flex-direction: column
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0
+    }
+
+    .hero-bg img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: opacity 1s ease
+    }
+
+    .hero-bg-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(105deg, rgba(22, 18, 14, .92) 0%, rgba(22, 18, 14, .7) 50%, rgba(22, 18, 14, .45) 100%)
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      flex: 1;
+      display: flex;
+      align-items: center
+    }
+
+    .hero-thumbs {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      border-top: 1px solid rgba(255, 255, 255, .10)
+    }
+
+    .ht-item {
+      flex: 1;
+      padding: .9rem 1.4rem;
+      cursor: pointer;
+      border-right: 1px solid rgba(255, 255, 255, .10);
+      transition: .2s;
+      display: flex;
+      align-items: center;
+      gap: .85rem;
+      overflow: hidden
+    }
+
+    .ht-item:last-child {
+      border-right: none
+    }
+
+    .ht-item:hover {
+      background: rgba(255, 255, 255, .06)
+    }
+
+    .ht-item.ht-act {
+      background: rgba(192, 57, 43, .18);
+      border-top: 2px solid var(--r)
+    }
+
+    .ht-img {
+      width: 54px;
+      height: 40px;
+      object-fit: cover;
+      border-radius: 5px;
+      flex-shrink: 0;
+      opacity: .85
+    }
+
+    .ht-tag {
+      font-size: .58rem;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--g);
+      margin-bottom: .2rem
+    }
+
+    .ht-title {
+      font-size: .78rem;
+      font-weight: 600;
+      color: #fff;
+      line-height: 1.2
+    }
+
+    .ht-sub {
+      font-size: .65rem;
+      color: rgba(255, 255, 255, .5);
+      margin-top: .1rem
+    }
+
+    .ht-num {
+      font-family: 'DM Mono', monospace;
+      font-size: .58rem;
+      color: rgba(255, 255, 255, .3);
+      margin-left: auto;
+      flex-shrink: 0
+    }
+
+    .hero-progress {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 2px;
+      background: var(--r);
+      z-index: 3;
+      transition: width .1s linear
+    }
+
+    .hri {
+      max-width: 1380px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 2rem;
+      flex-wrap: wrap
+    }
+
+    .hey {
+      font-size: .62rem;
+      font-weight: 600;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--rm);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: .8rem
+    }
+
+    .hey::before {
+      content: '';
+      width: 18px;
+      height: 1.5px;
+      background: var(--rm)
+    }
+
+    .htl {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.9rem, 4vw, 3rem);
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.08;
+      letter-spacing: -.02em;
+      margin-bottom: .7rem
+    }
+
+    .hsu {
+      font-size: .88rem;
+      color: rgba(255, 255, 255, .42);
+      max-width: 500px;
+      line-height: 1.7
+    }
+
+    .hbg {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+      margin-top: 1.6rem
+    }
+
+    .bdg {
+      font-size: .62rem;
+      font-weight: 600;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      padding: .3rem .7rem;
+      border-radius: 4px;
+      border: 1px solid rgba(255, 255, 255, .11);
+      color: rgba(255, 255, 255, .45)
+    }
+
+    .hst {
+      display: flex;
+      gap: 2.5rem;
+      align-items: flex-end;
+      flex-shrink: 0
+    }
+
+    .hs {
+      text-align: right
+    }
+
+    .hsv {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3rem;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1
+    }
+
+    .hsl {
+      font-size: .62rem;
+      color: rgba(255, 255, 255, .38);
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      margin-top: .35rem
+    }
+
+    .page {
+      display: none
+    }
+
+    .page.act {
+      display: block;
+      animation: fi .22s ease
+    }
+
+    @keyframes fi {
+      from {
+        opacity: 0;
+        transform: translateY(5px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    .main {
+      max-width: 1380px;
+      margin: 0 auto;
+      padding: 2.5rem 2rem 5rem
+    }
+
+    .sh {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 1.4rem;
+      padding-bottom: .7rem;
+      border-bottom: 1px solid var(--bd)
+    }
+
+    .sl {
+      font-size: .6rem;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--i5)
+    }
+
+    .st {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.35rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin-top: .2rem
+    }
+
+    .ks {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 1px;
+      background: var(--bd);
+      border: 1px solid var(--bd);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: var(--s1);
+      margin-bottom: 2.5rem
+    }
+
+    .kp {
+      background: var(--wh);
+      padding: 1.3rem 1.3rem 1.1rem;
+      position: relative;
+      transition: .18s
+    }
+
+    .kp:hover {
+      background: var(--cream)
+    }
+
+    .ki {
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: .7rem
+    }
+
+    .ir {
+      background: var(--rl);
+      color: var(--r)
+    }
+
+    .ig {
+      background: var(--gl);
+      color: var(--g)
+    }
+
+    .it {
+      background: var(--tl);
+      color: var(--t)
+    }
+
+    .ib2 {
+      background: var(--bl);
+      color: var(--b)
+    }
+
+    .kv {
+      font-family: 'DM Mono', monospace;
+      font-size: 1.65rem;
+      font-weight: 500;
+      color: var(--ink);
+      letter-spacing: -.03em;
+      line-height: 1;
+      margin-bottom: .2rem
+    }
+
+    .kl {
+      font-size: .69rem;
+      color: var(--i5);
+      line-height: 1.4
+    }
+
+    .kt {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      font-size: .58rem;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 10px
+    }
+
+    .tu {
+      background: #E6F4EE;
+      color: var(--t)
+    }
+
+    .td {
+      background: #FDE9E7;
+      color: var(--r)
+    }
+
+    .tn {
+      background: var(--surf);
+      color: var(--i5)
+    }
+
+    .g {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 1.2rem;
+      margin-bottom: 2.5rem
+    }
+
+    .cd {
+      background: var(--wh);
+      border: 1px solid var(--bd);
+      border-radius: 12px;
+      padding: 1.4rem;
+      box-shadow: var(--s1);
+      transition: .18s
+    }
+
+    .cd:hover {
+      box-shadow: var(--s2);
+      transform: translateY(-1px)
+    }
+
+    .c3 {
+      grid-column: span 3
+    }
+
+    .c4 {
+      grid-column: span 4
+    }
+
+    .c5 {
+      grid-column: span 5
+    }
+
+    .c6 {
+      grid-column: span 6
+    }
+
+    .c7 {
+      grid-column: span 7
+    }
+
+    .c8 {
+      grid-column: span 8
+    }
+
+    .c12 {
+      grid-column: span 12
+    }
+
+    .ct {
+      font-size: .86rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: .18rem
+    }
+
+    .cs {
+      font-size: .66rem;
+      color: var(--i5);
+      margin-bottom: 1rem
+    }
+
+    .cw {
+      position: relative;
+      height: 200px
+    }
+
+    .cwt {
+      height: 420px
+    }
+
+    .cws {
+      height: 150px
+    }
+
+    .tw {
+      overflow-x: auto;
+      border-radius: 10px;
+      border: 1px solid var(--bd);
+      margin-bottom: 2.5rem
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .74rem
+    }
+
+    th {
+      text-align: left;
+      padding: .5rem .8rem;
+      font-size: .59rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--i5);
+      background: var(--surf);
+      border-bottom: 1px solid var(--bd);
+      white-space: nowrap
+    }
+
+    td {
+      padding: .52rem .8rem;
+      border-bottom: 1px solid var(--bd);
+      color: var(--i7);
+      vertical-align: middle
+    }
+
+    tr:last-child td {
+      border-bottom: none
+    }
+
+    tr:hover td {
+      background: var(--cream)
+    }
+
+    .mo {
+      font-family: 'DM Mono', monospace;
+      font-size: .7rem
+    }
+
+    .rk {
+      font-family: 'DM Mono', monospace;
+      font-size: .58rem;
+      color: var(--i5)
+    }
+
+    .bc {
+      display: flex;
+      align-items: center;
+      gap: 7px
+    }
+
+    .bi2 {
+      height: 5px;
+      border-radius: 3px;
+      background: var(--r)
+    }
+
+    .pc {
+      font-size: .62rem;
+      color: var(--i5)
+    }
+
+    .pu {
+      color: var(--t);
+      font-weight: 600
+    }
+
+    .pm {
+      color: #9C6B00;
+      font-weight: 600
+    }
+
+    .pd {
+      color: var(--r);
+      font-weight: 600
+    }
+
+    .tf td {
+      background: var(--surf);
+      font-weight: 700;
+      border-top: 2px solid var(--bd)
+    }
+
+    .wf {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2px;
+      margin: 1rem 0
+    }
+
+    .wc {
+      width: 12px;
+      height: 12px;
+      border-radius: 2px;
+      cursor: default;
+      transition: .12s
+    }
+
+    .wc:hover {
+      transform: scale(1.4)
+    }
+
+    .wl {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem 1.2rem
+    }
+
+    .wi {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: .7rem;
+      color: var(--i7)
+    }
+
+    .wsw {
+      width: 8px;
+      height: 8px;
+      border-radius: 2px
+    }
+
+    .wp {
+      font-family: 'DM Mono', monospace;
+      font-size: .65rem;
+      color: var(--i5)
+    }
+
+    .lw {
+      display: flex;
+      flex-direction: column;
+      gap: .48rem
+    }
+
+    .lr {
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .ll {
+      font-size: .67rem;
+      color: var(--i7);
+      min-width: 112px
+    }
+
+    .lb {
+      flex: 1;
+      height: 6px;
+      background: var(--surf);
+      border-radius: 3px;
+      overflow: hidden
+    }
+
+    .lf {
+      height: 100%;
+      border-radius: 3px
+    }
+
+    .lv {
+      font-family: 'DM Mono', monospace;
+      font-size: .64rem;
+      color: var(--i5);
+      min-width: 36px;
+      text-align: right
+    }
+
+    .ps {
+      background: var(--wh);
+      border: 1px solid var(--bd);
+      border-radius: 12px;
+      padding: 1.4rem;
+      box-shadow: var(--s1);
+      margin-bottom: 1.8rem
+    }
+
+    .pst {
+      font-size: .65rem;
+      font-weight: 600;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      color: var(--i5);
+      margin-bottom: .9rem
+    }
+
+    .pc2 {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .4rem
+    }
+
+    .chip {
+      font-family: 'DM Sans', sans-serif;
+      font-size: .7rem;
+      font-weight: 500;
+      padding: .32rem .74rem;
+      border-radius: 6px;
+      border: 1.5px solid var(--bd);
+      background: var(--surf);
+      color: var(--i7);
+      cursor: pointer;
+      transition: .16s
+    }
+
+    .chip:hover {
+      border-color: var(--r);
+      color: var(--r)
+    }
+
+    .chip.sel {
+      background: var(--r);
+      border-color: var(--r);
+      color: #fff
+    }
+
+    .ph {
+      background: var(--wh);
+      border: 1px solid var(--bd);
+      border-radius: 12px;
+      padding: 1.7rem 2rem;
+      box-shadow: var(--s1);
+      margin-bottom: 1.4rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+      flex-wrap: wrap
+    }
+
+    .pn {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.9rem;
+      font-weight: 700;
+      color: var(--ink)
+    }
+
+    .pr {
+      font-size: .65rem;
+      color: var(--i5);
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      margin-top: .2rem
+    }
+
+    .pk {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap
+    }
+
+    .pkv {
+      font-family: 'DM Mono', monospace;
+      font-size: 1.2rem;
+      font-weight: 500;
+      color: var(--ink)
+    }
+
+    .pkl {
+      font-size: .58rem;
+      color: var(--i5);
+      text-transform: uppercase;
+      letter-spacing: .06em
+    }
+
+    .vb {
+      display: inline-flex;
+      align-items: center;
+      font-size: .58rem;
+      font-weight: 600;
+      padding: 1px 5px;
+      border-radius: 8px;
+      margin-left: .3rem
+    }
+
+    .vu {
+      background: #E6F4EE;
+      color: var(--t)
+    }
+
+    .vd {
+      background: #FDE9E7;
+      color: var(--r)
+    }
+
+    .ve {
+      background: var(--surf);
+      color: var(--i5)
+    }
+
+    .pg {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 1.2rem;
+      margin-bottom: 1.8rem
+    }
+
+    .ib {
+      background: var(--wh);
+      border: 1px solid var(--bd);
+      border-radius: 12px;
+      padding: 1.3rem;
+      box-shadow: var(--s1)
+    }
+
+    .ibt {
+      font-size: .82rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: .12rem
+    }
+
+    .ibs {
+      font-size: .62rem;
+      color: var(--i5);
+      margin-bottom: .9rem
+    }
+
+    .ir2 {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: .36rem 0;
+      border-bottom: 1px solid var(--bd)
+    }
+
+    .ir2:last-child {
+      border-bottom: none
+    }
+
+    .ik {
+      font-size: .67rem;
+      color: var(--i7)
+    }
+
+    .iv {
+      font-family: 'DM Mono', monospace;
+      font-size: .67rem;
+      font-weight: 500;
+      color: var(--ink)
+    }
+
+    .ip {
+      font-size: .59rem;
+      color: var(--i5);
+      margin-left: .25rem
+    }
+
+    .pb2 {
+      height: 3px;
+      background: var(--surf);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-top: .2rem
+    }
+
+    .pf2 {
+      height: 100%;
+      border-radius: 2px
+    }
+
+    .nd {
+      font-size: .68rem;
+      color: var(--i5);
+      padding: .5rem 0;
+      font-style: italic
+    }
+
+    .tabs {
+      display: flex;
+      gap: 2px;
+      margin-bottom: 1.2rem;
+      background: var(--surf);
+      border-radius: 8px;
+      padding: 3px;
+      flex-wrap: wrap
+    }
+
+    .tab {
+      font-family: 'DM Sans', sans-serif;
+      font-size: .7rem;
+      font-weight: 500;
+      padding: .36rem .82rem;
+      border-radius: 6px;
+      border: none;
+      background: none;
+      color: var(--i5);
+      cursor: pointer;
+      transition: .16s
+    }
+
+    .tab:hover {
+      color: var(--ink)
+    }
+
+    .tab.act {
+      background: var(--wh);
+      color: var(--ink);
+      box-shadow: var(--s1)
+    }
+
+    .tp {
+      display: none
+    }
+
+    .tp.act {
+      display: grid;
+      gap: 1.2rem;
+      margin-bottom: 2.5rem
+    }
+
+    .fw {
+      position: fixed;
+      bottom: 1.75rem;
+      right: 1.75rem;
+      z-index: 300
+    }
+
+    .fab {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--ink);
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--s3);
+      transition: .2s
+    }
+
+    .fab:hover {
+      background: var(--r);
+      transform: scale(1.06)
+    }
+
+    .fab svg {
+      width: 19px;
+      height: 19px
+    }
+
+    .cp {
+      position: absolute;
+      bottom: 58px;
+      right: 0;
+      width: 328px;
+      background: var(--wh);
+      border: 1px solid var(--bd);
+      border-radius: 14px;
+      box-shadow: var(--s3);
+      overflow: hidden;
+      display: none;
+      animation: su .2s ease
+    }
+
+    @keyframes su {
+      from {
+        opacity: 0;
+        transform: translateY(10px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    .ch {
+      background: var(--ink);
+      padding: .85rem 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 9px
+    }
+
+    .cav {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--r);
+      display: flex;
+      align-items: center;
+      justify-content: center
+    }
+
+    .cav svg {
+      width: 13px;
+      height: 13px;
+      color: #fff
+    }
+
+    .cn2 {
+      font-size: .8rem;
+      font-weight: 600;
+      color: #fff
+    }
+
+    .cs2 {
+      font-size: .6rem;
+      color: rgba(255, 255, 255, .38)
+    }
+
+    .cms {
+      padding: .85rem;
+      min-height: 120px;
+      max-height: 240px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: .4rem
+    }
+
+    .bm {
+      background: var(--surf);
+      border-radius: 4px 10px 10px 10px;
+      padding: .55rem .75rem;
+      font-size: .76rem;
+      color: var(--i7);
+      line-height: 1.5;
+      max-width: 93%
+    }
+
+    .um {
+      background: var(--r);
+      color: #fff;
+      border-radius: 10px 4px 10px 10px;
+      padding: .55rem .75rem;
+      font-size: .76rem;
+      line-height: 1.5;
+      max-width: 93%;
+      align-self: flex-end
+    }
+
+    .ty {
+      display: flex;
+      gap: 3px;
+      padding: .3rem .75rem
+    }
+
+    .ty span {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--i5);
+      animation: bn 1.2s infinite
+    }
+
+    .ty span:nth-child(2) {
+      animation-delay: .2s
+    }
+
+    .ty span:nth-child(3) {
+      animation-delay: .4s
+    }
+
+    @keyframes bn {
+
+      0%,
+      60%,
+      100% {
+        transform: translateY(0)
+      }
+
+      30% {
+        transform: translateY(-5px)
+      }
+    }
+
+    .ciw {
+      padding: .65rem .85rem .85rem;
+      border-top: 1px solid var(--bd);
+      display: flex;
+      gap: 6px
+    }
+
+    .ci {
+      flex: 1;
+      border: 1.5px solid var(--i2);
+      border-radius: 7px;
+      padding: .48rem .65rem;
+      font-size: .76rem;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--ink);
+      background: var(--cream);
+      outline: none
+    }
+
+    .ci:focus {
+      border-color: var(--r)
+    }
+
+    .csb {
+      width: 30px;
+      height: 30px;
+      border-radius: 6px;
+      background: var(--r);
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center
+    }
+
+    .csb:hover {
+      background: var(--ink)
+    }
+
+    .csb svg {
+      width: 12px;
+      height: 12px
+    }
+
+    .foot {
+      background: var(--ink);
+      color: rgba(255, 255, 255, .38);
+      padding: 1.6rem 2rem;
+      text-align: center;
+      font-size: .68rem
+    }
+
+    .foot a {
+      color: rgba(255, 255, 255, .52);
+      text-decoration: none
+    }
+
+    .foot a:hover {
+      color: #fff
+    }
+
+    /* ── RESPONSIVE SYSTEM ── */
+
+    /* Tablet landscape: 1024px */
+    @media(max-width:1024px) {
+      .hi { padding: 0 1.2rem; gap:.8rem }
+      .hri { padding: 0 1.2rem; gap:1.5rem }
+      .main { padding: 2rem 1.2rem 4rem }
+      .c4,.c5,.c7,.c8 { grid-column: span 6 }
+      .ks { grid-template-columns: repeat(4,1fr) }
+      .hero-thumbs .ht-item { padding:.7rem 1rem; gap:.6rem }
+      .ht-img { width:42px; height:32px }
+      .ht-title { font-size:.72rem }
+      .ht-sub { display:none }
+    }
+
+    /* Tablet portrait: 768px */
+    @media(max-width:768px) {
+      /* Header */
+      .hi { height:auto; min-height:56px; padding:.6rem 1rem; flex-wrap:wrap; gap:.5rem }
+      .nav { order:3; width:100%; justify-content:flex-start; overflow-x:auto; padding-bottom:2px; flex-wrap:nowrap }
+      .nb { font-size:.62rem; padding:.35rem .65rem; white-space:nowrap; flex-shrink:0 }
+      .nb span { display:inline !important }
+      .brand img { height:28px }
+      .bn { font-size:.88rem }
+      .bs { display:none }
+      .bx { font-size:.65rem; padding:.35rem .7rem }
+      .bx span { display:inline !important }
+
+      /* Hero */
+      .hero { min-height:auto }
+      .hero-content { padding: 2rem 0 }
+      .hri { flex-direction:column; align-items:flex-start; gap:1rem; padding:1.5rem 1rem }
+      .htl { font-size:clamp(1.5rem,6vw,2.2rem) }
+      .hsu { font-size:.82rem; max-width:100% }
+      .hbg { flex-wrap:wrap }
+      .hst { flex-direction:row; gap:1.5rem; align-self:flex-start }
+      .hsv { font-size:2.2rem }
+      /* Hero thumbs: horizontal scroll */
+      .hero-thumbs { overflow-x:auto; overflow-y:hidden; -webkit-overflow-scrolling:touch }
+      .hero-thumbs::-webkit-scrollbar { height:3px }
+      .hero-thumbs::-webkit-scrollbar-thumb { background:rgba(255,255,255,.2); border-radius:2px }
+      .ht-item { min-width:200px; flex-shrink:0; padding:.7rem .9rem; gap:.55rem }
+      .ht-sub { display:none }
+
+      /* KPI strip: 3 per row */
+      .ks { grid-template-columns: repeat(3,1fr) }
+      .kv { font-size:1.4rem }
+      .kl { font-size:.65rem }
+
+      /* Grid: full width */
+      .c3,.c4,.c5,.c6,.c7,.c8,.c12 { grid-column: span 12 }
+      .g { gap:.9rem; margin-bottom:1.8rem }
+      .g .cd,.pg .ib { grid-column: span 12 !important }
+
+      /* Chart heights: reduce on tablet */
+      .cw { height:180px }
+      .cwt { height:320px }
+      .cws { height:140px }
+
+      /* Province header: stack vertically */
+      .ph { flex-direction:column; align-items:flex-start; gap:1rem; padding:1.2rem }
+      .pk { gap:1rem; flex-wrap:wrap }
+      .pkv { font-size:1rem }
+
+      /* Lit bars label */
+      .ll { min-width:90px; font-size:.62rem }
+
+      /* Table: allow scroll */
+      .tw { overflow-x:auto }
+      table { min-width:640px }
+      th,td { padding:.4rem .6rem; font-size:.68rem }
+
+      /* Tabs */
+      .tabs { gap:1px; padding:2px; overflow-x:auto; flex-wrap:nowrap }
+      .tab { font-size:.65rem; padding:.32rem .65rem; white-space:nowrap; flex-shrink:0 }
+
+      /* Reports */
+      .rg { grid-template-columns: 1fr }
+      .rc { padding:1.1rem }
+
+      /* Province chips */
+      .pc2 { gap:.35rem }
+      .chip { font-size:.65rem; padding:.28rem .6rem }
+      .chip3 { font-size:.65rem; padding:.28rem .6rem }
+
+      /* Chatbot */
+      .cp { width:92vw; right:-1rem }
+    }
+
+    /* Mobile: 480px */
+    @media(max-width:480px) {
+      /* Header: compact */
+      .hi { padding:.5rem .8rem }
+      .nb { font-size:.6rem; padding:.3rem .55rem }
+      .bx span { display:none !important }
+
+      /* Hero */
+      .hri { padding:1.2rem .8rem }
+      .htl { font-size:clamp(1.3rem,7vw,1.8rem) }
+      .hbg { gap:.35rem }
+      .bdg { font-size:.55rem; padding:.25rem .55rem }
+      .hst { gap:1.2rem }
+      .hsv { font-size:1.8rem }
+      .hsl { font-size:.55rem }
+
+      /* Hero thumbs: mini */
+      .ht-item { min-width:160px; padding:.55rem .7rem; gap:.45rem }
+      .ht-img { width:36px; height:28px }
+      .ht-title { font-size:.68rem }
+      .ht-tag { font-size:.55rem }
+      .ht-num { display:none }
+
+      /* KPI: 2 per row */
+      .ks { grid-template-columns: repeat(2,1fr) }
+      .kv { font-size:1.25rem }
+      .kp { padding:1rem 1rem .9rem }
+      .ki { width:22px; height:22px; margin-bottom:.6rem }
+
+      /* Charts */
+      .cw { height:160px }
+      .cwt { height:260px }
+      .cws { height:125px }
+
+      /* Section headers */
+      .st { font-size:1.1rem }
+      .sl { font-size:.56rem }
+
+      /* Province detail blocks: 1 col */
+      .pg { grid-template-columns:1fr; gap:.8rem }
+      .ib { padding:1rem }
+
+      /* Tabs: smaller */
+      .tab { font-size:.6rem; padding:.28rem .55rem }
+
+      /* Chatbot: full width */
+      .cp { width:96vw; right:-.5rem }
+      .fab { width:42px; height:42px }
+      .fw { bottom:1.2rem; right:1.2rem }
+
+      /* Reports page */
+      .dlb { font-size:.65rem; padding:.32rem .65rem }
+      .ps3 { font-size:.58rem }
+
+      /* Main padding */
+      .main { padding:1.4rem .8rem 3.5rem }
+    }
+
+    /* Small mobile: 360px */
+    @media(max-width:360px) {
+      .ks { grid-template-columns: repeat(2,1fr) }
+      .kv { font-size:1.1rem }
+      .htl { font-size:1.3rem }
+      .hri { padding:1rem .6rem }
+      .main { padding:1.2rem .6rem 3rem }
+      .tab { font-size:.58rem; padding:.25rem .48rem }
+      .nb { font-size:.58rem; padding:.28rem .5rem }
+    }
+
+    .rg {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(265px, 1fr));
+      gap: 1.2rem;
+      margin-bottom: 2.5rem
+    }
+
+    .rc {
+      background: var(--wh);
+      border: 1px solid var(--bd);
+      border-radius: 12px;
+      padding: 1.4rem;
+      box-shadow: var(--s1);
+      transition: .2s;
+      display: flex;
+      flex-direction: column;
+      gap: .65rem
+    }
+
+    .rc:hover {
+      box-shadow: var(--s2);
+      transform: translateY(-2px)
+    }
+
+    .rc-t {
+      font-size: .86rem;
+      font-weight: 600;
+      color: var(--ink)
+    }
+
+    .rc-d {
+      font-size: .72rem;
+      color: var(--i5);
+      line-height: 1.5
+    }
+
+    .dlb {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: .7rem;
+      font-weight: 600;
+      padding: .38rem .82rem;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      transition: .18s
+    }
+
+    .dlr {
+      background: var(--rl);
+      color: var(--r)
+    }
+
+    .dlr:hover {
+      background: var(--r);
+      color: #fff
+    }
+
+    .dlg {
+      background: var(--tl);
+      color: var(--t)
+    }
+
+    .dlg:hover {
+      background: var(--t);
+      color: #fff
+    }
+
+    .dlb2 {
+      background: var(--surf);
+      color: var(--ink)
+    }
+
+    .dlb2:hover {
+      background: var(--ink);
+      color: #fff
+    }
+
+    .ps3 {
+      font-size: .63rem;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 10px;
+      background: var(--surf);
+      color: var(--i5);
+      margin-right: .3rem
+    }
+
+    .chip3 {
+      font-family: 'DM Sans', sans-serif;
+      font-size: .7rem;
+      font-weight: 500;
+      padding: .32rem .74rem;
+      border-radius: 6px;
+      border: 1.5px solid var(--bd);
+      background: var(--surf);
+      color: var(--i7);
+      cursor: pointer;
+      transition: .16s
+    }
+
+    .chip3:hover {
+      border-color: var(--r);
+      color: var(--r)
+    }
+
+    .chip3.sel3 {
+      background: var(--r);
+      border-color: var(--r);
+      color: #fff
+    }
+
+    .dlrow {
+      background: var(--wh);
+      border: 1px solid var(--bd);
+      border-radius: 10px;
+      padding: 1.1rem 1.4rem;
+      box-shadow: var(--s1);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: .8rem
+    }
+
+    .dlrow-info {
+      flex: 1;
+      min-width: 160px
+    }
+
+    .dlrow-n {
+      font-size: .9rem;
+      font-weight: 600;
+      color: var(--ink)
+    }
+
+    .dlrow-s {
+      font-size: .7rem;
+      color: var(--i5)
+    }
+
+
+
+    .banner-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block
+    }
+
+
+    .banner-caption-tag {
+      font-size: .6rem;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--g);
+      margin-bottom: .35rem
+    }
+
+    .banner-caption-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.2
+    }
+
+    .banner-caption-sub {
+      font-size: .72rem;
+      color: rgba(255, 255, 255, .65);
+      margin-top: .2rem
+    }
+  
+    /* ── GLOBAL RESPONSIVE FIXES ── */
+    *, *::before, *::after { box-sizing: border-box }
+    img { max-width: 100%; height: auto }
+    canvas { max-width: 100% !important }
+    .cw canvas, .cwt canvas, .cws canvas { display:block; width:100% !important }
+
+    /* Prevent horizontal scroll on body */
+    body { overflow-x: hidden }
+
+    /* Table always scrollable */
+    .tw { overflow-x: auto; -webkit-overflow-scrolling: touch }
+    .tw table { min-width: 600px }
+
+    /* Waffle grid wraps nicely */
+    .wf { gap: 2px }
+    .wc { width: clamp(9px, 1.8vw, 12px); height: clamp(9px, 1.8vw, 12px) }
+
+    /* Hero thumbs: always scrollable on touch */
+    .hero-thumbs { scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch }
+    .ht-item { scroll-snap-align: start }
+
+    /* Province chips: wrap nicely */
+    .pchips, .pc2 { flex-wrap: wrap }
+
+    /* Reports grid: flexible */
+    .rg { grid-template-columns: repeat(auto-fill, minmax(min(265px, 100%), 1fr)) }
+
+    /* Prevent text overflow */
+    .pv-name, .htl, .st, .ct { word-break: break-word }
+    .pkv { word-break: keep-all }
+
+    /* Nav: horizontal scroll on small screens */
+    .nav { overflow-x: auto; -webkit-overflow-scrolling: touch }
+    .nav::-webkit-scrollbar { display: none }
+
+    /* Tabs: scrollable */
+    .tabs { overflow-x: auto; -webkit-overflow-scrolling: touch; scroll-snap-type: x mandatory }
+    .tab { scroll-snap-align: start; flex-shrink: 0 }
+
+    /* DL buttons wrap */
+    .rep-actions, [style*="display:flex"][style*="gap"] { flex-wrap: wrap }
+</style>
+</head>
+
+<body>
+
+  <header class="hdr">
+    <div class="hi">
+      <a class="brand" href="#">
+        <img src="https://www.ine.gov.ao/ine/Portal/tvcorporativa/censo/Logocenso.png" alt="INE">
+        <div>
+          <p class="bn">INE Angola</p>
+          <p class="bs">Instituto Nacional de Estatística</p>
+        </div>
+      </a>
+      <nav class="nav">
+        <button class="nb act" onclick="goPage('nac',this)">Panorama Nacional</button>
+        <button class="nb" onclick="goPage('prov',this)">Explorador por Província</button>
+        
+        <button class="nb" onclick="window.location.href='AtlasCensitario.html'">🌍 Atlas Censitário de Angola</button>
+        <button class="nb" onclick="goPage('rep',this)">📄 Relatórios</button>
+      </nav>
+      <div style="display:flex;gap:.6rem;flex-shrink:0">
+        <button class="bx" onclick="exportAll()">
+          <svg viewBox="0 0 16 16" fill="currentColor">
+            <path
+              d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+            <path
+              d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+          </svg>
+          <span>Exportar Excel</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <section class="hero">
+
+    <!-- Background images (swap via JS) -->
+    <div class="hero-bg">
+      <img id="hBg0" src="banner_censo.png"
+        alt="">
+      <img id="hBg1" src="banner_2.png"
+        alt="" style="position:absolute;inset:0;opacity:0">
+      <img id="hBg2" src="banner_3.png"
+        alt="" style="position:absolute;inset:0;opacity:0">
+      <div class="hero-bg-overlay"></div>
+    </div>
+
+    <!-- Progress bar -->
+    <div class="hero-progress" id="hProg"></div>
+
+    <!-- Main content -->
+    <div class="hero-content">
+      <div class="hri">
+        <div>
+          <p class="hey" id="hSlideTag">Pessoas e Famílias</p>
+          <h1 class="htl" id="hSlideTitle">Panorama Estatístico<br>de Angola</h1>
+          <p class="hsu">Dados oficiais extraídos directamente dos 21 ficheiros Excel do INE — 76 indicadores por
+            província cobrindo população, habitação, energia, água e educação.</p>
+          <div class="hbg">
+            <span class="bdg">INE Angola · Dados Oficiais 2024</span>
+            <span class="bdg">21 Províncias</span>
+            <span class="bdg">76 Indicadores</span>
+          </div>
+        </div>
+        <div class="hst">
+          <div class="hs">
+            <p class="hsv" id="hTot">36,6M</p>
+            <p class="hsl">Habitantes</p>
+          </div>
+          <div class="hs">
+            <p class="hsv">21</p>
+            <p class="hsl">Províncias</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Thumbnail nav panels -->
+    <div class="hero-thumbs">
+
+      <div class="ht-item ht-act" id="ht0" onclick="heroGo(0)">
+        <img class="ht-img"
+          src="banner_censo.png" alt="">
+        <div style="min-width:0">
+          <p class="ht-tag">Pessoas e Famílias</p>
+          <p class="ht-title">36,6 Milhões de Angolanos</p>
+          <p class="ht-sub">Recenseados nas 21 províncias · 2024</p>
+        </div>
+        <span class="ht-num">01</span>
+      </div>
+
+      <div class="ht-item" id="ht1" onclick="heroGo(1)">
+        <img class="ht-img"
+          src="banner_2.png" alt="">
+        <div style="min-width:0">
+          <p class="ht-tag">Urbanização</p>
+          <p class="ht-title">65,7% em Zona Urbana</p>
+          <p class="ht-sub">Luanda concentra 24% da população</p>
+        </div>
+        <span class="ht-num">02</span>
+      </div>
+
+      <div class="ht-item" id="ht2" onclick="heroGo(2)">
+        <img class="ht-img"
+          src="banner_3.png" alt="">
+        <div style="min-width:0">
+          <p class="ht-tag">Educação e Juventude</p>
+          <p class="ht-title">44,6% com menos de 15 anos</p>
+          <p class="ht-sub">Angola tem a população mais jovem de África</p>
+        </div>
+        <span class="ht-num">03</span>
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- PAGE 1 -->
+
+
+  <div class="page act" id="page-nac">
+    <div class="main">
+
+      <div class="sh" style="margin-top:0">
+        <div>
+          <p class="sl">Indicadores Fundamentais</p>
+          <h2 class="st">Síntese Nacional — Censo 2024</h2>
+        </div>
+        <span class="sl">Fonte: INE Angola · 21 ficheiros Excel oficiais</span>
+      </div>
+      <div class="ks" id="kstrip"></div>
+
+      <div class="sh">
+        <div>
+          <p class="sl">Estrutura Demográfica</p>
+          <h2 class="st">Composição da População</h2>
+        </div>
+      </div>
+      <div class="g">
+        <div class="cd c7">
+          <p class="ct">Pirâmide Etária Nacional</p>
+          <p class="cs">20 grupos quinquenais (0–4 a 95+) por sexo — % pop. total · Censo 2024</p>
+          <div class="cw cwt"><canvas id="cPyr"></canvas></div>
+        </div>
+        <div class="cd c5">
+          <p class="ct">Distribuição por Sexo</p>
+          <p class="cs">% pop. total</p>
+          <div class="cw cws"><canvas id="cSexo"></canvas></div>
+          <p class="ct" style="margin-top:.8rem">Urbano vs. Rural</p>
+          <p class="cs">% residência</p>
+          <div class="cw cws"><canvas id="cUrb"></canvas></div>
+        </div>
+      </div>
+
+      <div class="g">
+        <div class="cd c8">
+          <p class="ct">Top 10 Províncias por População</p>
+          <p class="cs">Número de habitantes · Censo 2024</p>
+          <div class="cw"><canvas id="cBar"></canvas></div>
+        </div>
+        <div class="cd c4">
+          <p class="ct">Registo de Nascimento</p>
+          <p class="cs">% com registo civil</p>
+          <div class="cw cws"><canvas id="cReg"></canvas></div>
+          <p class="ct" style="margin-top:.8rem">Bilhete de Identidade</p>
+          <p class="cs">% pop. ≥5 anos</p>
+          <div class="cw cws"><canvas id="cBI"></canvas></div>
+        </div>
+      </div>
+
+      <div class="sh">
+        <div>
+          <p class="sl">Dados Provinciais</p>
+          <h2 class="st">Todas as 21 Províncias</h2>
+        </div>
+      </div>
+      <div class="tw">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Província</th>
+              <th>Pop. Total</th>
+              <th>Distribuição</th>
+              <th>% Mulheres</th>
+              <th>% Urbana</th>
+              <th>% 0–14</th>
+              <th>% 65+</th>
+              <th>Literacia</th>
+              <th>% Electricidade</th>
+              <th>% Sem Água</th>
+              <th>% Sem San.</th>
+              <th>% Registo</th>
+              <th>% BI</th>
+            </tr>
+          </thead>
+          <tbody id="tbd"></tbody>
+          <tfoot>
+            <tr class="tf" id="tft"></tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <div class="sh">
+        <div>
+          <p class="sl">Condições de Vida</p>
+          <h2 class="st">Habitação, Energia, Água, Combustível e Materiais</h2>
+        </div>
+      </div>
+      <div class="tabs">
+        <button class="tab act" onclick="showTab(this,'tb-hab')">🏠 Habitação</button>
+        <button class="tab" onclick="showTab(this,'tb-ene')">  Energia</button>
+        <button class="tab" onclick="showTab(this,'tb-agu')">💧 Água e Saneamento</button>
+        <button class="tab" onclick="showTab(this,'tb-com')">🔥 Combustível</button>
+        <button class="tab" onclick="showTab(this,'tb-mat')">🧱 Materiais</button>
+        <button class="tab" onclick="showTab(this,'tb-pis')">🪨 Piso</button>
+      </div>
+
+      <div class="tp act" id="tb-hab" style="grid-template-columns:repeat(12,1fr)">
+        <div class="cd c6">
+          <p class="ct">Tipo de Habitação — Nacional</p>
+          <p class="cs">% dos alojamentos familiares · Censo 2024</p>
+          <div class="cw"><canvas id="cHab"></canvas></div>
+        </div>
+        <div class="cd c6">
+          <p class="ct">% Cubatas + Barracas por Província</p>
+          <p class="cs">Habitação de qualidade precária</p>
+          <div class="lw" id="bHabQ"></div>
+        </div>
+      </div>
+      <div class="tp" id="tb-ene" style="grid-template-columns:repeat(12,1fr)">
+        <div class="cd c6">
+          <p class="ct">Fonte de Iluminação — Nacional</p>
+          <p class="cs">% de agregados familiares · Censo 2024</p>
+          <div class="cw"><canvas id="cIlum"></canvas></div>
+        </div>
+        <div class="cd c6">
+          <p class="ct">% Agregados c/ Electricidade por Província</p>
+          <p class="cs">Acesso à rede eléctrica</p>
+          <div class="lw" id="bElec"></div>
+        </div>
+      </div>
+      <div class="tp" id="tb-agu" style="grid-template-columns:repeat(12,1fr)">
+        <div class="cd c5">
+          <p class="ct">Acesso à Água da Rede</p>
+          <p class="cs">% de agregados</p>
+          <div class="cw"><canvas id="cAgua"></canvas></div>
+        </div>
+        <div class="cd c4">
+          <p class="ct">Fonte de Abastecimento</p>
+          <p class="cs">Canalizada, poço, rio</p>
+          <div class="cw"><canvas id="cFonte"></canvas></div>
+        </div>
+        <div class="cd c3">
+          <p class="ct">Saneamento</p>
+          <p class="cs">c/ ou sem sanitário</p>
+          <div class="cw"><canvas id="cSan"></canvas></div>
+        </div>
+        <div class="cd c12">
+          <p class="ct">Sem Sanitário / Ar Livre por Província</p>
+          <p class="cs">% de agregados familiares sem qualquer instalação sanitária · ordenado por valor</p>
+          <div class="lw" id="bSan"></div>
+        </div>
+      </div>
+      <div class="tp" id="tb-com" style="grid-template-columns:repeat(12,1fr)">
+        <div class="cd c6">
+          <p class="ct">Combustível para Cozinhar — Nacional</p>
+          <p class="cs">% de agregados por fonte energética · Censo 2024</p>
+          <div class="cw"><canvas id="cComb"></canvas></div>
+        </div>
+        <div class="cd c6">
+          <p class="ct">% Usam Lenha para Cozinhar por Província</p>
+          <p class="cs">Uso de lenha como combustível principal</p>
+          <div class="lw" id="bLenha"></div>
+        </div>
+      </div>
+      <div class="tp" id="tb-mat" style="grid-template-columns:repeat(12,1fr)">
+        <div class="cd c6">
+          <p class="ct">Material das Paredes Exteriores</p>
+          <p class="cs">% de habitações por tipo de material · Censo 2024</p>
+          <div class="cw"><canvas id="cPar"></canvas></div>
+        </div>
+        <div class="cd c6">
+          <p class="ct">Material do Tecto</p>
+          <p class="cs">% de habitações por tipo de cobertura · Censo 2024</p>
+          <div class="cw"><canvas id="cTec"></canvas></div>
+        </div>
+      </div>
+      <div class="tp" id="tb-pis" style="grid-template-columns:repeat(12,1fr)">
+        <div class="cd c6">
+          <p class="ct">Material do Piso</p>
+          <p class="cs">% de habitações por tipo de pavimento · Censo 2024</p>
+          <div class="cw"><canvas id="cPiso"></canvas></div>
+        </div>
+        <div class="cd c6">
+          <p class="ct">Piso de Terra Batida — Ranking</p>
+          <p class="cs">Número de habitações com piso de terra batida por província</p>
+          <div class="lw" id="bPiso"></div>
+        </div>
+      </div>
+
+      <div class="sh">
+        <div>
+          <p class="sl">Família e Sociedade</p>
+          <h2 class="st">Estado Civil e Grupos Etários</h2>
+        </div>
+      </div>
+      <div class="g">
+        <div class="cd c6">
+          <p class="ct">Estado Civil — Nacional</p>
+          <p class="cs">Pop. com 12 ou mais anos · Censo 2024</p>
+          <div class="cw"><canvas id="cCivil"></canvas></div>
+        </div>
+        <div class="cd c6">
+          <p class="ct">Estrutura Etária Nacional</p>
+          <p class="cs">Grandes grupos etários — % da população</p>
+          <div class="cw"><canvas id="cIdade"></canvas></div>
+        </div>
+      </div>
+
+      <div class="sh">
+        <div>
+          <p class="sl">Educação e Literacia</p>
+          <h2 class="st">Nível de Instrução e Alfabetização</h2>
+        </div>
+      </div>
+      <div class="g">
+        <div class="cd c6">
+          <p class="ct">Nível de Ensino Concluído</p>
+          <p class="cs">% pop. ≥18 anos · Censo 2024</p>
+          <div class="cw"><canvas id="cEdu"></canvas></div>
+        </div>
+        <div class="cd c6">
+          <p class="ct">Taxa de Literacia por Província</p>
+          <p class="cs">Pop. ≥15 anos que sabe ler e escrever — ordenado</p>
+          <div class="lw" id="bLit"></div>
+        </div>
+      </div>
+      <div class="g">
+        <div class="cd c6">
+          <p class="ct">Literacia por Sexo — Diferencial de Género</p>
+          <p class="cs">Gap homens vs. mulheres na taxa de literacia por província</p>
+          <div class="cw"><canvas id="cLitG"></canvas></div>
+        </div>
+        <div class="cd c6">
+          <p class="ct">Nível de Ensino — Representação Proporcional</p>
+          <p class="cs">Cada célula = 0,5% · Pop. ≥18 anos com dados disponíveis</p>
+          <div class="wf" id="waffle"></div>
+          <div class="wl" id="wleg"></div>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /nac -->
+
+  <!-- PAGE 2 -->
+  <div class="page" id="page-prov">
+    <div class="main">
+      <div class="sh" style="margin-top:0">
+        <div>
+          <p class="sl">Explorador de Dados</p>
+          <h2 class="st">Análise Detalhada por Província</h2>
+        </div>
+        <button class="bx" onclick="exportProv()">
+          <svg viewBox="0 0 16 16" fill="currentColor">
+            <path
+              d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+            <path
+              d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+          </svg>
+          Exportar Província
+        </button>
+      </div>
+      <div class="ps">
+        <p class="pst">Seleccionar Província — 21 disponíveis</p>
+        <div class="pc2" id="chips"></div>
+      </div>
+      <div id="pvH" class="ph" style="display:none"></div>
+      <div id="pvG" class="pg" style="display:none"></div>
+      <div class="g" id="pvC" style="display:none">
+        <div class="cd c6">
+          <p class="ct">Educação — Nível Concluído</p>
+          <p class="cs">% pop. ≥18 anos</p>
+          <div class="cw"><canvas id="pvEdu"></canvas></div>
+        </div>
+        <div class="cd c6">
+          <p class="ct">Fonte de Iluminação</p>
+          <p class="cs">% de agregados</p>
+          <div class="cw"><canvas id="pvIlum"></canvas></div>
+        </div>
+        <div class="cd c6">
+          <p class="ct">Tipo de Habitação</p>
+          <p class="cs">% dos alojamentos</p>
+          <div class="cw"><canvas id="pvHab"></canvas></div>
+        </div>
+        <div class="cd c6">
+          <p class="ct">Acesso à Água</p>
+          <p class="cs">% de agregados</p>
+          <div class="cw"><canvas id="pvAgua"></canvas></div>
+        </div>
+        <div class="cd c6">
+          <p class="ct">Combustível para Cozinhar</p>
+          <p class="cs">% de agregados</p>
+          <div class="cw"><canvas id="pvComb"></canvas></div>
+        </div>
+        <div class="cd c6">
+          <p class="ct">Materiais — Paredes e Tecto</p>
+          <p class="cs">% de habitações</p>
+          <div class="cw"><canvas id="pvMat"></canvas></div>
+        </div>
+        <div class="cd c6">
+          <p class="ct">Material do Piso</p>
+          <p class="cs">% de habitações</p>
+          <div class="cw"><canvas id="pvPiso"></canvas></div>
+        </div>
+        <div class="cd c6">
+          <p class="ct">Grupos Etários</p>
+          <p class="cs">% da população</p>
+          <div class="cw"><canvas id="pvIdade"></canvas></div>
+        </div>
+      </div>
+    </div>
+  </div><!-- /prov -->
+
+  <footer class="foot">
+    <p style="margin-bottom:.35rem;color:rgba(255,255,255,.6);font-weight:600">Instituto Nacional de Estatística —
+      Angola</p>
+    <p>Rua Ho Chi Min, nº 10 — Luanda · <a href="mailto:censo@ine.gov.ao">censo@ine.gov.ao</a> · <a
+        href="https://www.ine.gov.ao" target="_blank">www.ine.gov.ao</a></p>
+    <p style="margin-top:.8rem;font-size:.6rem;opacity:.35">© 2025 INE Angola · Censo Demográfico 2024 · 21 Províncias ·
+      76 Indicadores · Dados Oficiais</p>
+  </footer>
+
+
+  <div class="page" id="page-rep">
+    <div class="main">
+      <div class="sh" style="margin-top:0">
+        <div>
+          <p class="sl">Relatórios e Exportações</p>
+          <h2 class="st">Descarregar Ficheiros — Censo 2024</h2>
+        </div>
+        <span class="sl" style="font-size:.58rem">Coloque os ficheiros na mesma pasta que este HTML</span>
+      </div>
+
+      <!-- GERAIS -->
+      <div class="sh">
+        <div>
+          <p class="sl">Publicações Nacionais</p>
+          <h2 class="st">Relatório Geral e Ficheiros Completos</h2>
+        </div>
+      </div>
+      <div class="rg">
+        <div class="rc">
+          <div style="font-size:2.2rem"></div>
+          <p class="rc-t">Relatório Geral e Inquérito de Cobertura</p>
+          <p class="rc-d">Análise completa das 21 províncias — população, educação, habitação, energia, água e
+            saneamento. Ficheiro PDF gerado pelo INE.</p>
+          <div><span class="ps3">PDF</span><span class="ps3">21 Províncias</span><span class="ps3">Capa Oficial</span>
+          </div>
+          <div style="margin-top:.5rem">
+            <a class="dlb dlr" href="Relatorio_Geral_Angola_Censo2024.pdf"
+              download="Relatorio_Geral_Tecnico_Angola_Censo2024.pdf">
+              <svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor">
+                <path
+                  d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                <path
+                  d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+              </svg> Descarregar PDF
+            </a>
+          </div>
+          <div style="margin-top:.5rem">
+            <a class="dlb dlr" href="Inquerito_Cobertura_Censo2024.pdf"
+              download="Inquerito_Cobertura_Censo2024.pdf">
+              <svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor">
+                <path
+                  d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                <path
+                  d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+              </svg> Descarregar PDF
+            </a>
+          </div>
+        </div>
+        <div class="rc">
+          <div style="font-size:2.2rem"></div>
+          <p class="rc-t">Excel Completo — Todas as Províncias</p>
+          <p class="rc-d">Os Quadros Anexos dos Resultados Definitivos do RGPH 2024 apresentam, de forma detalhada, os principais indicadores sobre a população e as condições de habitação em Angola. Reúnem informação desagregada por diferentes níveis geográficos, permitindo análises mais aprofundadas.</p>
+          <div><span class="ps3">Excel</span><span class="ps3">+ Folhas</span>
+          </div>
+          <div style="margin-top:.5rem;display:flex;gap:.6rem;flex-wrap:wrap">
+            <a class="dlb dlg" href="QUADROS ANEXOS DOS RESULTADOS DEFINITIVOS RGPH 2024.xlsx" download="QUADROS ANEXOS DOS RESULTADOS DEFINITIVOS RGPH 2024.xlsx">
+              <svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor">
+                <path
+                  d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                <path
+                  d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+              </svg> Descarregar Excel
+            </a>
+           
+          </div>
+        </div>
+        <div class="rc">
+          <div style="font-size:2.2rem"></div>
+          <p class="rc-t">Download em Lote</p>
+          <p class="rc-d">Seleccione províncias abaixo e descarregue todos os ficheiros PDF ou Excel de uma só vez.</p>
+          <div><span class="ps3">Selecção Múltipla</span><span class="ps3">PDF + Excel</span></div>
+          <div style="margin-top:.5rem;display:flex;gap:.6rem;flex-wrap:wrap">
+            <button class="dlb dlr" onclick="dlLote('pdf')">↓ PDF das Seleccionadas</button>
+            <button class="dlb dlg" onclick="dlLote('xlsx')">↓ Excel das Seleccionadas</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROVINCIAIS -->
+      <div class="sh">
+        <div>
+          <p class="sl">Relatórios Provinciais</p>
+          <h2 class="st">Seleccionar Províncias — PDF e Excel</h2>
+        </div>
+      </div>
+
+      <!-- Selector + actions -->
+      <div class="rc" style="margin-bottom:1.2rem;flex-direction:row;align-items:flex-start;flex-wrap:wrap;gap:1rem">
+        <div style="flex:1;min-width:220px">
+          <p
+            style="font-size:.63rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--i5);margin-bottom:.6rem">
+            Clique para seleccionar</p>
+          <div class="pc2" style="gap:.4rem">
+            <button class="chip3" id="chip1" onclick="toggleChk('Luanda',1,!selSet.has('Luanda'),this)">Luanda</button>
+            <button class="chip3" id="chip2" onclick="toggleChk('Huíla',2,!selSet.has('Huíla'),this)">Huíla</button>
+            <button class="chip3" id="chip3" onclick="toggleChk('Huambo',3,!selSet.has('Huambo'),this)">Huambo</button>
+            <button class="chip3" id="chip4"
+              onclick="toggleChk('Benguela',4,!selSet.has('Benguela'),this)">Benguela</button>
+            <button class="chip3" id="chip5" onclick="toggleChk('Cuanza Sul',5,!selSet.has('Cuanza Sul'),this)">Cuanza
+              Sul</button>
+            <button class="chip3" id="chip6" onclick="toggleChk('Bié',6,!selSet.has('Bié'),this)">Bié</button>
+            <button class="chip3" id="chip7" onclick="toggleChk('Uíge',7,!selSet.has('Uíge'),this)">Uíge</button>
+            <button class="chip3" id="chip8" onclick="toggleChk('Cunene',8,!selSet.has('Cunene'),this)">Cunene</button>
+            <button class="chip3" id="chip9" onclick="toggleChk('Lunda Norte',9,!selSet.has('Lunda Norte'),this)">Lunda
+              Norte</button>
+            <button class="chip3" id="chip10"
+              onclick="toggleChk('Icolo e Bengo',10,!selSet.has('Icolo e Bengo'),this)">Icolo e Bengo</button>
+            <button class="chip3" id="chip11"
+              onclick="toggleChk('Malanje',11,!selSet.has('Malanje'),this)">Malanje</button>
+            <button class="chip3" id="chip12"
+              onclick="toggleChk('Cabinda',12,!selSet.has('Cabinda'),this)">Cabinda</button>
+            <button class="chip3" id="chip13" onclick="toggleChk('Lunda Sul',13,!selSet.has('Lunda Sul'),this)">Lunda
+              Sul</button>
+            <button class="chip3" id="chip14"
+              onclick="toggleChk('Namibe',14,!selSet.has('Namibe'),this)">Namibe</button>
+            <button class="chip3" id="chip15" onclick="toggleChk('Bengo',15,!selSet.has('Bengo'),this)">Bengo</button>
+            <button class="chip3" id="chip16" onclick="toggleChk('Zaire',16,!selSet.has('Zaire'),this)">Zaire</button>
+            <button class="chip3" id="chip17"
+              onclick="toggleChk('Cuanza Norte',17,!selSet.has('Cuanza Norte'),this)">Cuanza Norte</button>
+            <button class="chip3" id="chip18"
+              onclick="toggleChk('Moxico',18,!selSet.has('Moxico'),this)">Moxico</button>
+            <button class="chip3" id="chip19"
+              onclick="toggleChk('Cubango',19,!selSet.has('Cubango'),this)">Cubango</button>
+            <button class="chip3" id="chip20"
+              onclick="toggleChk('Moxico Leste',20,!selSet.has('Moxico Leste'),this)">Moxico Leste</button>
+            <button class="chip3" id="chip21"
+              onclick="toggleChk('Cuando ',21,!selSet.has('Cuando '),this)">Cuando </button>
+
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:.4rem;flex-shrink:0;padding-top:1.5rem">
+          <button class="dlb dlb2" style="font-size:.68rem" onclick="selTodas()">☑ Todas</button>
+          <button class="dlb dlb2" style="font-size:.68rem" onclick="selNenhuma()">☐ Nenhuma</button>
+        </div>
+      </div>
+
+      <!-- Selected panel -->
+      <div id="repPanel" style="margin-bottom:1.8rem"></div>
+
+      <!-- TABLE -->
+      <div class="sh">
+        <div>
+          <p class="sl">Lista Completa</p>
+          <h2 class="st">Todos os Ficheiros — 21 Províncias</h2>
+        </div>
+      </div>
+      <div class="tw" style="margin-bottom:2.5rem">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:28px"><input type="checkbox" id="chkAll" onchange="selTodas(this.checked)"
+                  title="Selec. todas"></th>
+              <th>#</th>
+              <th>Província</th>
+              <th>Relatório PDF</th>
+              <th>Excel Provincial</th>
+              <th>Exportação Rápida</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr id="rep-row-1">
+              <td><input type="checkbox" id="chk1" onchange="toggleChk('Luanda',1,this.checked)"></td>
+              <td><span class="rk">1</span></td>
+              <td><strong>Luanda</strong></td>
+              <td><a class="dlb dlr" style="font-size:.65rem;padding:.28rem .7rem"
+                  href="Relatorio_Provincial_Luanda_Censo2024.pdf"
+                  download="Relatorio_Provincial_Luanda_Censo2024.pdf"><svg width="11" height="11" viewBox="0 0 16 16"
+                    fill="currentColor">
+                    <path
+                      d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                    <path
+                      d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+                  </svg> PDF</a></td>
+              <td><a class="dlb dlg" style="font-size:.65rem;padding:.28rem .7rem"
+                  href="Excel_Provincial_Luanda_Censo2024.xlsx" download="Excel_Provincial_Luanda_Censo2024.xlsx"><svg
+                    width="11" height="11" viewBox="0 0 16 16" fill="currentColor">
+                    <path
+                      d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                    <path
+                      d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+                  </svg> Excel</a></td>
+              <td><button class="dlb dlb2" style="font-size:.65rem;padding:.28rem .7rem"
+                  onclick="quickExport('Luanda')">  Exportar</button></td>
+            </tr>
+            <tr id="rep-row-2">
+              <td><input type="checkbox" id="chk2" onchange="toggleChk('Huíla',2,this.checked)"></td>
+              <td><span class="rk">2</span></td>
+              <td><strong>Huíla</strong></td>
+              <td><a class="dlb dlr" style="font-size:.65rem;padding:.28rem .7rem"
+                  href="Relatorio_Provincial_Huila_Censo2024.pdf"
+                  download="Relatorio_Provincial_Huila_Censo2024.pdf"><svg width="11" height="11" viewBox="0 0 16 16"
+                    fill="currentColor">
+                    <path
+                      d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                    <path
+                      d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+                  </svg> PDF</a></td>
+              <td><a class="dlb dlg" style="font-size:.65rem;padding:.28rem .7rem"
+                  href="Excel_Provincial_Huila_Censo2024.xlsx" download="Excel_Provincial_Huila_Censo2024.xlsx"><svg
+                    width="11" height="11" viewBox="0 0 16 16" fill="currentColor">
+                    <path
+                      d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                    <path
+                      d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+                  </svg> Excel</a></td>
+              <td><button class="dlb dlb2" style="font-size:.65rem;padding:.28rem .7rem"
+                  onclick="quickExport('Huíla')">  Exportar</button></td>
+            </tr>
+            <tr id="rep-row-3">
+              <td><input type="checkbox" id="chk3" onchange="toggleChk('Huambo',3,this.checked)"></td>
+              <td><span class="rk">3</span></td>
+              <td><strong>Huambo</strong></td>
+              <td><a class="dlb dlr" style="font-size:.65rem;padding:.28rem .7rem"
+                  href="Relatorio_Provincial_Huambo_Censo2024.pdf"
+                  download="Relatorio_Provincial_Huambo_Censo2024.pdf"><svg width="11" height="11" viewBox="0 0 16 16"
+                    fill="currentColor">
+                    <path
+                      d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                    <path
+                      d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+                  </svg> PDF</a></td>
+              <td><a class="dlb dlg" style="font-size:.65rem;padding:.28rem .7rem"
+                  href="Excel_Provincial_Huambo_Censo2024.xlsx" download="Excel_Provincial_Huambo_Censo2024.xlsx"><svg
+                    width="11" height="11" viewBox="0 0 16 16" fill="currentColor">
+                    <path
+                      d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                    <path
+                      d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+                  </svg> Excel</a></td>
+              <td><button class="dlb dlb2" style="font-size:.65rem;padding:.28rem .7rem"
+                  onclick="quickExport('Huambo')">  Exportar</button></td>
+            </tr>
+            <tr id="rep-row-4">
+              <td><input type="checkbox" id="chk4" onchange="toggleChk('Benguela',4,this.checked)"></td>
+              <td><span class="rk">4</span></td>
+              <td><strong>Benguela</strong></td>
+              <td><a class="dlb dlr" style="font-size:.65rem;padding:.28rem .7rem"
+                  href="Relatorio_Provincial_Benguela_Censo2024.pdf"
+                  download="Relatorio_Provincial_Benguela_Censo2024.pdf"><svg width="11" height="11" viewBox="0 0 16 16"
+                    fill="currentColor">
+                    <path
+                      d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                    <path
+                      d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+                  </svg> PDF</a></td>
+              <td><a class="dlb dlg" style="font-size:.65rem;padding:.28rem .7rem"
+                  href="Excel_Provincial_Benguela_Censo2024.xlsx"
+                  download="Excel_Provincial_Benguela_Censo2024.xlsx"><svg width="11" height="11" viewBox="0 0 16 16"
+                    fill="currentColor">
+                    <path
+                      d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                    <path
+                      d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+                  </svg> Excel</a></td>
+              <td><button class="dlb dlb2" style="font-size:.65rem;padding:.28rem .7rem"
+                  onclick="quickExport('Benguela')">  Exportar</button></td>
+            </tr>
+            <tr id="rep-row-5">
+              <td><input type="checkbox" id="chk5" onchange="toggleChk('Cuanza Sul',5,this.checked)"></td>
+              <td><span class="rk">5</span></td>
+              <td><strong>Cuanza Sul</strong></td>
+              <td><a class="dlb dlr" style="font-size:.65rem;padding:.28rem .7rem"
+                  href="Relatorio_Provincial_Cuanza_Sul_Censo2024.pdf"
+                  download="Relatorio_Provincial_Cuanza_Sul_Censo2024.pdf"><svg width="11" height="11"
+                    viewBox="0 0 16 16" fill="currentColor">
+                    <path
+                      d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                    <path
+                      d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+                  </svg> PDF</a></td>
+              <td><a class="dlb dlg" style="font-size:.65rem;padding:.28rem .7rem"
+                  href="Excel_Provincial_Cuanza_Sul_Censo2024.xlsx"
+                  download="Excel_Provincial_Cuanza_Sul_Censo2024.xlsx"><svg width="11" height="11" viewBox="0 0 16 16"
+                    fill="currentColor">
+                    <path
+                      d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                    <path
+                      d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+                  </svg> Excel</a></td>
+              <td><button class="dlb dlb2" style="font-size:.65rem;padding:.28rem .7rem"
+                  onclick="quickExport('Cuanza Sul')">  Exportar</button></td>
+            </tr>
+            <tr id="rep-row-6">
+              <td><input type="checkbox" id="chk6" onchange="toggleChk('Bié',6,this.checked)"></td>
+              <td><span class="rk">6</span></td>
+              <td><strong>Bié</strong></td>
+              <td><a class="dlb dlr" style="font-size:.65rem;padding:.28rem .7rem"
+                  href="Relatorio_Provincial_Bie_Censo2024.pdf" download="Relatorio_Provincial_Bie_Censo2024.pdf"><svg
+                    width="11" height="11" viewBox="0 0 16 16" fill="currentColor">
+                    <path
+                      d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                    <path
+                      d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+                  </svg> PDF</a></td>
+              <td><a class="dlb dlg" style="font-size:.65rem;padding:.28rem .7rem"
+                  href="Excel_Provincial_Bie_Censo2024.xlsx" download="Excel_Provincial_Bie_Censo2024.xlsx"><svg
+                    width="11" height="11" viewBox="0 0 16 16" fill="currentColor">
+                    <path
+                      d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                    <path
+                      d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+                  </svg> Excel</a></td>
+              <td><button class="dlb dlb2" style="font-size:.65rem;padding:.28rem .7rem" onclick="quickExport('Bié')"> 
+                  Exportar</button></td>
+            </tr>
+            <tr id="rep-row-7">
+              <td><input type="checkbox" id="chk7" onchange="toggleChk('Uíge',7,this.checked)"></td>
+              <td><span class="rk">7</span></td>
+              <td><strong>Uíge</strong></td>
+              <td><a class="dlb dlr" style="font-size:.65rem;padding:.28rem .7rem"
+                  href="Relatorio_Provincial_Uige_Censo2024.pdf" download="Relatorio_Provincial_Uige_Censo2024.pdf"><svg
+                    width="11" height="11" viewBox="0 0 16 16" fill="currentColor">
+                    <path
+                      d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                    <path
+                      d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+                  </svg> PDF</a></td>
+              <td><a class="dlb dlg" style="font-size:.65rem;padding:.28rem .7rem"
+                  href="Excel_Provincial_Uige_Censo2024.xlsx" download="Excel_Provincial_Uige_Censo2024.xlsx"><svg
+                    width="11" height="11" viewBox="0 0 16 16" fill="currentColor">
+                    <path
+                      d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                    <path
+                      d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+                  </svg> Excel</a></td>
+              <td><button class="dlb dlb2" style="font-size:.65rem;padding:.28rem .7rem" onclick="quickExport('Uíge')"> 
+                  Exportar</button></td>
+            </tr>
+            <tr id="rep-row-8">
+              <td><input type="checkbox" id="chk8" onchange="toggleChk('Cunene',8,this.checked)"></td>
+              <td><span class="rk">8</span></td>
+              <td><strong>Cunene</strong></td>
+              <td><a class="dlb dlr" style="font-size:.65rem;padding:.28rem .7rem"
+                  href="Relatorio_Provincial_Cunene_Censo2024.pdf"
+                  download="Relatorio_Provincial_Cunene_Censo2024.pdf"><svg width="11" height="11" viewBox="0 0 16 16"
+                    fill="currentColor">
+                    <path
+                      d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                    <path
+                      d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+                  </svg> PDF</a></td>
+              <td><a class="dlb dlg" style="font-size:.65rem;padding:.28rem .7rem"
+                  href="Excel_Provincial_Cunene_Censo2024.xlsx" download="Excel_Provincial_Cunene_Censo2024.xlsx"><svg
+                    width="11" height="11" viewBox="0 0 16 16" fill="currentColor">
+                    <path
+                      d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                    <path
+                      d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+                  </svg> Excel</a></td>
+              <td><button class="dlb dlb2" style="font-size:.65rem;padding:.28rem .7rem"
+                  onclick="quickExport('Cunene')">  Exportar</button></td>
+            </tr>
+            <tr id="rep-row-9">
+              <td><input type="checkbox" id="chk9" onchange="toggleChk('Lunda Norte',9,this.checked)"></td>
+              <td><span class="rk">9</span></td>
+              <td><strong>Lunda Norte</strong></td>
+              <td><a class="dlb dlr" style="font-size:.65rem;padding:.28rem .7rem"
+                  href="Relatorio_Provincial_Lunda_Norte_Censo2024.pdf"
+                  download="Relatorio_Provincial_Lunda_Norte_Censo2024.pdf"><svg width="11" height="11"
+                    viewBox="0 0 16 16" fill="currentColor">
+                    <path
+                      d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                    <path
+                      d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+                  </svg> PDF</a></td>
+              <td><a class="dlb dlg" style="font-size:.65rem;padding:.28rem .7rem"
+                  href="Excel_Provincial_Lunda_Norte_Censo2024.xlsx"
+                  download="Excel_Provincial_Lunda_Norte_Censo2024.xlsx"><svg width="11" height="11" viewBox="0 0 16 16"
+                    fill="currentColor">
+                    <path
+                      d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                    <path
+                      d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+                  </svg> Excel</a></td>
+              <td><button class="dlb dlb2" style="font-size:.65rem;padding:.28rem .7rem"
+                  onclick="quickExport('Lunda Norte')">  Exportar</button></td>
+            </tr>
+            <tr id="rep-row-10">
+              <td><input type="checkbox" id="chk10" onchange="toggleChk('Icolo e Bengo',10,this.checked)"></td>
+              <td><span class="rk">10</span></td>
+              <td><strong>Icolo e Bengo</strong></td>
+              <td><a class="dlb dlr" style="font-size:.65rem;padding:.28rem .7rem"
+                  href="Relatorio_Provincial_Icolo_e_Bengo_Censo2024.pdf"
+                  download="Relatorio_Provincial_Icolo_e_Bengo_Censo2024.pdf"><svg width="11" height="11"
+                    viewBox="0 0 16 16" fill="currentColor">
+                    <path
+                      d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                    <path
+                      d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+                  </svg> PDF</a></td>
+              <td><a class="dlb dlg" style="font-size:.65rem;padding:.28rem .7rem"
+                  href="Excel_Provincial_Icolo_e_Bengo_Censo2024.xlsx"
+                  download="Excel_Provincial_Icolo_e_Bengo_Censo2024.xlsx"><svg width="11" height="11"
+                    viewBox="0 0 16 16" fill="currentColor">
+                    <path
+                      d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                    <path
+                      d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+                  </svg> Excel</a></td>
+              <td><button class="dlb dlb2" style="font-size:.65rem;padding:.28rem .7rem"
+                  onclick="quickExport('Icolo e Bengo')">  Exportar</button></td>
+            </tr>
+            <tr id="rep-row-11">
+              <td><input type="checkbox" id="chk11" onchange="toggleChk('Malanje',11,this.checked)"></td>
+              <td><span class="rk">11</span></td>
+              <td><strong>Malanje</strong></td>
+              <td><a class="dlb dlr" style="font-size:.65rem;padding:.28rem .7rem"
+                  href="Relatorio_Provincial_Malanje_Censo2024.pdf"
+                  download="Relatorio_Provincial_Malanje_Censo2024.pdf"><svg width="11" height="11" viewBox="0 0 16 16"
+                    fill="currentColor">
+                    <path
+                      d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                    <path
+                      d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+                  </svg> PDF</a></td>
+              <td><a class="dlb dlg" style="font-size:.65rem;padding:.28rem .7rem"
+                  href="Excel_Provincial_Malanje_Censo2024.xlsx" download="Excel_Provincial_Malanje_Censo2024.xlsx"><svg
+                    width="11" height="11" viewBox="0 0 16 16" fill="currentColor">
+                    <path
+                      d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                    <path
+                      d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+                  </svg> Excel</a></td>
+              <td><button class="dlb dlb2" style="font-size:.65rem;padding:.28rem .7rem"
+                  onclick="quickExport('Malanje')">  Exportar</button></td>
+            </tr>
+            <tr id="rep-row-12">
+              <td><input type="checkbox" id="chk12" onchange="toggleChk('Cabinda',12,this.checked)"></td>
+              <td><span class="rk">12</span></td>
+              <td><strong>Cabinda</strong></td>
+              <td><a class="dlb dlr" style="font-size:.65rem;padding:.28rem .7rem"
+                  href="Relatorio_Provincial_Cabinda_Censo2024.pdf"
+                  download="Relatorio_Provincial_Cabinda_Censo2024.pdf"><svg width="11" height="11" viewBox="0 0 16 16"
+                    fill="currentColor">
+                    <path
+                      d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                    <path
+                      d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+                  </svg> PDF</a></td>
+              <td><a class="dlb dlg" style="font-size:.65rem;padding:.28rem .7rem"
+                  href="Excel_Provincial_Cabinda_Censo2024.xlsx" download="Excel_Provincial_Cabinda_Censo2024.xlsx"><svg
+                    width="11" height="11" viewBox="0 0 16 16" fill="currentColor">
+                    <path
+                      d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                    <path
+                      d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+                  </svg> Excel</a></td>
+              <td><button class="dlb dlb2" style="font-size:.65rem;padding:.28rem .7rem"
+                  onclick="quickExport('Cabinda')">  Exportar</button></td>
+            </tr>
+            <tr id="rep-row-13">
+              <td><input type="checkbox" id="chk13" onchange="toggleChk('Lunda Sul',13,this.checked)"></td>
+              <td><span class="rk">13</span></td>
+              <td><strong>Lunda Sul</strong></td>
+              <td><a class="dlb dlr" style="font-size:.65rem;padding:.28rem .7rem"
+                  href="Relatorio_Provincial_Lunda_Sul_Censo2024.pdf"
+                  download="Relatorio_Provincial_Lunda_Sul_Censo2024.pdf"><svg width="11" height="11"
+                    viewBox="0 0 16 16" fill="currentColor">
+                    <path
+                      d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                    <path
+                      d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+                  </svg> PDF</a></td>
+              <td><a class="dlb dlg" style="font-size:.65rem;padding:.28rem .7rem"
+                  href="Excel_Provincial_Lunda_Sul_Censo2024.xlsx"
+                  download="Excel_Provincial_Lunda_Sul_Censo2024.xlsx"><svg width="11" height="11" viewBox="0 0 16 16"
+                    fill="currentColor">
+                    <path
+                      d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                    <path
+                      d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+                  </svg> Excel</a></td>
+              <td><button class="dlb dlb2" style="font-size:.65rem;padding:.28rem .7rem"
+                  onclick="quickExport('Lunda Sul')">  Exportar</button></td>
+            </tr>
+            <tr id="rep-row-14">
+              <td><input type="checkbox" id="chk14" onchange="toggleChk('Namibe',14,this.checked)"></td>
+              <td><span class="rk">14</span></td>
+              <td><strong>Namibe</strong></td>
+              <td><a class="dlb dlr" style="font-size:.65rem;padding:.28rem .7rem"
+                  href="Relatorio_Provincial_Namibe_Censo2024.pdf"
+                  download="Relatorio_Provincial_Namibe_Censo2024.pdf"><svg width="11" height="11" viewBox="0 0 16 16"
+                    fill="currentColor">
+                    <path
+                      d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                    <path
+                      d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+                  </svg> PDF</a></td>
+              <td><a class="dlb dlg" style="font-size:.65rem;padding:.28rem .7rem"
+                  href="Excel_Provincial_Namibe_Censo2024.xlsx" download="Excel_Provincial_Namibe_Censo2024.xlsx"><svg
+                    width="11" height="11" viewBox="0 0 16 16" fill="currentColor">
+                    <path
+                      d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                    <path
+                      d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+                  </svg> Excel</a></td>
+              <td><button class="dlb dlb2" style="font-size:.65rem;padding:.28rem .7rem"
+                  onclick="quickExport('Namibe')">  Exportar</button></td>
+            </tr>
+            <tr id="rep-row-15">
+              <td><input type="checkbox" id="chk15" onchange="toggleChk('Bengo',15,this.checked)"></td>
+              <td><span class="rk">15</span></td>
+              <td><strong>Bengo</strong></td>
+              <td><a class="dlb dlr" style="font-size:.65rem;padding:.28rem .7rem"
+                  href="Relatorio_Provincial_Bengo_Censo2024.pdf"
+                  download="Relatorio_Provincial_Bengo_Censo2024.pdf"><svg width="11" height="11" viewBox="0 0 16 16"
+                    fill="currentColor">
+                    <path
+                      d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                    <path
+                      d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+                  </svg> PDF</a></td>
+              <td><a class="dlb dlg" style="font-size:.65rem;padding:.28rem .7rem"
+                  href="Excel_Provincial_Bengo_Censo2024.xlsx" download="Excel_Provincial_Bengo_Censo2024.xlsx"><svg
+                    width="11" height="11" viewBox="0 0 16 16" fill="currentColor">
+                    <path
+                      d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                    <path
+                      d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+                  </svg> Excel</a></td>
+              <td><button class="dlb dlb2" style="font-size:.65rem;padding:.28rem .7rem"
+                  onclick="quickExport('Bengo')">  Exportar</button></td>
+            </tr>
+            <tr id="rep-row-16">
+              <td><input type="checkbox" id="chk16" onchange="toggleChk('Zaire',16,this.checked)"></td>
+              <td><span class="rk">16</span></td>
+              <td><strong>Zaire</strong></td>
+              <td><a class="dlb dlr" style="font-size:.65rem;padding:.28rem .7rem"
+                  href="Relatorio_Provincial_Zaire_Censo2024.pdf"
+                  download="Relatorio_Provincial_Zaire_Censo2024.pdf"><svg width="11" height="11" viewBox="0 0 16 16"
+                    fill="currentColor">
+                    <path
+                      d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                    <path
+                      d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+                  </svg> PDF</a></td>
+              <td><a class="dlb dlg" style="font-size:.65rem;padding:.28rem .7rem"
+                  href="Excel_Provincial_Zaire_Censo2024.xlsx" download="Excel_Provincial_Zaire_Censo2024.xlsx"><svg
+                    width="11" height="11" viewBox="0 0 16 16" fill="currentColor">
+                    <path
+                      d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                    <path
+                      d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+                  </svg> Excel</a></td>
+              <td><button class="dlb dlb2" style="font-size:.65rem;padding:.28rem .7rem"
+                  onclick="quickExport('Zaire')">  Exportar</button></td>
+            </tr>
+            <tr id="rep-row-17">
+              <td><input type="checkbox" id="chk17" onchange="toggleChk('Cuanza Norte',17,this.checked)"></td>
+              <td><span class="rk">17</span></td>
+              <td><strong>Cuanza Norte</strong></td>
+              <td><a class="dlb dlr" style="font-size:.65rem;padding:.28rem .7rem"
+                  href="Relatorio_Provincial_Cuanza_Norte_Censo2024.pdf"
+                  download="Relatorio_Provincial_Cuanza_Norte_Censo2024.pdf"><svg width="11" height="11"
+                    viewBox="0 0 16 16" fill="currentColor">
+                    <path
+                      d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                    <path
+                      d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+                  </svg> PDF</a></td>
+              <td><a class="dlb dlg" style="font-size:.65rem;padding:.28rem .7rem"
+                  href="Excel_Provincial_Cuanza_Norte_Censo2024.xlsx"
+                  download="Excel_Provincial_Cuanza_Norte_Censo2024.xlsx"><svg width="11" height="11"
+                    viewBox="0 0 16 16" fill="currentColor">
+                    <path
+                      d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                    <path
+                      d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+                  </svg> Excel</a></td>
+              <td><button class="dlb dlb2" style="font-size:.65rem;padding:.28rem .7rem"
+                  onclick="quickExport('Cuanza Norte')">  Exportar</button></td>
+            </tr>
+            <tr id="rep-row-18">
+              <td><input type="checkbox" id="chk18" onchange="toggleChk('Moxico',18,this.checked)"></td>
+              <td><span class="rk">18</span></td>
+              <td><strong>Moxico</strong></td>
+              <td><a class="dlb dlr" style="font-size:.65rem;padding:.28rem .7rem"
+                  href="Relatorio_Provincial_Moxico_Censo2024.pdf"
+                  download="Relatorio_Provincial_Moxico_Censo2024.pdf"><svg width="11" height="11" viewBox="0 0 16 16"
+                    fill="currentColor">
+                    <path
+                      d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                    <path
+                      d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+                  </svg> PDF</a></td>
+              <td><a class="dlb dlg" style="font-size:.65rem;padding:.28rem .7rem"
+                  href="Excel_Provincial_Moxico_Censo2024.xlsx" download="Excel_Provincial_Moxico_Censo2024.xlsx"><svg
+                    width="11" height="11" viewBox="0 0 16 16" fill="currentColor">
+                    <path
+                      d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                    <path
+                      d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+                  </svg> Excel</a></td>
+              <td><button class="dlb dlb2" style="font-size:.65rem;padding:.28rem .7rem"
+                  onclick="quickExport('Moxico')">  Exportar</button></td>
+            </tr>
+            <tr id="rep-row-19">
+              <td><input type="checkbox" id="chk19" onchange="toggleChk('Cubango',19,this.checked)"></td>
+              <td><span class="rk">19</span></td>
+              <td><strong>Cubango</strong></td>
+              <td><a class="dlb dlr" style="font-size:.65rem;padding:.28rem .7rem"
+                  href="Relatorio_Provincial_Cubango_Censo2024.pdf"
+                  download="Relatorio_Provincial_Cubango_Censo2024.pdf"><svg width="11" height="11" viewBox="0 0 16 16"
+                    fill="currentColor">
+                    <path
+                      d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                    <path
+                      d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+                  </svg> PDF</a></td>
+              <td><a class="dlb dlg" style="font-size:.65rem;padding:.28rem .7rem"
+                  href="Excel_Provincial_Cubango_Censo2024.xlsx" download="Excel_Provincial_Cubango_Censo2024.xlsx"><svg
+                    width="11" height="11" viewBox="0 0 16 16" fill="currentColor">
+                    <path
+                      d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                    <path
+                      d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+                  </svg> Excel</a></td>
+              <td><button class="dlb dlb2" style="font-size:.65rem;padding:.28rem .7rem"
+                  onclick="quickExport('Cubango')">  Exportar</button></td>
+            </tr>
+            <tr id="rep-row-20">
+              <td><input type="checkbox" id="chk20" onchange="toggleChk('Moxico Leste',20,this.checked)"></td>
+              <td><span class="rk">20</span></td>
+              <td><strong>Moxico Leste</strong></td>
+              <td><a class="dlb dlr" style="font-size:.65rem;padding:.28rem .7rem"
+                  href="Relatorio_Provincial_Moxico_Leste_Censo2024.pdf"
+                  download="Relatorio_Provincial_Moxico_Leste_Censo2024.pdf"><svg width="11" height="11"
+                    viewBox="0 0 16 16" fill="currentColor">
+                    <path
+                      d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                    <path
+                      d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+                  </svg> PDF</a></td>
+              <td><a class="dlb dlg" style="font-size:.65rem;padding:.28rem .7rem"
+                  href="Excel_Provincial_Moxico_Leste_Censo2024.xlsx"
+                  download="Excel_Provincial_Moxico_Leste_Censo2024.xlsx"><svg width="11" height="11"
+                    viewBox="0 0 16 16" fill="currentColor">
+                    <path
+                      d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                    <path
+                      d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+                  </svg> Excel</a></td>
+              <td><button class="dlb dlb2" style="font-size:.65rem;padding:.28rem .7rem"
+                  onclick="quickExport('Moxico Leste')">  Exportar</button></td>
+            </tr>
+            <tr id="rep-row-21">
+              <td><input type="checkbox" id="chk21" onchange="toggleChk('Cuando ',21,this.checked)"></td>
+              <td><span class="rk">21</span></td>
+              <td><strong>Cuando </strong></td>
+              <td><a class="dlb dlr" style="font-size:.65rem;padding:.28rem .7rem"
+                  href="Relatorio_Provincial_Cuando_Cubango_Censo2024.pdf"
+                  download="Relatorio_Provincial_Cuando_Cubango_Censo2024.pdf"><svg width="11" height="11"
+                    viewBox="0 0 16 16" fill="currentColor">
+                    <path
+                      d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                    <path
+                      d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+                  </svg> PDF</a></td>
+              <td><a class="dlb dlg" style="font-size:.65rem;padding:.28rem .7rem"
+                  href="Excel_Provincial_Cuando_Cubango_Censo2024.xlsx"
+                  download="Excel_Provincial_Cuando_Cubango_Censo2024.xlsx"><svg width="11" height="11"
+                    viewBox="0 0 16 16" fill="currentColor">
+                    <path
+                      d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                    <path
+                      d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+                  </svg> Excel</a></td>
+              <td><button class="dlb dlb2" style="font-size:.65rem;padding:.28rem .7rem"
+                  onclick="quickExport('Cuando ')">  Exportar</button></td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- <div class="fw">
+    <div class="cp" id="chatP">
+      <div class="ch">
+        <div class="cav"><svg viewBox="0 0 16 16" fill="white">
+            <path
+              d="M6 12.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5ZM3 8.062C3 6.76 4.235 5.765 5.53 5.886a26.58 26.58 0 0 0 4.94 0C11.765 5.765 13 6.76 13 8.062v1.157a.933.933 0 0 1-.765.935c-.845.147-2.34.346-4.235.346-1.895 0-3.39-.2-4.235-.346A.933.933 0 0 1 3 9.219V8.062Z" />
+          </svg></div>
+        <div>
+          <p class="cn2">Assistente Censo 2024</p>
+          <p class="cs2">21 Províncias · 76 Indicadores · Claude AI</p>
+        </div>
+      </div>
+      <div class="cms" id="cMsg">
+        <div class="bm">Olá! Pergunta-me qualquer coisa sobre os dados do Censo 2024 das 21 províncias de Angola —
+          população, literacia, habitação, energia, água, saneamento, combustível, materiais e muito mais.</div>
+      </div>
+      <div class="ciw">
+        <input class="ci" id="cInp" placeholder="Ex: literacia de Moxico Leste?" type="text">
+        <button class="csb" id="cSend"><svg viewBox="0 0 16 16" fill="currentColor">
+            <path
+              d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083l6-15Zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471-.47 1.178Z" />
+          </svg></button>
+      </div>
+    </div>
+    <button class="fab" id="fabB"><svg viewBox="0 0 16 16" fill="currentColor">
+        <path
+          d="M6 12.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5ZM3 8.062C3 6.76 4.235 5.765 5.53 5.886a26.58 26.58 0 0 0 4.94 0C11.765 5.765 13 6.76 13 8.062v1.157a.933.933 0 0 1-.765.935c-.845.147-2.34.346-4.235.346-1.895 0-3.39-.2-4.235-.346A.933.933 0 0 1 3 9.219V8.062Zm4.542-.827a.25.25 0 0 0-.217.068l-.92.9a24.767 24.767 0 0 1-1.871-.183.25.25 0 0 0-.068.495c.55.076 1.232.149 2.02.193a.25.25 0 0 0 .189-.071l.754-.736.847 1.71a.25.25 0 0 0 .404.062l.932-.97a25.286 25.286 0 0 0 1.922-.188.25.25 0 0 0-.068-.495c-.538.074-1.207.145-1.98.189a.25.25 0 0 0-.166.076l-.754.785-.842-1.7a.25.25 0 0 0-.182-.134Z" />
+      </svg></button>
+  </div> -->
+
+  <script>
+    // ═══════════ DADOS REAIS — CENSO 2024 — 21 PROVÍNCIAS ═══════════
+    const D = [{"provincia":"Cabinda","pop_total":903370,"pop_homens":448053,"pop_mulheres":455317,"pop_urbana":787740,"pop_rural":115630,"idade_0_14":328634,"idade_15_64":553691,"idade_65mais":21045,"civil_solteiro":362711,"civil_casado":228749,"civil_separado":10214,"civil_divorciado":741,"civil_viuvo":9166,"reg_total_pop":903370,"reg_com_registo":677434,"bi_total_pop":793641,"bi_com_bi":539161,"lit_taxa":84,"lit_homens":89,"lit_mulheres":79,"edu_primario":74961,"edu_i_sec":138113,"edu_ii_sec":148541,"edu_superior":20547,"edu_nenhum":41594,"agg_total":234516,"agg_electricidade":186917,"agg_gerador":4055,"agg_solar":2134,"agg_eolica":1880,"agg_lanterna":27309,"agg_vela":4232,"agg_lenha":3273,"agg_nenhum":1633,"comb_total":234516,"comb_nao_coz":9280,"comb_elec":8830,"comb_gas":155546,"comb_petroleo":3331,"comb_carvao_veg":24760,"comb_lenha":31967,"san_total":234516,"san_nenhum":130918,"agua_total":234516,"agua_dentro_casa":31957,"agua_quintal":0,"agua_sem_acesso":81344,"fonte_canalizada":99389,"fonte_poco":6282,"fonte_rio":6508,"hab_total":234320,"hab_vivenda":29601,"hab_convencional":182831,"hab_apartamento":16641,"hab_cubata":4396,"hab_barraca":825,"par_total":234320,"par_pedra":3396,"par_cimento":141828,"par_tijolo":1034,"par_adobe":78571,"par_madeira":1946,"par_zinco":444,"par_pauapique":1620,"par_outro":5481,"tec_total":234320,"tec_betao":26,"tec_telha":8251,"tec_lusalite":5171,"tec_zinco":210322,"tec_capim":1645,"piso_total":234320,"piso_cimento":169026,"piso_ceramica":29830,"piso_madeira":31132,"piso_terra":862},{"provincia":"Zaire","pop_total":682658,"pop_homens":336999,"pop_mulheres":345659,"pop_urbana":519044,"pop_rural":163614,"idade_0_14":262363,"idade_15_64":390091,"idade_65mais":30203,"civil_solteiro":265235,"civil_casado":179424,"civil_separado":13316,"civil_divorciado":650,"civil_viuvo":8873,"reg_total_pop":682658,"reg_com_registo":531074,"bi_total_pop":590170,"bi_com_bi":413998,"lit_taxa":85,"lit_homens":90,"lit_mulheres":79,"edu_primario":71164,"edu_i_sec":103123,"edu_ii_sec":95530,"edu_superior":11390,"edu_nenhum":36103,"agg_total":172899,"agg_electricidade":118479,"agg_gerador":3136,"agg_solar":2114,"agg_eolica":1546,"agg_lanterna":38896,"agg_vela":2086,"agg_lenha":2431,"agg_nenhum":1415,"comb_total":172899,"comb_nao_coz":5369,"comb_elec":9500,"comb_gas":69041,"comb_petroleo":4571,"comb_carvao_veg":38164,"comb_lenha":45487,"san_total":172899,"san_nenhum":33593,"agua_total":172899,"agua_dentro_casa":10956,"agua_quintal":35338,"agua_sem_acesso":126606,"fonte_canalizada":38522,"fonte_poco":19068,"fonte_rio":11504,"hab_total":172847,"hab_vivenda":14011,"hab_convencional":152334,"hab_apartamento":1257,"hab_cubata":4596,"hab_barraca":621,"par_total":172847,"par_pedra":3225,"par_cimento":79471,"par_tijolo":440,"par_adobe":81686,"par_madeira":275,"par_zinco":626,"par_pauapique":857,"par_outro":6268,"tec_total":172847,"tec_betao":46,"tec_telha":4912,"tec_lusalite":6635,"tec_zinco":152656,"tec_capim":1080,"piso_total":172847,"piso_cimento":100207,"piso_ceramica":50580,"piso_madeira":17424,"piso_terra":1053},{"provincia":"Uíge","pop_total":2017922,"pop_homens":1001154,"pop_mulheres":1016767,"pop_urbana":1042302,"pop_rural":975620,"idade_0_14":883783,"idade_15_64":1050167,"idade_65mais":83971,"civil_solteiro":693196,"civil_casado":515321,"civil_separado":36309,"civil_divorciado":3583,"civil_viuvo":31853,"reg_total_pop":2017922,"reg_com_registo":1482184,"bi_total_pop":1711051,"bi_com_bi":913206,"lit_taxa":67,"lit_homens":78,"lit_mulheres":56,"edu_primario":161033,"edu_i_sec":214310,"edu_ii_sec":171151,"edu_superior":29971,"edu_nenhum":129071,"agg_total":457093,"agg_electricidade":118962,"agg_gerador":8782,"agg_solar":7044,"agg_eolica":5073,"agg_lanterna":207333,"agg_vela":57896,"agg_lenha":33295,"agg_nenhum":11214,"comb_total":457093,"comb_nao_coz":11911,"comb_elec":11219,"comb_gas":103618,"comb_petroleo":8158,"comb_carvao_veg":187792,"comb_lenha":133136,"san_total":457093,"san_nenhum":162578,"agua_total":457093,"agua_dentro_casa":41042,"agua_quintal":0,"agua_sem_acesso":73097,"fonte_canalizada":91230,"fonte_poco":1134,"fonte_rio":36441,"hab_total":456775,"hab_vivenda":21327,"hab_convencional":359062,"hab_apartamento":2600,"hab_cubata":73070,"hab_barraca":700,"par_total":456775,"par_pedra":3778,"par_cimento":76180,"par_tijolo":2480,"par_adobe":286265,"par_madeira":317,"par_zinco":3701,"par_pauapique":57826,"par_outro":26229,"tec_total":456775,"tec_betao":11276,"tec_telha":10735,"tec_lusalite":357662,"tec_zinco":38859,"tec_capim":38243,"piso_total":456775,"piso_cimento":93368,"piso_ceramica":316785,"piso_madeira":28105,"piso_terra":1262},{"provincia":"Bengo","pop_total":716335,"pop_homens":359163,"pop_mulheres":357172,"pop_urbana":374186,"pop_rural":342149,"idade_0_14":264992,"idade_15_64":419485,"idade_65mais":31859,"civil_solteiro":271316,"civil_casado":197899,"civil_separado":11586,"civil_divorciado":450,"civil_viuvo":10547,"reg_total_pop":716335,"reg_com_registo":559839,"bi_total_pop":623883,"bi_com_bi":443518,"lit_taxa":75,"lit_homens":84,"lit_mulheres":66,"edu_primario":0,"edu_i_sec":0,"edu_ii_sec":0,"edu_superior":0,"edu_nenhum":0,"agg_total":205456,"agg_electricidade":65950,"agg_gerador":12662,"agg_solar":3589,"agg_eolica":3389,"agg_lanterna":95101,"agg_vela":7361,"agg_lenha":8149,"agg_nenhum":3351,"comb_total":205456,"comb_nao_coz":7488,"comb_elec":7669,"comb_gas":80828,"comb_petroleo":5017,"comb_carvao_veg":14141,"comb_lenha":89655,"san_total":205456,"san_nenhum":55217,"agua_total":205456,"agua_dentro_casa":24402,"agua_quintal":35885,"agua_sem_acesso":145169,"fonte_canalizada":47518,"fonte_poco":27598,"fonte_rio":14562,"hab_total":205179,"hab_vivenda":20305,"hab_convencional":144268,"hab_apartamento":5733,"hab_cubata":25936,"hab_barraca":8914,"par_total":205179,"par_pedra":2384,"par_cimento":83501,"par_tijolo":1859,"par_adobe":80382,"par_madeira":213,"par_zinco":13565,"par_pauapique":7161,"par_outro":16113,"tec_total":205179,"tec_betao":572,"tec_telha":9368,"tec_lusalite":10180,"tec_zinco":163217,"tec_capim":6853,"piso_total":205179,"piso_cimento":71991,"piso_ceramica":19904,"piso_madeira":72,"piso_terra":107930},{"provincia":"Luanda","pop_total":8665510,"pop_homens":4263902,"pop_mulheres":4401607,"pop_urbana":8605233,"pop_rural":60277,"idade_0_14":2810194,"idade_15_64":5364344,"idade_65mais":490971,"civil_solteiro":3711800,"civil_casado":2162510,"civil_separado":106377,"civil_divorciado":11588,"civil_viuvo":130612,"reg_total_pop":8665510,"reg_com_registo":6532012,"bi_total_pop":7825899,"bi_com_bi":5376103,"lit_taxa":94,"lit_homens":97,"lit_mulheres":92,"edu_primario":611114,"edu_i_sec":1953306,"edu_ii_sec":1640386,"edu_superior":335661,"edu_nenhum":375756,"agg_total":2461949,"agg_electricidade":1841281,"agg_gerador":90998,"agg_solar":73592,"agg_eolica":72975,"agg_lanterna":120555,"agg_vela":74642,"agg_lenha":98573,"agg_nenhum":2579,"comb_total":2461949,"comb_nao_coz":138182,"comb_elec":193736,"comb_gas":1822174,"comb_petroleo":109201,"comb_carvao_veg":168836,"comb_lenha":20281,"san_total":2461949,"san_nenhum":42879,"agua_total":2461949,"agua_dentro_casa":515297,"agua_quintal":724899,"agua_sem_acesso":1221752,"fonte_canalizada":994108,"fonte_poco":816765,"fonte_rio":82904,"hab_total":2458540,"hab_vivenda":446055,"hab_convencional":1900966,"hab_apartamento":70430,"hab_cubata":18997,"hab_barraca":21900,"par_total":2458540,"par_pedra":41678,"par_cimento":2293397,"par_tijolo":18776,"par_adobe":8246,"par_madeira":3636,"par_zinco":25102,"par_pauapique":3190,"par_outro":64516,"tec_total":2458540,"tec_betao":3085,"tec_telha":236973,"tec_lusalite":271681,"tec_zinco":1666238,"tec_capim":3706,"piso_total":2458540,"piso_cimento":1416156,"piso_ceramica":260506,"piso_madeira":763424,"piso_terra":11711},{"provincia":"Cuanza Norte","pop_total":659097,"pop_homens":324984,"pop_mulheres":334113,"pop_urbana":445950,"pop_rural":213147,"idade_0_14":272645,"idade_15_64":364538,"idade_65mais":21915,"civil_solteiro":235078,"civil_casado":174969,"civil_separado":12765,"civil_divorciado":307,"civil_viuvo":13545,"reg_total_pop":659097,"reg_com_registo":537408,"bi_total_pop":561090,"bi_com_bi":379065,"lit_taxa":73,"lit_homens":86,"lit_mulheres":60,"edu_primario":75022,"edu_i_sec":72398,"edu_ii_sec":53625,"edu_superior":13048,"edu_nenhum":57141,"agg_total":168568,"agg_electricidade":87751,"agg_gerador":2487,"agg_solar":1802,"agg_eolica":1340,"agg_lanterna":25560,"agg_vela":31947,"agg_lenha":11416,"agg_nenhum":2131,"comb_total":168568,"comb_nao_coz":4015,"comb_elec":4595,"comb_gas":77984,"comb_petroleo":2304,"comb_carvao_veg":34888,"comb_lenha":44228,"san_total":168568,"san_nenhum":70322,"agua_total":168568,"agua_dentro_casa":12557,"agua_quintal":19998,"agua_sem_acesso":136013,"fonte_canalizada":25257,"fonte_poco":7473,"fonte_rio":29153,"hab_total":168267,"hab_vivenda":7105,"hab_convencional":144282,"hab_apartamento":337,"hab_cubata":13751,"hab_barraca":2786,"par_total":168267,"par_pedra":538,"par_cimento":42997,"par_tijolo":2207,"par_adobe":107903,"par_madeira":85,"par_zinco":3884,"par_pauapique":4815,"par_outro":5838,"tec_total":168267,"tec_betao":18,"tec_telha":3710,"tec_lusalite":3675,"tec_zinco":4001,"tec_capim":149260,"piso_total":168267,"piso_cimento":54111,"piso_ceramica":97702,"piso_madeira":10804,"piso_terra":1096},{"provincia":"Cuanza Sul","pop_total":2327981,"pop_homens":1133553,"pop_mulheres":1194428,"pop_urbana":958860,"pop_rural":1369121,"idade_0_14":1066994,"idade_15_64":1183407,"idade_65mais":77581,"civil_solteiro":710004,"civil_casado":632863,"civil_separado":37309,"civil_divorciado":3256,"civil_viuvo":37120,"reg_total_pop":2327981,"reg_com_registo":1711148,"bi_total_pop":1917935,"bi_com_bi":897606,"lit_taxa":64,"lit_homens":78,"lit_mulheres":52,"edu_primario":227220,"edu_i_sec":185078,"edu_ii_sec":99557,"edu_superior":18348,"edu_nenhum":253441,"agg_total":575047,"agg_electricidade":131047,"agg_gerador":13777,"agg_solar":7884,"agg_eolica":5496,"agg_lanterna":262184,"agg_vela":122194,"agg_lenha":12601,"agg_nenhum":11047,"comb_total":575047,"comb_nao_coz":11616,"comb_elec":11399,"comb_gas":166277,"comb_petroleo":10601,"comb_carvao_veg":72198,"comb_lenha":301670,"san_total":575047,"san_nenhum":427680,"agua_total":575047,"agua_dentro_casa":32589,"agua_quintal":42639,"agua_sem_acesso":499818,"fonte_canalizada":44941,"fonte_poco":25089,"fonte_rio":71637,"hab_total":574117,"hab_vivenda":24236,"hab_convencional":499698,"hab_apartamento":2544,"hab_cubata":44967,"hab_barraca":2650,"par_total":574117,"par_pedra":2335,"par_cimento":109156,"par_tijolo":2880,"par_adobe":436646,"par_madeira":485,"par_zinco":1306,"par_pauapique":5187,"par_outro":16120,"tec_total":574117,"tec_betao":446,"tec_telha":12975,"tec_lusalite":22651,"tec_zinco":470894,"tec_capim":15950,"piso_total":574117,"piso_cimento":392881,"piso_ceramica":130661,"piso_madeira":27300,"piso_terra":2110},{"provincia":"Malanje","pop_total":1298250,"pop_homens":638369,"pop_mulheres":659881,"pop_urbana":729676,"pop_rural":568574,"idade_0_14":544081,"idade_15_64":702562,"idade_65mais":51607,"civil_solteiro":431546,"civil_casado":338895,"civil_separado":18920,"civil_divorciado":801,"civil_viuvo":23952,"reg_total_pop":1298250,"reg_com_registo":750542,"bi_total_pop":1102703,"bi_com_bi":572073,"lit_taxa":63,"lit_homens":74,"lit_mulheres":52,"edu_primario":94982,"edu_i_sec":155486,"edu_ii_sec":80333,"edu_superior":15399,"edu_nenhum":98651,"agg_total":338946,"agg_electricidade":122278,"agg_gerador":13493,"agg_solar":8372,"agg_eolica":5480,"agg_lanterna":96897,"agg_vela":55678,"agg_lenha":21821,"agg_nenhum":7112,"comb_total":338946,"comb_nao_coz":12653,"comb_elec":11300,"comb_gas":108666,"comb_petroleo":8400,"comb_carvao_veg":77452,"comb_lenha":119300,"san_total":338946,"san_nenhum":238591,"agua_total":338946,"agua_dentro_casa":32742,"agua_quintal":61824,"agua_sem_acesso":244380,"fonte_canalizada":75175,"fonte_poco":4101,"fonte_rio":22746,"hab_total":338731,"hab_vivenda":21225,"hab_convencional":256703,"hab_apartamento":507,"hab_cubata":59194,"hab_barraca":1092,"par_total":338731,"par_pedra":2586,"par_cimento":98938,"par_tijolo":2181,"par_adobe":206925,"par_madeira":129,"par_zinco":1634,"par_pauapique":12207,"par_outro":14131,"tec_total":338731,"tec_betao":37,"tec_telha":11658,"tec_lusalite":10718,"tec_zinco":255401,"tec_capim":28391,"piso_total":338731,"piso_cimento":104197,"piso_ceramica":189820,"piso_madeira":28788,"piso_terra":1323},{"provincia":"Lunda Norte","pop_total":1742217,"pop_homens":898545,"pop_mulheres":843673,"pop_urbana":1278489,"pop_rural":463728,"idade_0_14":712242,"idade_15_64":979401,"idade_65mais":50574,"civil_solteiro":537013,"civil_casado":522760,"civil_separado":28969,"civil_divorciado":2287,"civil_viuvo":24110,"reg_total_pop":1742217,"reg_com_registo":922118,"bi_total_pop":1468984,"bi_com_bi":623390,"lit_taxa":54,"lit_homens":65,"lit_mulheres":42,"edu_primario":135116,"edu_i_sec":177019,"edu_ii_sec":82921,"edu_superior":12925,"edu_nenhum":115120,"agg_total":444411,"agg_electricidade":84438,"agg_gerador":46658,"agg_solar":7827,"agg_eolica":6563,"agg_lanterna":243278,"agg_vela":8396,"agg_lenha":25885,"agg_nenhum":13163,"comb_total":444411,"comb_nao_coz":16682,"comb_elec":11191,"comb_gas":86530,"comb_petroleo":9312,"comb_carvao_veg":241376,"comb_lenha":77662,"san_total":444411,"san_nenhum":312321,"agua_total":444411,"agua_dentro_casa":45413,"agua_quintal":69447,"agua_sem_acesso":329551,"fonte_canalizada":85874,"fonte_poco":48555,"fonte_rio":28694,"hab_total":443384,"hab_vivenda":24948,"hab_convencional":323148,"hab_apartamento":7959,"hab_cubata":84130,"hab_barraca":2862,"par_total":443384,"par_pedra":1566,"par_cimento":94124,"par_tijolo":3526,"par_adobe":278275,"par_madeira":390,"par_zinco":3696,"par_pauapique":31994,"par_outro":29813,"tec_total":443384,"tec_betao":12950,"tec_telha":11883,"tec_lusalite":11883,"tec_zinco":365566,"tec_capim":21661,"piso_total":443384,"piso_cimento":132574,"piso_ceramica":22685,"piso_madeira":7624,"piso_terra":248209},{"provincia":"Lunda Sul","pop_total":893936,"pop_homens":448936,"pop_mulheres":445000,"pop_urbana":675102,"pop_rural":218834,"idade_0_14":353251,"idade_15_64":495175,"idade_65mais":45510,"civil_solteiro":287738,"civil_casado":235541,"civil_separado":14778,"civil_divorciado":1096,"civil_viuvo":10457,"reg_total_pop":893936,"reg_com_registo":614503,"bi_total_pop":764957,"bi_com_bi":404529,"lit_taxa":74,"lit_homens":82,"lit_mulheres":65,"edu_primario":58473,"edu_i_sec":166364,"edu_ii_sec":74543,"edu_superior":10978,"edu_nenhum":59505,"agg_total":224841,"agg_electricidade":100672,"agg_gerador":11434,"agg_solar":8755,"agg_eolica":8398,"agg_lanterna":64212,"agg_vela":9065,"agg_lenha":12306,"agg_nenhum":5036,"comb_total":224841,"comb_nao_coz":15091,"comb_elec":14265,"comb_gas":66262,"comb_petroleo":11792,"comb_carvao_veg":72006,"comb_lenha":44962,"san_total":224841,"san_nenhum":48005,"agua_total":224841,"agua_dentro_casa":30897,"agua_quintal":43234,"agua_sem_acesso":150710,"fonte_canalizada":51191,"fonte_poco":9910,"fonte_rio":33125,"hab_total":224449,"hab_vivenda":33306,"hab_convencional":170808,"hab_apartamento":1008,"hab_cubata":18446,"hab_barraca":576,"par_total":224449,"par_pedra":718,"par_cimento":94274,"par_tijolo":1130,"par_adobe":113119,"par_madeira":123,"par_zinco":1090,"par_pauapique":7399,"par_outro":6596,"tec_total":224449,"tec_betao":15752,"tec_telha":15752,"tec_lusalite":16056,"tec_zinco":160171,"tec_capim":9341,"piso_total":224449,"piso_cimento":102324,"piso_ceramica":77394,"piso_madeira":30832,"piso_terra":918},{"provincia":"Moxico","pop_total":574253,"pop_homens":280847,"pop_mulheres":293405,"pop_urbana":397185,"pop_rural":177068,"idade_0_14":235549,"idade_15_64":318787,"idade_65mais":19917,"civil_solteiro":205450,"civil_casado":155621,"civil_separado":8926,"civil_divorciado":900,"civil_viuvo":6676,"reg_total_pop":574253,"reg_com_registo":393615,"bi_total_pop":494475,"bi_com_bi":263298,"lit_taxa":62,"lit_homens":71,"lit_mulheres":54,"edu_primario":38746,"edu_i_sec":61643,"edu_ii_sec":50647,"edu_superior":10740,"edu_nenhum":33335,"agg_total":139394,"agg_electricidade":47783,"agg_gerador":3848,"agg_solar":2561,"agg_eolica":2343,"agg_lanterna":65505,"agg_vela":2459,"agg_lenha":5461,"agg_nenhum":5623,"comb_total":139394,"comb_nao_coz":4728,"comb_elec":4269,"comb_gas":37199,"comb_petroleo":3188,"comb_carvao_veg":41551,"comb_lenha":48119,"san_total":139394,"san_nenhum":96247,"agua_total":139394,"agua_dentro_casa":12935,"agua_quintal":24891,"agua_sem_acesso":101568,"fonte_canalizada":27055,"fonte_poco":5386,"fonte_rio":21899,"hab_total":139195,"hab_vivenda":11816,"hab_convencional":80825,"hab_apartamento":616,"hab_cubata":38750,"hab_barraca":7181,"par_total":139195,"par_pedra":488,"par_cimento":43537,"par_tijolo":1303,"par_adobe":54773,"par_madeira":44,"par_zinco":10114,"par_pauapique":19258,"par_outro":9678,"tec_total":139195,"tec_betao":9,"tec_telha":4745,"tec_lusalite":4606,"tec_zinco":101043,"tec_capim":19588,"piso_total":139195,"piso_cimento":33143,"piso_ceramica":87666,"piso_madeira":11657,"piso_terra":625},{"provincia":"Bié","pop_total":2264874,"pop_homens":1090904,"pop_mulheres":1173970,"pop_urbana":1011171,"pop_rural":1253703,"idade_0_14":1036838,"idade_15_64":1160153,"idade_65mais":67883,"civil_solteiro":727983,"civil_casado":597917,"civil_separado":23606,"civil_divorciado":2263,"civil_viuvo":41409,"reg_total_pop":2264874,"reg_com_registo":898033,"bi_total_pop":1868108,"bi_com_bi":594757,"lit_taxa":47,"lit_homens":57,"lit_mulheres":39,"edu_primario":138593,"edu_i_sec":156207,"edu_ii_sec":100708,"edu_superior":19420,"edu_nenhum":162266,"agg_total":556925,"agg_electricidade":100773,"agg_gerador":12440,"agg_solar":6228,"agg_eolica":5725,"agg_lanterna":382197,"agg_vela":6496,"agg_lenha":8557,"agg_nenhum":23421,"comb_total":556925,"comb_nao_coz":11024,"comb_elec":11496,"comb_gas":98144,"comb_petroleo":7804,"comb_carvao_veg":97958,"comb_lenha":329464,"san_total":556925,"san_nenhum":413940,"agua_total":556925,"agua_dentro_casa":39717,"agua_quintal":59836,"agua_sem_acesso":457372,"fonte_canalizada":67574,"fonte_poco":1649,"fonte_rio":19739,"hab_total":555291,"hab_vivenda":26676,"hab_convencional":461806,"hab_apartamento":2498,"hab_cubata":62045,"hab_barraca":2258,"par_total":555291,"par_pedra":4004,"par_cimento":89071,"par_tijolo":4218,"par_adobe":404398,"par_madeira":383,"par_zinco":1573,"par_pauapique":23724,"par_outro":27921,"tec_total":555291,"tec_betao":1693,"tec_telha":12813,"tec_lusalite":11716,"tec_zinco":406405,"tec_capim":42766,"piso_total":555291,"piso_cimento":86622,"piso_ceramica":398695,"piso_madeira":27083,"piso_terra":2497},{"provincia":"Huambo","pop_total":2691902,"pop_homens":1296018,"pop_mulheres":1395883,"pop_urbana":1297752,"pop_rural":1394150,"idade_0_14":1211338,"idade_15_64":1393009,"idade_65mais":87554,"civil_solteiro":837163,"civil_casado":659833,"civil_separado":25098,"civil_divorciado":2782,"civil_viuvo":55107,"reg_total_pop":2691902,"reg_com_registo":1256779,"bi_total_pop":2253749,"bi_com_bi":851400,"lit_taxa":63,"lit_homens":72,"lit_mulheres":55,"edu_primario":196547,"edu_i_sec":269230,"edu_ii_sec":157006,"edu_superior":37000,"edu_nenhum":249682,"agg_total":612476,"agg_electricidade":185493,"agg_gerador":12241,"agg_solar":7474,"agg_eolica":5575,"agg_lanterna":351801,"agg_vela":11363,"agg_lenha":10810,"agg_nenhum":8833,"comb_total":612476,"comb_nao_coz":11342,"comb_elec":13004,"comb_gas":163478,"comb_petroleo":7873,"comb_carvao_veg":92095,"comb_lenha":323365,"san_total":612476,"san_nenhum":47213,"agua_total":612476,"agua_dentro_casa":53743,"agua_quintal":94838,"agua_sem_acesso":94838,"fonte_canalizada":101338,"fonte_poco":1287,"fonte_rio":20931,"hab_total":611928,"hab_vivenda":32221,"hab_convencional":558561,"hab_apartamento":9446,"hab_cubata":10109,"hab_barraca":1578,"par_total":611928,"par_pedra":4054,"par_cimento":118257,"par_tijolo":7802,"par_adobe":463223,"par_madeira":381,"par_zinco":410,"par_pauapique":469,"par_outro":17332,"tec_total":611928,"tec_betao":3195,"tec_telha":17826,"tec_lusalite":27783,"tec_zinco":503909,"tec_capim":3346,"piso_total":611928,"piso_cimento":148698,"piso_ceramica":37925,"piso_madeira":847,"piso_terra":383316},{"provincia":"Benguela","pop_total":2597638,"pop_homens":1246173,"pop_mulheres":1351465,"pop_urbana":1545159,"pop_rural":1052479,"idade_0_14":1076882,"idade_15_64":1426985,"idade_65mais":93772,"civil_solteiro":988455,"civil_casado":638921,"civil_separado":38309,"civil_divorciado":2813,"civil_viuvo":43388,"reg_total_pop":2597638,"reg_com_registo":1553849,"bi_total_pop":2222293,"bi_com_bi":1014932,"lit_taxa":67,"lit_homens":75,"lit_mulheres":61,"edu_primario":207409,"edu_i_sec":270309,"edu_ii_sec":234048,"edu_superior":47572,"edu_nenhum":199633,"agg_total":632291,"agg_electricidade":235764,"agg_gerador":17184,"agg_solar":7976,"agg_eolica":6824,"agg_lanterna":288167,"agg_vela":22731,"agg_lenha":10469,"agg_nenhum":25482,"comb_total":632291,"comb_nao_coz":13965,"comb_elec":15527,"comb_gas":237359,"comb_petroleo":10976,"comb_carvao_veg":109210,"comb_lenha":243253,"san_total":632291,"san_nenhum":420316,"agua_total":632291,"agua_dentro_casa":66220,"agua_quintal":84804,"agua_sem_acesso":481267,"fonte_canalizada":122140,"fonte_poco":65689,"fonte_rio":24713,"hab_total":630027,"hab_vivenda":55596,"hab_convencional":474963,"hab_apartamento":8062,"hab_cubata":82621,"hab_barraca":8744,"par_total":630027,"par_pedra":4738,"par_cimento":265237,"par_tijolo":9946,"par_adobe":257438,"par_madeira":664,"par_zinco":3658,"par_pauapique":42280,"par_outro":46065,"tec_total":630027,"tec_betao":24267,"tec_telha":103480,"tec_lusalite":359360,"tec_zinco":59588,"tec_capim":83333,"piso_total":630027,"piso_cimento":67850,"piso_ceramica":12190,"piso_madeira":5931,"piso_terra":308},{"provincia":"Namibe","pop_total":815708,"pop_homens":399859,"pop_mulheres":415849,"pop_urbana":539189,"pop_rural":276519,"idade_0_14":355052,"idade_15_64":439597,"idade_65mais":21058,"civil_solteiro":0,"civil_casado":0,"civil_separado":0,"civil_divorciado":0,"civil_viuvo":0,"reg_total_pop":815708,"reg_com_registo":507038,"bi_total_pop":688978,"bi_com_bi":375191,"lit_taxa":71,"lit_homens":74,"lit_mulheres":67,"edu_primario":59898,"edu_i_sec":86269,"edu_ii_sec":78425,"edu_superior":18716,"edu_nenhum":43365,"agg_total":183187,"agg_electricidade":97980,"agg_gerador":3464,"agg_solar":1436,"agg_eolica":1212,"agg_lanterna":47291,"agg_vela":1445,"agg_lenha":2576,"agg_nenhum":22491,"comb_total":183187,"comb_nao_coz":3091,"comb_elec":3850,"comb_gas":97512,"comb_petroleo":1804,"comb_carvao_veg":23068,"comb_lenha":53496,"san_total":183187,"san_nenhum":125511,"agua_total":183187,"agua_dentro_casa":22244,"agua_quintal":41796,"agua_sem_acesso":119147,"fonte_canalizada":55501,"fonte_poco":32277,"fonte_rio":16805,"hab_total":182599,"hab_vivenda":13134,"hab_convencional":113719,"hab_apartamento":895,"hab_cubata":51312,"hab_barraca":3482,"par_total":182599,"par_pedra":1572,"par_cimento":83015,"par_tijolo":3001,"par_adobe":34525,"par_madeira":163,"par_zinco":5047,"par_pauapique":43322,"par_outro":11954,"tec_total":182599,"tec_betao":5712,"tec_telha":10532,"tec_lusalite":112381,"tec_zinco":41413,"tec_capim":12562,"piso_total":182599,"piso_cimento":83717,"piso_ceramica":77533,"piso_madeira":16935,"piso_terra":1151},{"provincia":"Huíla","pop_total":3302866,"pop_homens":1599066,"pop_mulheres":1703799,"pop_urbana":1287615,"pop_rural":2015250,"idade_0_14":1490770,"idade_15_64":1693965,"idade_65mais":118131,"civil_solteiro":1124487,"civil_casado":823052,"civil_separado":30863,"civil_divorciado":4353,"civil_viuvo":54860,"reg_total_pop":3302866,"reg_com_registo":1556141,"bi_total_pop":2771689,"bi_com_bi":889179,"lit_taxa":56,"lit_homens":64,"lit_mulheres":50,"edu_primario":123088,"edu_i_sec":139876,"edu_ii_sec":97771,"edu_superior":21678,"edu_nenhum":124970,"agg_total":760147,"agg_electricidade":200070,"agg_gerador":16206,"agg_solar":10496,"agg_eolica":9155,"agg_lanterna":385454,"agg_vela":11889,"agg_lenha":14682,"agg_nenhum":95541,"comb_total":760147,"comb_nao_coz":16290,"comb_elec":18727,"comb_gas":199039,"comb_petroleo":12926,"comb_carvao_veg":72033,"comb_lenha":439013,"san_total":760147,"san_nenhum":581030,"agua_total":760147,"agua_dentro_casa":57303,"agua_quintal":79975,"agua_sem_acesso":622869,"fonte_canalizada":93663,"fonte_poco":14060,"fonte_rio":49083,"hab_total":758655,"hab_vivenda":44605,"hab_convencional":445106,"hab_apartamento":3964,"hab_cubata":259562,"hab_barraca":5351,"par_total":758655,"par_pedra":3589,"par_cimento":139156,"par_tijolo":21932,"par_adobe":350667,"par_madeira":793,"par_zinco":4276,"par_pauapique":197036,"par_outro":41206,"tec_total":758655,"tec_betao":36,"tec_telha":22220,"tec_lusalite":21332,"tec_zinco":430875,"tec_capim":219182,"piso_total":758655,"piso_cimento":178756,"piso_ceramica":498817,"piso_madeira":48584,"piso_terra":2937},{"provincia":"Cunene","pop_total":1806417,"pop_homens":867639,"pop_mulheres":938777,"pop_urbana":460653,"pop_rural":1345764,"idade_0_14":857567,"idade_15_64":914224,"idade_65mais":34625,"civil_solteiro":761938,"civil_casado":296340,"civil_separado":12058,"civil_divorciado":1162,"civil_viuvo":10567,"reg_total_pop":1806417,"reg_com_registo":824448,"bi_total_pop":1493197,"bi_com_bi":551842,"lit_taxa":55,"lit_homens":58,"lit_mulheres":52,"edu_primario":117073,"edu_i_sec":122454,"edu_ii_sec":79123,"edu_superior":12778,"edu_nenhum":135241,"agg_total":261283,"agg_electricidade":49653,"agg_gerador":4415,"agg_solar":4093,"agg_eolica":3288,"agg_lanterna":115143,"agg_vela":3516,"agg_lenha":4387,"agg_nenhum":8319,"comb_total":261283,"comb_nao_coz":5170,"comb_elec":5728,"comb_gas":51592,"comb_petroleo":4326,"comb_carvao_veg":16483,"comb_lenha":177388,"san_total":261283,"san_nenhum":189689,"agua_total":261283,"agua_dentro_casa":17477,"agua_quintal":31382,"agua_sem_acesso":31382,"fonte_canalizada":36793,"fonte_poco":7510,"fonte_rio":19089,"hab_total":260571,"hab_vivenda":13157,"hab_convencional":85453,"hab_apartamento":501,"hab_cubata":149579,"hab_barraca":11860,"par_total":260571,"par_pedra":594,"par_cimento":73345,"par_tijolo":619,"par_adobe":4434,"par_madeira":393,"par_zinco":11638,"par_pauapique":142601,"par_outro":26947,"tec_total":260571,"tec_betao":9,"tec_telha":5920,"tec_lusalite":5811,"tec_zinco":84750,"tec_capim":141963,"piso_total":260571,"piso_cimento":47560,"piso_ceramica":19190,"piso_madeira":789,"piso_terra":188531},{"provincia":"Cubango","pop_total":570447,"pop_homens":278701,"pop_mulheres":291746,"pop_urbana":391856,"pop_rural":178591,"idade_0_14":240713,"idade_15_64":312020,"idade_65mais":17714,"civil_solteiro":217128,"civil_casado":133909,"civil_separado":5498,"civil_divorciado":668,"civil_viuvo":5542,"reg_total_pop":570447,"reg_com_registo":369430,"bi_total_pop":481927,"bi_com_bi":286855,"lit_taxa":66,"lit_homens":74,"lit_mulheres":59,"edu_primario":43403,"edu_i_sec":65214,"edu_ii_sec":45253,"edu_superior":7859,"edu_nenhum":35144,"agg_total":128875,"agg_electricidade":55646,"agg_gerador":2394,"agg_solar":1782,"agg_eolica":1669,"agg_lanterna":52096,"agg_vela":1729,"agg_lenha":2639,"agg_nenhum":6807,"comb_total":128875,"comb_nao_coz":4413,"comb_elec":3347,"comb_gas":50010,"comb_petroleo":2227,"comb_carvao_veg":21478,"comb_lenha":47073,"san_total":128875,"san_nenhum":48798,"agua_total":128875,"agua_dentro_casa":12140,"agua_quintal":20255,"agua_sem_acesso":96480,"fonte_canalizada":22797,"fonte_poco":3228,"fonte_rio":8210,"hab_total":128465,"hab_vivenda":8643,"hab_convencional":94991,"hab_apartamento":231,"hab_cubata":23845,"hab_barraca":732,"par_total":128465,"par_pedra":904,"par_cimento":32909,"par_tijolo":780,"par_adobe":64942,"par_madeira":68,"par_zinco":1137,"par_pauapique":18218,"par_outro":9507,"tec_total":128465,"tec_betao":4,"tec_telha":3653,"tec_lusalite":3354,"tec_zinco":95014,"tec_capim":18138,"piso_total":128465,"piso_cimento":74848,"piso_ceramica":35582,"piso_madeira":11228,"piso_terra":395},{"provincia":"Icolo e Bengo","pop_total":1523457,"pop_homens":747445,"pop_mulheres":776013,"pop_urbana":1373789,"pop_rural":149668,"idade_0_14":552431,"idade_15_64":891099,"idade_65mais":79928,"civil_solteiro":593413,"civil_casado":397502,"civil_separado":17450,"civil_divorciado":1461,"civil_viuvo":21897,"reg_total_pop":1523457,"reg_com_registo":1112075,"bi_total_pop":1355396,"bi_com_bi":886881,"lit_taxa":90,"lit_homens":94,"lit_mulheres":86,"edu_primario":0,"edu_i_sec":292903,"edu_ii_sec":119370,"edu_superior":25020,"edu_nenhum":0,"agg_total":422673,"agg_electricidade":242070,"agg_gerador":19308,"agg_solar":11480,"agg_eolica":11285,"agg_lanterna":66308,"agg_vela":13483,"agg_lenha":25986,"agg_nenhum":8413,"comb_total":422673,"comb_nao_coz":21976,"comb_elec":23768,"comb_gas":270870,"comb_petroleo":16574,"comb_carvao_veg":46045,"comb_lenha":41853,"san_total":422673,"san_nenhum":144807,"agua_total":422673,"agua_dentro_casa":96781,"agua_quintal":69150,"agua_sem_acesso":256742,"fonte_canalizada":128510,"fonte_poco":149419,"fonte_rio":42863,"hab_total":421666,"hab_vivenda":61999,"hab_convencional":263734,"hab_apartamento":33131,"hab_cubata":21193,"hab_barraca":41527,"par_total":421666,"par_pedra":6729,"par_cimento":319349,"par_tijolo":2246,"par_adobe":7250,"par_madeira":303,"par_zinco":51708,"par_pauapique":3321,"par_outro":30760,"tec_total":421666,"tec_betao":1975,"tec_telha":27345,"tec_lusalite":25507,"tec_zinco":305406,"tec_capim":3614,"piso_total":421666,"piso_cimento":101992,"piso_ceramica":208079,"piso_madeira":108024,"piso_terra":2364},{"provincia":"Moxico Leste","pop_total":411074,"pop_homens":280847,"pop_mulheres":293405,"pop_urbana":218935,"pop_rural":192140,"idade_0_14":235549,"idade_15_64":318787,"idade_65mais":19917,"civil_solteiro":127482,"civil_casado":105799,"civil_separado":6681,"civil_divorciado":1000,"civil_viuvo":3856,"reg_total_pop":411074,"reg_com_registo":206748,"bi_total_pop":341859,"bi_com_bi":131750,"lit_taxa":40,"lit_homens":51,"lit_mulheres":31,"edu_primario":19801,"edu_i_sec":40693,"edu_ii_sec":11181,"edu_superior":841,"edu_nenhum":17576,"agg_total":93784,"agg_electricidade":8047,"agg_gerador":3014,"agg_solar":2703,"agg_eolica":2483,"agg_lanterna":63742,"agg_vela":2826,"agg_lenha":3203,"agg_nenhum":5623,"comb_total":139394,"comb_nao_coz":4728,"comb_elec":4269,"comb_gas":37199,"comb_petroleo":3188,"comb_carvao_veg":41551,"comb_lenha":48119,"san_total":139394,"san_nenhum":96247,"agua_total":93784,"agua_dentro_casa":12935,"agua_quintal":24891,"agua_sem_acesso":101568,"fonte_canalizada":9005,"fonte_poco":2562,"fonte_rio":11467,"hab_total":93740,"hab_vivenda":8561,"hab_convencional":63181,"hab_apartamento":18,"hab_cubata":21625,"hab_barraca":352,"par_total":93740,"par_pedra":438,"par_cimento":19002,"par_tijolo":494,"par_adobe":64155,"par_madeira":98,"par_zinco":842,"par_pauapique":4796,"par_outro":3915,"tec_total":139195,"tec_betao":9,"tec_telha":4745,"tec_lusalite":4606,"tec_zinco":101043,"tec_capim":19588,"piso_total":139195,"piso_cimento":33143,"piso_ceramica":87666,"piso_madeira":11657,"piso_terra":625},{"provincia":"Cuando ","pop_total":138770,"pop_homens":70751,"pop_mulheres":68019,"pop_urbana":51501,"pop_rural":87269,"idade_0_14":58182,"idade_15_64":74833,"idade_65mais":5755,"civil_solteiro":49311,"civil_casado":35878,"civil_separado":1725,"civil_divorciado":225,"civil_viuvo":1269,"reg_total_pop":138770,"reg_com_registo":76812,"bi_total_pop":116047,"bi_com_bi":59108,"lit_taxa":43,"lit_homens":51,"lit_mulheres":35,"edu_primario":8157,"edu_i_sec":10753,"edu_ii_sec":4316,"edu_superior":299,"edu_nenhum":9783,"agg_total":35852,"agg_electricidade":7012,"agg_gerador":696,"agg_solar":646,"agg_eolica":375,"agg_lanterna":18117,"agg_vela":447,"agg_lenha":641,"agg_nenhum":5855,"comb_total":35852,"comb_nao_coz":1957,"comb_elec":842,"comb_gas":3867,"comb_petroleo":508,"comb_carvao_veg":2708,"comb_lenha":25797,"san_total":35852,"san_nenhum":20425,"agua_total":35852,"agua_dentro_casa":3167,"agua_quintal":5933,"agua_sem_acesso":26753,"fonte_canalizada":7600,"fonte_poco":18,"fonte_rio":3567,"hab_total":35834,"hab_vivenda":1474,"hab_convencional":15323,"hab_apartamento":7,"hab_cubata":18575,"hab_barraca":453,"par_total":35834,"par_pedra":90,"par_cimento":3616,"par_tijolo":73,"par_adobe":10240,"par_madeira":24,"par_zinco":596,"par_pauapique":17087,"par_outro":4109,"tec_total":35834,"tec_betao":1,"tec_telha":736,"tec_lusalite":756,"tec_zinco":16672,"tec_capim":15419,"piso_total":35834,"piso_cimento":29636,"piso_ceramica":2998,"piso_madeira":1275,"piso_terra":175}]
+      ;
+
+    // ═══════════ PIRÂMIDE ETÁRIA NACIONAL ═══════════
+    const PIR = {
+      g: ['95+', '90–94', '85–89', '80–84', '75–79', '70–74', '65–69', '60–64', '55–59', '50–54', '45–49', '40–44', '35–39', '30–34', '25–29', '20–24', '15–19', '10–14', '5–9', '0–4'],
+      h: [4092, 7607, 13403, 99030, 121625, 184702, 245545, 315232, 369448, 493325, 630605, 755533, 942602, 1162619, 1380945, 1702930, 2105820, 2397273, 2425429, 2574220],
+      m: [9702, 14430, 25268, 119995, 142053, 208924, 269684, 348025, 399497, 513386, 669654, 770363, 1002674, 1212879, 1482849, 1879621, 2200796, 2399533, 2420932, 2582429]
+    };
+
+    // ═══════════ UTILS ═══════════
+    const ri = v => Math.round(v || 0);
+    const fm = n => ri(n).toLocaleString('pt-PT');
+    const pc = (a, b, d = 1) => b ? ((a / b) * 100).toFixed(d) : '0';
+    const sm = (k) => D.reduce((s, p) => s + (p[k] || 0), 0);
+
+    // ═══════════ TOTAIS NACIONAIS ═══════════
+    const TOT = sm('pop_total'), TOT_H = sm('pop_homens'), TOT_M = sm('pop_mulheres');
+    const TOT_U = sm('pop_urbana'), TOT_R = sm('pop_rural');
+    const TOT_014 = sm('idade_0_14'), TOT_1564 = sm('idade_15_64'), TOT_65 = sm('idade_65mais');
+    const TOT_A = sm('agg_total'), TOT_E = sm('agg_electricidade');
+    const TOT_AG = sm('agua_total'), TOT_SAG = sm('agua_sem_acesso');
+    const TOT_ST = sm('san_total'), TOT_SN = sm('san_nenhum');
+    const TOT_RP = sm('reg_total_pop'), TOT_RC = sm('reg_com_registo');
+    const TOT_BP = sm('bi_total_pop'), TOT_BC = sm('bi_com_bi');
+    const NAT_LIT = D.reduce((s, p) => s + p.lit_taxa * p.pop_total, 0) / TOT;
+    const EF = p => p.edu_i_sec > 0;
+    const E = {
+      prim: D.filter(EF).reduce((s, p) => s + (p.edu_primario || 0), 0),
+      isec: D.filter(EF).reduce((s, p) => s + (p.edu_i_sec || 0), 0),
+      iisec: D.filter(EF).reduce((s, p) => s + (p.edu_ii_sec || 0), 0),
+      sup: D.filter(EF).reduce((s, p) => s + (p.edu_superior || 0), 0),
+      nen: D.filter(EF).reduce((s, p) => s + (p.edu_nenhum || 0), 0)
+    };
+    const ET = Object.values(E).reduce((s, v) => s + v, 0);
+    const HAB = { viv: sm('hab_vivenda'), con: sm('hab_convencional'), apt: sm('hab_apartamento'), cub: sm('hab_cubata'), bar: sm('hab_barraca') };
+    const HT = Object.values(HAB).reduce((s, v) => s + v, 0);
+    const ILM = { elec: TOT_E, ger: sm('agg_gerador'), sol: sm('agg_solar'), eol: sm('agg_eolica'), lan: sm('agg_lanterna'), vel: sm('agg_vela'), len: sm('agg_lenha'), nen: sm('agg_nenhum') };
+    const IT = Object.values(ILM).reduce((s, v) => s + v, 0);
+    const CV = { sol: sm('civil_solteiro'), cas: sm('civil_casado'), sep: sm('civil_separado'), div: sm('civil_divorciado'), viu: sm('civil_viuvo') };
+    const CVT = Object.values(CV).reduce((s, v) => s + v, 0);
+    const CM = { gas: sm('comb_gas'), elec: sm('comb_elec'), len: sm('comb_lenha'), car: sm('comb_carvao_veg'), pet: sm('comb_petroleo'), nao: sm('comb_nao_coz') };
+    const CMT = Object.values(CM).reduce((s, v) => s + v, 0);
+    const PAR = { cim: sm('par_cimento'), ado: sm('par_adobe'), pau: sm('par_pauapique'), tij: sm('par_tijolo'), zin: sm('par_zinco'), mad: sm('par_madeira'), ped: sm('par_pedra'), out: sm('par_outro') };
+    const PT = Object.values(PAR).reduce((s, v) => s + v, 0);
+    const TEC = { zin: sm('tec_zinco'), lus: sm('tec_lusalite'), tel: sm('tec_telha'), cap: sm('tec_capim'), bet: sm('tec_betao') };
+    const TT = Object.values(TEC).reduce((s, v) => s + v, 0);
+    const PSO = { cer: sm('piso_ceramica'), cim: sm('piso_cimento'), mad: sm('piso_madeira'), ter: sm('piso_terra') };
+    const PST = Object.values(PSO).reduce((s, v) => s + v, 0);
+    const AGF = { can: sm('fonte_canalizada'), poc: sm('fonte_poco'), rio: sm('fonte_rio') };
+    const AGFT = Object.values(AGF).reduce((s, v) => s + v, 0);
+
+    document.getElementById('hTot').textContent = (TOT / 1e6).toFixed(1) + 'M';
+
+    // ═══════════ CORES E OPÇÕES ═══════════
+    const C = { r: '#C0392B', g: '#B8860B', t: '#1A6E52', b: '#2459A0', ink: '#16120E', i5: '#7A736B', i2: '#D5CFC8' };
+    const TIP = { backgroundColor: C.ink, titleFont: { family: "'DM Sans',sans-serif", size: 11, weight: '600' }, bodyFont: { family: "'DM Sans',sans-serif", size: 11 }, padding: 10, cornerRadius: 6 };
+    const TICK = { font: { family: "'DM Mono',monospace", size: 10 }, color: C.i5 };
+    const GRID = { color: 'rgba(22,18,14,.05)' };
+    const doOpts = (pos = 'bottom') => ({
+      responsive: true, maintainAspectRatio: false, cutout: '60%',
+      plugins: { legend: { display: true, position: pos, labels: { font: { family: "'DM Sans',sans-serif", size: 10 }, color: C.i5, padding: 10, usePointStyle: true, pointStyleWidth: 6 } }, tooltip: TIP }
+    });
+    const baBase = { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: TIP }, scales: { x: { grid: GRID, ticks: TICK }, y: { grid: GRID, ticks: TICK } } };
+
+    // ═══════════ KPI STRIP ═══════════
+    const KDATA = [
+      { ic: 'ir', v: (TOT / 1e6).toFixed(1) + 'M', l: 'População Recenseada<br>21 Províncias · Censo 2024', t: 'tn', ts: 'Oficial' },
+      { ic: 'ig', v: pc(TOT_M, TOT) + '%', l: 'Mulheres · ' + pc(TOT_H, TOT) + '% Homens<br>Distribuição por Sexo', t: 'tn', ts: 'Género' },
+      { ic: 'ig', v: pc(TOT_U, TOT_U + TOT_R) + '%', l: 'Zona Urbana<br>' + pc(TOT_R, TOT_U + TOT_R) + '% Zona Rural', t: 'tu', ts: '▲ Urbanização' },
+      { ic: 'ir', v: pc(TOT_014, TOT) + '%', l: 'Têm Menos de 15 Anos<br>Pop. jovem — 0 a 14 anos', t: 'tn', ts: 'Jovens' },
+      { ic: 'ig', v: pc(TOT_65, TOT) + '%', l: 'Têm 65 ou Mais Anos<br>Pop. idosa — 65+ anos', t: 'tn', ts: 'Idosos' },
+      { ic: 'it', v: NAT_LIT.toFixed(0) + '%', l: 'Taxa Média de Literacia<br>Pop. ≥15 anos (ponderada)', t: 'tn', ts: 'Nacional' },
+      { ic: 'ib2', v: pc(TOT_E, TOT_A) + '%', l: 'Agregados c/ Electricidade<br>da Rede Pública · Censo 2024', t: TOT_E / TOT_A > .5 ? 'tu' : 'td', ts: (TOT_E / TOT_A > .5 ? '▲' : '▼') + ' Acesso' },
+      { ic: 'ir', v: pc(TOT_SAG, TOT_AG) + '%', l: 'Sem Acesso à Água da Rede<br>Agregados Familiares', t: 'td', ts: '▼ Meta' },
+      { ic: 'ir', v: pc(TOT_SN, TOT_ST) + '%', l: 'Sem Sanitário · Ar Livre<br>Agregados Familiares', t: 'td', ts: '▼ Meta' },
+      { ic: 'ig', v: pc(CM.gas, CMT) + '%', l: 'Usam Gás para Cozinhar<br>Agregados Familiares', t: 'tu', ts: '▲ Moderno' },
+      { ic: 'ir', v: pc(CM.len, CMT) + '%', l: 'Usam Lenha para Cozinhar<br>Agregados Familiares', t: 'td', ts: '▼ Meta' },
+      { ic: 'it', v: pc(TOT_RC, TOT_RP) + '%', l: 'Com Registo de Nascimento<br>Média Nacional', t: 'tn', ts: 'Registo Civil' },
+      { ic: 'ig', v: pc(TOT_BC, TOT_BP) + '%', l: 'Com Bilhete de Identidade<br>Pop. ≥5 anos', t: 'tn', ts: 'BI' },
+      { ic: 'ib2', v: pc(E.sup, ET) + '%', l: 'Ensino Superior Concluído<br>Pop. ≥18 anos com dados', t: 'tn', ts: 'Educação' },
+    ];
+    const SVG0 = '<svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4"/></svg>';
+    document.getElementById('kstrip').innerHTML = KDATA.map(k =>
+      `<div class="kp"><div class="ki ${k.ic}">${SVG0}</div><p class="kv">${k.v}</p><p class="kl">${k.l}</p><span class="kt ${k.t}">${k.ts}</span></div>`
+    ).join('');
+
+    // ═══════════ GRÁFICOS NACIONAIS ═══════════
+    // Pirâmide
+    const pT = PIR.h.reduce((s, v) => s + v, 0) + PIR.m.reduce((s, v) => s + v, 0);
+    new Chart(document.getElementById('cPyr'), {
+      type: 'bar', data: {
+        labels: PIR.g, datasets: [
+          { label: 'Mulheres', indexAxis: 'y', data: PIR.m.map(v => -(v / pT * 100)), backgroundColor: C.r + 'BB', borderRadius: 2 },
+          { label: 'Homens', indexAxis: 'y', data: PIR.h.map(v => v / pT * 100), backgroundColor: C.ink + 'BB', borderRadius: 2 }
+        ]
+      }, options: { ...baBase, indexAxis: 'y', plugins: { ...baBase.plugins, legend: { display: true, position: 'bottom', labels: { font: { family: "'DM Sans',sans-serif", size: 11 }, color: C.i5, padding: 12, usePointStyle: true, pointStyleWidth: 6 } }, tooltip: { ...TIP, callbacks: { label: ctx => `${ctx.dataset.label}: ${Math.abs(ctx.parsed.x).toFixed(2)}%` } } }, scales: { x: { ...baBase.scales.x, ticks: { ...TICK, callback: v => Math.abs(v).toFixed(1) + '%' } }, y: { ...baBase.scales.y, grid: { display: false } } } }
+    });
+
+    // Helper: donut
+    function mkDon(id, labels, data, colors, pos = 'bottom') {
+      return new Chart(document.getElementById(id), { type: 'doughnut', data: { labels, datasets: [{ data, backgroundColor: colors, borderColor: '#fff', borderWidth: 2, hoverOffset: 5 }] }, options: doOpts(pos) });
+    }
+    // Helper: bar
+    function mkBar(id, labels, data, colors, pctSuffix = false) {
+      return new Chart(document.getElementById(id), { type: 'bar', data: { labels, datasets: [{ data, backgroundColor: colors, borderRadius: 4, borderSkipped: false }] }, options: { ...baBase, plugins: { ...baBase.plugins, tooltip: { ...TIP, callbacks: { label: ctx => ctx.parsed.y + (pctSuffix ? '%' : '') } } }, scales: { x: { ...baBase.scales.x, grid: { display: false } }, y: { ...baBase.scales.y, ticks: { ...TICK, callback: v => v + (pctSuffix ? '%' : '') } } } } });
+    }
+
+    mkDon('cSexo', ['Homens', 'Mulheres'], [+pc(TOT_H, TOT), +pc(TOT_M, TOT)], [C.ink, C.r]);
+    mkDon('cUrb', ['Urbana', 'Rural'], [+pc(TOT_U, TOT_U + TOT_R), +pc(TOT_R, TOT_U + TOT_R)], [C.r, C.i2]);
+    mkDon('cReg', ['c/ Registo', 'Sem Registo'], [+pc(TOT_RC, TOT_RP), +(100 - TOT_RC / TOT_RP * 100).toFixed(1)], [C.t, '#E4F3EE']);
+    mkDon('cBI', ['c/ BI', 'Sem BI'], [+pc(TOT_BC, TOT_BP), +(100 - TOT_BC / TOT_BP * 100).toFixed(1)], [C.b, '#EAF0FB']);
+
+    // Top 10
+    const top10 = [...D].sort((a, b) => b.pop_total - a.pop_total).slice(0, 10);
+    new Chart(document.getElementById('cBar'), { type: 'bar', data: { labels: top10.map(p => p.provincia), datasets: [{ data: top10.map(p => +(p.pop_total / 1e6).toFixed(3)), backgroundColor: top10.map((_, i) => C.r + Math.round(200 * (1 - i / 12)).toString(16).padStart(2, '0')), borderRadius: 4, borderSkipped: false }] }, options: { ...baBase, plugins: { ...baBase.plugins, tooltip: { ...TIP, callbacks: { label: ctx => ctx.parsed.y.toFixed(3) + 'M hab.' } } }, scales: { x: { ...baBase.scales.x, grid: { display: false } }, y: { ...baBase.scales.y, ticks: { ...TICK, callback: v => v.toFixed(1) + 'M' } } } } });
+
+    // Habitação
+    mkDon('cHab', ['Vivenda', 'Convencional', 'Apartamento', 'Cubata', 'Barraca'], [HAB.viv, HAB.con, HAB.apt, HAB.cub, HAB.bar].map(v => +pc(v, HT)), [C.g, C.ink + 'AA', C.b, C.r + '99', C.i2]);
+    // Iluminação
+    mkDon('cIlum', ['Electricidade', 'Gerador', 'Solar', 'Eólica', 'Lanterna', 'Vela', 'Lenha', 'Nenhum'], [ILM.elec, ILM.ger, ILM.sol, ILM.eol, ILM.lan, ILM.vel, ILM.len, ILM.nen].map(v => +pc(v, IT)), [C.t, C.g, C.b, '#9B59B6', C.r + 'BB', C.r + '66', C.r + '33', C.i2]);
+    // Água
+    mkDon('cAgua', ['Dentro de Casa', 'No Quintal', 'Sem Acesso'], [sm('agua_dentro_casa'), sm('agua_quintal'), TOT_SAG].map(v => +pc(v, TOT_AG)), [C.t, C.g, C.r]);
+    mkDon('cFonte', ['Canalizada', 'Poço/Furo', 'Rio/Lago'], [AGF.can, AGF.poc, AGF.rio].map(v => +pc(v, AGFT)), [C.t, C.b, C.r]);
+    mkDon('cSan', ['c/ Sanitário', 'Sem Sanitário'], [+(100 - TOT_SN / TOT_ST * 100).toFixed(1), +pc(TOT_SN, TOT_ST)], [C.t, C.r]);
+    // Combustível
+    mkDon('cComb', ['Gás', 'Electricidade', 'Lenha', 'Carvão Veg.', 'Petróleo', 'Não Cozinha'], [CM.gas, CM.elec, CM.len, CM.car, CM.pet, CM.nao].map(v => +pc(v, CMT)), [C.b, C.t, C.r, C.g, '#8E44AD', C.i2]);
+    // Paredes
+    mkDon('cPar', ['Cimento/Bloco', 'Adobe', 'Pau-a-pique', 'Tijolo', 'Zinco', 'Madeira', 'Pedra', 'Outro'], [PAR.cim, PAR.ado, PAR.pau, PAR.tij, PAR.zin, PAR.mad, PAR.ped, PAR.out].map(v => +pc(v, PT)), [C.t, C.g, C.r, C.b, '#8E44AD', C.g + '99', C.i5, C.i2]);
+    // Tecto
+    mkDon('cTec', ['Zinco', 'Lusalite', 'Telha', 'Capim/Palha', 'Placa Betão'], [TEC.zin, TEC.lus, TEC.tel, TEC.cap, TEC.bet].map(v => +pc(v, TT)), [C.r, C.g, C.t, C.i2, C.b]);
+    // Piso
+    mkDon('cPiso', ['Cerâmica', 'Cimento', 'Madeira', 'Terra Batida'], [PSO.cer, PSO.cim, PSO.mad, PSO.ter].map(v => +pc(v, PST)), [C.t, C.g, C.b, C.r]);
+    // Estado Civil
+    mkDon('cCivil', ['Solteiro(a)', 'Casado(a)/União', 'Separado(a)', 'Divorciado(a)', 'Viúvo(a)'], [CV.sol, CV.cas, CV.sep, CV.div, CV.viu].map(v => +pc(v, CVT)), [C.ink + 'AA', C.r, C.g, C.b, C.i2]);
+    // Idade
+    mkDon('cIdade', ['0–14 anos', '15–64 anos', '65+ anos'], [+pc(TOT_014, TOT), +pc(TOT_1564, TOT), +pc(TOT_65, TOT)], [C.r, C.ink + 'AA', C.g]);
+    // Educação bar
+    mkBar('cEdu', ['Primário', 'I Ciclo Sec.', 'II Ciclo Sec.', 'Superior', 'Nenhum'], [E.prim, E.isec, E.iisec, E.sup, E.nen].map(v => +pc(v, ET)), [C.ink + '33', C.ink + '66', C.ink + '99', C.r, C.g], true);
+    // Literacia género
+    const litS = [...D].sort((a, b) => b.lit_taxa - a.lit_taxa);
+    new Chart(document.getElementById('cLitG'), {
+      type: 'bar', data: {
+        labels: litS.map(p => p.provincia.length > 9 ? p.provincia.slice(0, 9) + '…' : p.provincia), datasets: [
+          { label: 'Homens', data: litS.map(p => p.lit_homens || 0), backgroundColor: C.ink + '88', borderRadius: 2, borderSkipped: false },
+          { label: 'Mulheres', data: litS.map(p => p.lit_mulheres || 0), backgroundColor: C.r + '88', borderRadius: 2, borderSkipped: false }
+        ]
+      }, options: { ...baBase, plugins: { ...baBase.plugins, legend: { display: true, position: 'bottom', labels: { font: { family: "'DM Sans',sans-serif", size: 10 }, color: C.i5, padding: 10, usePointStyle: true, pointStyleWidth: 6 } } }, scales: { x: { ...baBase.scales.x, grid: { display: false }, ticks: { ...TICK, maxRotation: 45, font: { family: "'DM Mono',monospace", size: 9 } } }, y: { ...baBase.scales.y, ticks: { ...TICK, callback: v => v + '%' } } } }
+    });
+
+    // ═══════════ BAR LISTS ═══════════
+    function mkBars(elId, arr, valFn, lblFn, colFn) {
+      const el = document.getElementById(elId); if (!el) return;
+      const srt = [...arr].sort((a, b) => valFn(b) - valFn(a));
+      el.innerHTML = srt.map(p => {
+        const v = valFn(p); if (v === null || v === undefined) return '';
+        const isNum = v > 999;
+        const maxV = valFn(srt[0]) || 1;
+        const w = isNum ? (v / maxV * 100).toFixed(1) : Math.min(v, 100).toFixed(1);
+        const disp = isNum ? fm(v) : v.toFixed(1) + '%';
+        return `<div class="lr"><span class="ll">${lblFn(p)}</span><div class="lb"><div class="lf" style="width:${w}%;background:${colFn(v)}"></div></div><span class="lv">${disp}</span></div>`;
+      }).join('');
+    }
+    mkBars('bLit', D, p => p.lit_taxa, p => p.provincia, v => v >= 80 ? C.t : v >= 60 ? C.r : C.g);
+    mkBars('bElec', D, p => p.agg_total ? +pc(p.agg_electricidade, p.agg_total) : 0, p => p.provincia, v => v >= 70 ? C.t : v >= 40 ? C.g : C.r);
+    mkBars('bSan', D, p => p.san_total ? +pc(p.san_nenhum, p.san_total) : 0, p => p.provincia, v => v >= 60 ? C.r : v >= 30 ? C.g : C.t);
+    mkBars('bLenha', D, p => p.comb_total ? +pc(p.comb_lenha, p.comb_total) : 0, p => p.provincia, v => v >= 50 ? C.r : v >= 25 ? C.g : C.t);
+    mkBars('bHabQ', D, p => p.hab_total ? +pc(p.hab_cubata + p.hab_barraca, p.hab_total) : 0, p => p.provincia, v => v >= 40 ? C.r : v >= 20 ? C.g : C.t);
+    mkBars('bPiso', D, p => p.piso_terra || 0, p => p.provincia, _ => C.r);
+
+    // ═══════════ WAFFLE ═══════════
+    const WD = [{ l: 'I Ciclo Sec.', v: E.isec, c: C.g }, { l: 'II Ciclo Sec.', v: E.iisec, c: C.t }, { l: 'Primário', v: E.prim, c: C.r }, { l: 'Nenhum', v: E.nen, c: C.i5 }, { l: 'Superior', v: E.sup, c: C.b }];
+    const WT = WD.reduce((s, d) => s + d.v, 0);
+    WD.forEach(d => {
+      d.pct = d.v / WT * 100; d.blk = Math.round(d.pct / 0.5);
+      for (let i = 0; i < d.blk; i++) { const c = document.createElement('div'); c.className = 'wc'; c.style.background = d.c; c.title = `${d.l}: ${d.pct.toFixed(1)}%`; document.getElementById('waffle').appendChild(c); }
+      document.getElementById('wleg').innerHTML += `<div class="wi"><span class="wsw" style="background:${d.c}"></span><span>${d.l}</span><span class="wp">${d.pct.toFixed(1)}%</span></div>`;
+    });
+
+    // ═══════════ TABELA ═══════════
+    const sortedD = [...D].sort((a, b) => b.pop_total - a.pop_total);
+    const maxP = sortedD[0].pop_total;
+    sortedD.forEach((p, i) => {
+      const uP = +pc(p.pop_urbana, p.pop_urbana + p.pop_rural);
+      const eP = +pc(p.agg_electricidade, p.agg_total);
+      const saP = +pc(p.agua_sem_acesso, p.agua_total);
+      const snP = p.san_total ? +pc(p.san_nenhum, p.san_total) : 0;
+      const mP = +pc(p.pop_mulheres, p.pop_total);
+      const jP = +pc(p.idade_0_14, p.pop_total);
+      const idP = +pc(p.idade_65mais, p.pop_total);
+      const rgP = +pc(p.reg_com_registo, p.reg_total_pop);
+      const biP = +pc(p.bi_com_bi, p.bi_total_pop);
+      const bw = (p.pop_total / maxP * 110).toFixed(0);
+      document.getElementById('tbd').innerHTML += `<tr>
+    <td><span class="rk">${i + 1}</span></td>
+    <td><strong>${p.provincia}</strong></td>
+    <td class="mo">${fm(p.pop_total)}</td>
+    <td><div class="bc"><div class="bi2" style="width:${bw}px"></div><span class="pc">${pc(p.pop_total, TOT)}%</span></div></td>
+    <td class="mo">${mP}%</td>
+    <td class="mo ${uP > 70 ? 'pu' : uP < 38 ? 'pd' : 'pm'}">${uP}%</td>
+    <td class="mo">${jP}%</td>
+    <td class="mo">${idP}%</td>
+    <td class="mo ${p.lit_taxa >= 80 ? 'pu' : p.lit_taxa < 55 ? 'pd' : 'pm'}">${p.lit_taxa}%</td>
+    <td class="mo ${eP > 70 ? 'pu' : eP < 35 ? 'pd' : 'pm'}">${eP}%</td>
+    <td class="mo ${saP > 60 ? 'pd' : saP < 25 ? 'pu' : 'pm'}">${saP}%</td>
+    <td class="mo ${snP > 50 ? 'pd' : snP < 15 ? 'pu' : 'pm'}">${snP}%</td>
+    <td class="mo ${rgP > 75 ? 'pu' : rgP < 50 ? 'pd' : 'pm'}">${rgP}%</td>
+    <td class="mo ${biP > 70 ? 'pu' : biP < 40 ? 'pd' : 'pm'}">${biP}%</td>
+  </tr>`;
+    });
+    document.getElementById('tft').innerHTML = `<td></td><td>TOTAL / MÉDIA</td><td class="mo">${fm(TOT)}</td><td></td><td class="mo">${pc(TOT_M, TOT)}%</td><td class="mo">${pc(TOT_U, TOT_U + TOT_R, 0)}%</td><td class="mo">${pc(TOT_014, TOT)}%</td><td class="mo">${pc(TOT_65, TOT)}%</td><td class="mo">${NAT_LIT.toFixed(0)}%</td><td class="mo">${pc(TOT_E, TOT_A)}%</td><td class="mo">${pc(TOT_SAG, TOT_AG)}%</td><td class="mo">${pc(TOT_SN, TOT_ST)}%</td><td class="mo">${pc(TOT_RC, TOT_RP)}%</td><td class="mo">${pc(TOT_BC, TOT_BP)}%</td>`;
+
+    // ═══════════ TABS ═══════════
+    function showTab(btn, tabId) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('act'));
+      document.querySelectorAll('.tp').forEach(t => t.classList.remove('act'));
+      btn.classList.add('act');
+      document.getElementById(tabId).classList.add('act');
+    }
+
+    // ═══════════ PAGE 2 — EXPLORADOR ═══════════
+    let SEL = null, PVC = {};
+    [...D].sort((a, b) => a.provincia.localeCompare(b.provincia, 'pt')).forEach(p => {
+      const b = document.createElement('button');
+      b.className = 'chip'; b.textContent = p.provincia;
+      b.onclick = () => loadProv(p.provincia);
+      document.getElementById('chips').appendChild(b);
+    });
+
+    function loadProv(nome) {
+      const p = D.find(d => d.provincia === nome); if (!p) return;
+      SEL = p;
+      document.querySelectorAll('.chip').forEach(c => c.classList.toggle('sel', c.textContent === nome));
+      const rank = sortedD.findIndex(d => d.provincia === nome) + 1;
+      const uP = pc(p.pop_urbana, p.pop_urbana + p.pop_rural);
+      const eP = pc(p.agg_electricidade, p.agg_total);
+      const rgP = pc(p.reg_com_registo, p.reg_total_pop);
+      const biP = pc(p.bi_com_bi, p.bi_total_pop);
+      const snP = p.san_total ? pc(p.san_nenhum, p.san_total) : '—';
+      const ld = +(p.lit_taxa - NAT_LIT).toFixed(1);
+      const ltag = ld > 0 ? `<span class="vb vu">▲+${ld}pp</span>` : ld < 0 ? `<span class="vb vd">▼${ld}pp</span>` : `<span class="vb ve">=Média</span>`;
+      document.getElementById('pvH').style.display = 'flex';
+      document.getElementById('pvH').innerHTML = `
+    <div>
+      <p class="pn">${p.provincia}</p>
+      <p class="pr">Província de Angola · Posição #${rank} em população · Censo 2024</p>
+    </div>
+    <div class="pk">
+      <div><p class="pkv">${(p.pop_total / 1e6).toFixed(3)}M</p><p class="pkl">Habitantes</p></div>
+      <div><p class="pkv">${uP}%</p><p class="pkl">Urbana</p></div>
+      <div><p class="pkv">${p.lit_taxa}%${ltag}</p><p class="pkl">Literacia</p></div>
+      <div><p class="pkv">${eP}%</p><p class="pkl">c/ Electricidade</p></div>
+      <div><p class="pkv">${snP}%</p><p class="pkl">Sem Sanitário</p></div>
+      <div><p class="pkv">${rgP}%</p><p class="pkl">Registo Nasc.</p></div>
+      <div><p class="pkv">${biP}%</p><p class="pkl">c/ BI</p></div>
+    </div>`;
+
+      // Detail blocks
+      document.getElementById('pvG').style.display = 'grid';
+      const bar = (v, t, c) => `<div class="pb2"><div class="pf2" style="width:${t ? Math.min(v / t * 100, 100).toFixed(1) : 0}%;background:${c}"></div></div>`;
+      const rw = (k, v, t, c = C.r) => `<div class="ir2"><span class="ik">${k}</span><span class="iv">${fm(v)}<span class="ip">(${t ? pc(v, t) : 0}%)</span></span></div>${bar(v, t, c)}`;
+      const cs = p.civil_solteiro + p.civil_casado + p.civil_separado + p.civil_divorciado + p.civil_viuvo;
+
+      document.getElementById('pvG').innerHTML = `
+    <div class="ib c4"><p class="ibt">População</p><p class="ibs">Composição por sexo e área</p>
+      ${rw('Total', p.pop_total, p.pop_total, C.ink)}
+      ${rw('Mulheres', p.pop_mulheres, p.pop_total, C.r)}
+      ${rw('Homens', p.pop_homens || p.pop_total - p.pop_mulheres, p.pop_total, C.ink + '99')}
+      ${rw('Urbana', p.pop_urbana, p.pop_urbana + p.pop_rural, C.t)}
+      ${rw('Rural', p.pop_rural, p.pop_urbana + p.pop_rural, C.g)}
+      ${rw('0–14 anos', p.idade_0_14, p.pop_total, C.r + '99')}
+      ${rw('15–64 anos', p.idade_15_64, p.pop_total, C.ink + '99')}
+      ${rw('65+ anos', p.idade_65mais, p.pop_total, C.g + '99')}
+    </div>
+    <div class="ib c4"><p class="ibt">Literacia e Documentação</p><p class="ibs">Alfabetização e documentos cívicos</p>
+      <div class="ir2"><span class="ik">Literacia Total</span><span class="iv">${p.lit_taxa}%</span></div>${bar(p.lit_taxa, 100, C.t)}
+      <div class="ir2"><span class="ik">Literacia Homens</span><span class="iv">${p.lit_homens || 0}%</span></div>${bar(p.lit_homens || 0, 100, C.ink + '99')}
+      <div class="ir2"><span class="ik">Literacia Mulheres</span><span class="iv">${p.lit_mulheres || 0}%</span></div>${bar(p.lit_mulheres || 0, 100, C.r)}
+      ${rw('c/ Registo de Nascimento', p.reg_com_registo, p.reg_total_pop, C.b)}
+      ${rw('c/ Bilhete de Identidade', p.bi_com_bi, p.bi_total_pop, C.b + '99')}
+    </div>
+    <div class="ib c4"><p class="ibt">Estado Civil</p><p class="ibs">Pop. com 12 ou mais anos</p>
+      ${cs > 0 ? `
+        ${rw('Solteiro(a)', p.civil_solteiro, cs, C.ink + '99')}
+        ${rw('Casado(a) / União de Facto', p.civil_casado, cs, C.r)}
+        ${rw('Separado(a)', p.civil_separado, cs, C.g)}
+        ${rw('Divorciado(a)', p.civil_divorciado, cs, C.b)}
+        ${rw('Viúvo(a)', p.civil_viuvo, cs, C.i5)}
+      `: '<p class="nd">Dados não disponíveis para esta província.</p>'}
+    </div>
+    <div class="ib c4"><p class="ibt">Energia e Iluminação</p><p class="ibs">Agregados familiares</p>
+      ${p.agg_total ? `
+        ${rw('c/ Electricidade da Rede', p.agg_electricidade, p.agg_total, C.t)}
+        ${rw('c/ Gerador', p.agg_gerador, p.agg_total, C.g)}
+        ${rw('c/ Painel Solar', p.agg_solar, p.agg_total, C.b)}
+        ${rw('c/ Eólica', p.agg_eolica, p.agg_total, '#9B59B6')}
+        ${rw('c/ Lanterna', p.agg_lanterna, p.agg_total, C.r + '88')}
+        ${rw('Sem Iluminação', p.agg_nenhum, p.agg_total, C.r)}
+      `: '<p class="nd">Dados não disponíveis.</p>'}
+    </div>
+    <div class="ib c4"><p class="ibt">Água, Fontes e Saneamento</p><p class="ibs">Acesso e tipo de abastecimento</p>
+      ${p.agua_total ? `
+        ${rw('Água Dentro de Casa', p.agua_dentro_casa, p.agua_total, C.t)}
+        ${rw('Água no Quintal', p.agua_quintal, p.agua_total, C.g)}
+        ${rw('Sem Acesso à Rede', p.agua_sem_acesso, p.agua_total, C.r)}
+        ${rw('Fonte Canalizada', p.fonte_canalizada || 0, p.agua_total, C.t)}
+        ${rw('Poço / Furo', p.fonte_poco || 0, p.agua_total, C.b)}
+        ${rw('Rio / Lago', p.fonte_rio || 0, p.agua_total, C.g)}
+        ${p.san_total ? rw('Sem Sanitário / Ar Livre', p.san_nenhum, p.san_total, C.r) : ''}
+      `: '<p class="nd">Dados não disponíveis.</p>'}
+    </div>
+    <div class="ib c4"><p class="ibt">Combustível para Cozinhar</p><p class="ibs">Fonte de energia dos agregados</p>
+      ${p.comb_total ? `
+        ${rw('Gás', p.comb_gas, p.comb_total, C.b)}
+        ${rw('Electricidade', p.comb_elec, p.comb_total, C.t)}
+        ${rw('Lenha', p.comb_lenha, p.comb_total, C.r)}
+        ${rw('Carvão Vegetal', p.comb_carvao_veg, p.comb_total, C.g)}
+        ${rw('Petróleo', p.comb_petroleo, p.comb_total, '#8E44AD')}
+        ${rw('Não Cozinha', p.comb_nao_coz, p.comb_total, C.i5)}
+      `: '<p class="nd">Dados não disponíveis.</p>'}
+    </div>
+    <div class="ib c4"><p class="ibt">Habitação</p><p class="ibs">Tipo de alojamento familiar</p>
+      ${p.hab_total ? `
+        ${rw('Vivenda', p.hab_vivenda, p.hab_total, C.g)}
+        ${rw('Casa Convencional', p.hab_convencional, p.hab_total, C.ink + '99')}
+        ${rw('Apartamento', p.hab_apartamento, p.hab_total, C.b)}
+        ${rw('Cubata', p.hab_cubata, p.hab_total, C.r + '99')}
+        ${rw('Barraca / Casa de Chapa', p.hab_barraca, p.hab_total, C.r)}
+      `: '<p class="nd">Dados não disponíveis.</p>'}
+    </div>
+    <div class="ib c4"><p class="ibt">Paredes Exteriores</p><p class="ibs">Material de construção</p>
+      ${p.par_total ? `
+        ${rw('Cimento / Bloco', p.par_cimento, p.par_total, C.t)}
+        ${rw('Adobe / Tabique', p.par_adobe, p.par_total, C.g)}
+        ${rw('Pau-a-pique', p.par_pauapique, p.par_total, C.r)}
+        ${rw('Tijolo', p.par_tijolo, p.par_total, C.b)}
+        ${rw('Zinco', p.par_zinco, p.par_total, '#8E44AD')}
+        ${rw('Madeira', p.par_madeira, p.par_total, C.g + '99')}
+        ${rw('Pedra', p.par_pedra, p.par_total, C.i5)}
+      `: '<p class="nd">Dados não disponíveis.</p>'}
+    </div>
+    <div class="ib c4"><p class="ibt">Tecto e Piso</p><p class="ibs">Materiais de cobertura e pavimento</p>
+      ${p.tec_total ? `<p style="font-size:.6rem;font-weight:600;color:var(--i5);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.3rem">TECTO</p>
+        ${rw('Zinco', p.tec_zinco, p.tec_total, C.r)}
+        ${rw('Lusalite / Fibrocimento', p.tec_lusalite, p.tec_total, C.g)}
+        ${rw('Telha', p.tec_telha, p.tec_total, C.t)}
+        ${rw('Capim / Palha', p.tec_capim, p.tec_total, C.i5)}
+        ${rw('Placa de Betão', p.tec_betao, p.tec_total, C.b)}
+      `: ''}
+      ${p.piso_total ? `<p style="font-size:.6rem;font-weight:600;color:var(--i5);text-transform:uppercase;letter-spacing:.07em;margin:.5rem 0 .3rem">PISO</p>
+        ${rw('Cerâmica', p.piso_ceramica, p.piso_total, C.t)}
+        ${rw('Cimento', p.piso_cimento, p.piso_total, C.g)}
+        ${rw('Madeira / Soalho', p.piso_madeira, p.piso_total, C.b)}
+        ${rw('Terra Batida', p.piso_terra, p.piso_total, C.r)}
+      `: '<p class="nd">Dados não disponíveis.</p>'}
+    </div>`;
+
+      // Charts prov
+      document.getElementById('pvC').style.display = 'grid';
+      Object.values(PVC).forEach(c => { try { c.destroy() } catch { } });
+      PVC = {};
+
+      if (p.edu_i_sec > 0 || p.edu_primario > 0) {
+        const et2 = p.edu_primario + p.edu_i_sec + p.edu_ii_sec + p.edu_superior + p.edu_nenhum;
+        PVC.edu = mkBar('pvEdu', ['Primário', 'I Ciclo', 'II Ciclo', 'Superior', 'Nenhum'], [p.edu_primario, p.edu_i_sec, p.edu_ii_sec, p.edu_superior, p.edu_nenhum].map(v => +pc(v, et2)), [C.ink + '33', C.ink + '66', C.ink + '99', C.r, C.g], true);
+      } else {
+        const el = document.getElementById('pvEdu');
+        if (el) el.parentElement.innerHTML = '<p class="ct">Educação</p><p class="nd">Dados de educação não disponíveis nesta fonte.</p>';
+        PVC.edu = { destroy: () => { } };
+      }
+      if (p.agg_total) {
+        const it2 = p.agg_electricidade + p.agg_gerador + p.agg_solar + p.agg_eolica + p.agg_lanterna + p.agg_vela + p.agg_lenha + p.agg_nenhum;
+        PVC.ilum = mkDon('pvIlum', ['Electricidade', 'Gerador', 'Solar', 'Eólica', 'Lanterna', 'Vela', 'Lenha', 'Nenhum'], [p.agg_electricidade, p.agg_gerador, p.agg_solar, p.agg_eolica, p.agg_lanterna, p.agg_vela, p.agg_lenha, p.agg_nenhum].map(v => +pc(v, it2)), [C.t, C.g, C.b, '#9B59B6', C.r + 'BB', C.r + '66', C.r + '33', C.i2]);
+        const ht2 = p.hab_vivenda + p.hab_convencional + p.hab_apartamento + p.hab_cubata + p.hab_barraca;
+        PVC.hab = mkDon('pvHab', ['Vivenda', 'Convencional', 'Apartamento', 'Cubata', 'Barraca'], [p.hab_vivenda, p.hab_convencional, p.hab_apartamento, p.hab_cubata, p.hab_barraca].map(v => +pc(v, ht2)), [C.g, C.ink + 'AA', C.b, C.r + '99', C.i2]);
+        PVC.agua = mkDon('pvAgua', ['Dentro de Casa', 'No Quintal', 'Sem Acesso'], [p.agua_dentro_casa, p.agua_quintal, p.agua_sem_acesso].map(v => +pc(v, p.agua_total)), [C.t, C.g, C.r]);
+        if (p.comb_total) {
+          const ct2 = p.comb_gas + p.comb_elec + p.comb_lenha + p.comb_carvao_veg + p.comb_petroleo + p.comb_nao_coz;
+          PVC.comb = mkDon('pvComb', ['Gás', 'Electricidade', 'Lenha', 'Carvão', 'Petróleo', 'Não Cozinha'], [p.comb_gas, p.comb_elec, p.comb_lenha, p.comb_carvao_veg, p.comb_petroleo, p.comb_nao_coz].map(v => +pc(v, ct2)), [C.b, C.t, C.r, C.g, '#8E44AD', C.i2]);
+        } else PVC.comb = { destroy: () => { } };
+        if (p.par_total && p.tec_total) {
+          PVC.mat = new Chart(document.getElementById('pvMat'), {
+            type: 'bar', data: {
+              labels: ['Cimento', 'Adobe', 'Pau-pique', 'Tijolo', 'Zinco/Tecto', 'Lusalite', 'Telha', 'Capim'], datasets: [
+                { label: 'Paredes %', data: [p.par_cimento, p.par_adobe, p.par_pauapique, p.par_tijolo, 0, 0, 0, 0].map(v => +pc(v, p.par_total)), backgroundColor: C.r + '99', borderRadius: 2, borderSkipped: false },
+                { label: 'Tecto %', data: [0, 0, 0, 0, p.tec_zinco, p.tec_lusalite, p.tec_telha, p.tec_capim].map(v => +pc(v, p.tec_total)), backgroundColor: C.b + '99', borderRadius: 2, borderSkipped: false }
+              ]
+            }, options: { ...baBase, plugins: { ...baBase.plugins, legend: { display: true, position: 'bottom', labels: { font: { family: "'DM Sans',sans-serif", size: 10 }, color: C.i5, padding: 10, usePointStyle: true, pointStyleWidth: 6 } } }, scales: { x: { ...baBase.scales.x, grid: { display: false }, ticks: { ...TICK, maxRotation: 40, font: { family: "'DM Mono',monospace", size: 9 } } }, y: { ...baBase.scales.y, ticks: { ...TICK, callback: v => v + '%' } } } }
+          });
+        } else PVC.mat = { destroy: () => { } };
+        if (p.piso_total) {
+          const pt2 = p.piso_ceramica + p.piso_cimento + p.piso_madeira + p.piso_terra;
+          PVC.piso = mkDon('pvPiso', ['Cerâmica', 'Cimento', 'Madeira', 'Terra Batida'], [p.piso_ceramica, p.piso_cimento, p.piso_madeira, p.piso_terra].map(v => +pc(v, pt2)), [C.t, C.g, C.b, C.r]);
+        } else PVC.piso = { destroy: () => { } };
+        PVC.idade = mkDon('pvIdade', ['0–14 anos', '15–64 anos', '65+ anos'], [+pc(p.idade_0_14, p.pop_total), +pc(p.idade_15_64, p.pop_total), +pc(p.idade_65mais, p.pop_total)], [C.r, C.ink + 'AA', C.g]);
+      } else {
+        ['pvIlum', 'pvHab', 'pvAgua', 'pvComb', 'pvMat', 'pvPiso', 'pvIdade'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.parentElement.innerHTML = '<p class="nd">Dados não disponíveis.</p>';
+          PVC[id] = { destroy: () => { } };
+        });
+      }
+      document.getElementById('pvH').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    // ═══════════ PAGE SWITCH ═══════════
+    // ══ HERO BANNER SLIDESHOW ══
+    const HERO_SLIDES = [
+      { tag: 'Pessoas e Famílias', title: '36,6 Milhões<br>de Angolanos Recenseados', bg: 'hBg0' },
+      { tag: 'Urbanização', title: '65,7% da População<br>em Zona Urbana', bg: 'hBg1' },
+      { tag: 'Educação e Juventude', title: '44,6% com Menos<br>de 15 Anos de Idade', bg: 'hBg2' }
+    ];
+    let heroCur = 0, heroTimer = null, heroProgress = 0, heroProgTimer = null;
+    const HERO_DUR = 6000;
+
+    function heroGo(idx) {
+      if (idx === heroCur) return;
+      heroCur = idx;
+      const bgs = [document.getElementById('hBg0'), document.getElementById('hBg1'), document.getElementById('hBg2')];
+      bgs.forEach((el, i) => {
+        if (!el) return;
+        el.style.opacity = i === idx ? '1' : '0';
+        el.style.position = i === idx ? 'relative' : 'absolute';
+      });
+      const s = HERO_SLIDES[idx];
+      const tagEl = document.getElementById('hSlideTag');
+      const titEl = document.getElementById('hSlideTitle');
+      if (tagEl) tagEl.textContent = s.tag;
+      if (titEl) titEl.innerHTML = s.title;
+      for (let i = 0; i < 3; i++) {
+        const el = document.getElementById('ht' + i);
+        if (el) el.classList.toggle('ht-act', i === idx);
+      }
+      heroProgress = 0;
+      clearInterval(heroProgTimer);
+      startHeroProgress();
+      clearTimeout(heroTimer);
+      heroTimer = setTimeout(() => heroGo((heroCur + 1) % 3), HERO_DUR);
+    }
+
+    function startHeroProgress() {
+      const bar = document.getElementById('hProg');
+      const step = 50;
+      heroProgTimer = setInterval(() => {
+        heroProgress += (step / HERO_DUR) * 100;
+        if (heroProgress >= 100) { heroProgress = 100; clearInterval(heroProgTimer); }
+        if (bar) bar.style.width = heroProgress + '%';
+      }, step);
+    }
+
+    (function initHero() {
+      const hero = document.querySelector('.hero');
+      if (!hero) return;
+      hero.addEventListener('mouseenter', () => { clearTimeout(heroTimer); clearInterval(heroProgTimer); });
+      hero.addEventListener('mouseleave', () => {
+        startHeroProgress();
+        heroTimer = setTimeout(() => heroGo((heroCur + 1) % 3), HERO_DUR * (1 - heroProgress / 100));
+      });
+      startHeroProgress();
+      heroTimer = setTimeout(() => heroGo(1), HERO_DUR);
+    })();
+
+    function goPage(id, btn) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('act'));
+      document.querySelectorAll('.nb').forEach(b => b.classList.remove('act'));
+      document.getElementById('page-' + id).classList.add('act');
+      btn.classList.add('act');
+    }
+
+    // ═══════════ EXCEL EXPORT ═══════════
+    function exportAll() {
+      const wb = XLSX.utils.book_new();
+      const res = [['CENSO 2024 — ANGOLA — INE — RESUMO NACIONAL'], [''],
+      ['Indicador', 'Valor', '%'],
+      ['Pop. Total', ri(TOT), '100'], ['Mulheres', ri(TOT_M), +pc(TOT_M, TOT)], ['Homens', ri(TOT_H), +pc(TOT_H, TOT)],
+      ['Zona Urbana', ri(TOT_U), +pc(TOT_U, TOT_U + TOT_R)], ['Zona Rural', ri(TOT_R), +pc(TOT_R, TOT_U + TOT_R)],
+      ['0-14 anos', ri(TOT_014), +pc(TOT_014, TOT)], ['15-64 anos', ri(TOT_1564), +pc(TOT_1564, TOT)], ['65+ anos', ri(TOT_65), +pc(TOT_65, TOT)],
+      ['Taxa Média Literacia', NAT_LIT.toFixed(1) + '%', ''],
+      ['Agg. c/ Electricidade', ri(TOT_E), +pc(TOT_E, TOT_A)], ['Sem Água da Rede', ri(TOT_SAG), +pc(TOT_SAG, TOT_AG)],
+      ['Sem Sanitário', ri(TOT_SN), +pc(TOT_SN, TOT_ST)], ['Com Registo Nasc.', ri(TOT_RC), +pc(TOT_RC, TOT_RP)],
+      ['Com Bilhete de ID', ri(TOT_BC), +pc(TOT_BC, TOT_BP)], ['Usam Lenha', ri(sm('comb_lenha')), +pc(sm('comb_lenha'), sm('comb_total'))],
+      ];
+      // Fix: replace the broken lambda
+      res[res.length - 1][1] = ri(sm('comb_lenha'));
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(res), 'Resumo Nacional');
+
+      const hpop = [['CENSO 2024 — POPULAÇÃO, GRUPOS ETÁRIOS E DOCUMENTOS'], [''],
+      ['Província', 'Pop. Total', 'Homens', 'Mulheres', '% Mulheres', 'Urbana', 'Rural', '% Urbana', '0-14', '15-64', '65+', '% 0-14', 'Literacia%', 'Lit.H%', 'Lit.M%', 'c/Registo', '%Registo', 'c/BI', '%BI']];
+      sortedD.forEach(p => hpop.push([
+        p.provincia, ri(p.pop_total), ri(p.pop_homens || p.pop_total - p.pop_mulheres), ri(p.pop_mulheres), +pc(p.pop_mulheres, p.pop_total),
+        ri(p.pop_urbana), ri(p.pop_rural), +pc(p.pop_urbana, p.pop_urbana + p.pop_rural),
+        ri(p.idade_0_14), ri(p.idade_15_64), ri(p.idade_65mais), +pc(p.idade_0_14, p.pop_total),
+        p.lit_taxa, p.lit_homens || 0, p.lit_mulheres || 0,
+        ri(p.reg_com_registo), +pc(p.reg_com_registo, p.reg_total_pop), ri(p.bi_com_bi), +pc(p.bi_com_bi, p.bi_total_pop)]));
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(hpop), 'Pop. e Documentos');
+
+      const hedu = [['CENSO 2024 — EDUCAÇÃO E ESTADO CIVIL'], [''],
+      ['Província', 'Primário', 'I Ciclo Sec.', 'II Ciclo Sec.', 'Superior', 'Nenhum', 'Solteiro(a)', 'Casado(a)/União', 'Separado(a)', 'Divorciado(a)', 'Viúvo(a)']];
+      sortedD.forEach(p => { hedu.push([p.provincia, ri(p.edu_primario), ri(p.edu_i_sec), ri(p.edu_ii_sec), ri(p.edu_superior), ri(p.edu_nenhum), ri(p.civil_solteiro || 0), ri(p.civil_casado || 0), ri(p.civil_separado || 0), ri(p.civil_divorciado || 0), ri(p.civil_viuvo || 0)]); });
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(hedu), 'Educação e Estado Civil');
+
+      const hene = [['CENSO 2024 — ENERGIA, COMBUSTÍVEL E ÁGUA'], [''],
+      ['Província', 'Tot.Agg', 'c/Electr.', 'c/Gerador', 'c/Solar', 'c/Eólica', 'c/Lanterna', 'c/Vela', 'Sem Ilum.', '%Electr.', 'Comb.Gás', 'Comb.Electr.', 'Comb.Lenha', 'Comb.Carvão', 'Comb.Pet.', 'Tot.Água', 'Água Casa', 'Água Quintal', 'Sem Água', '%SemÁgua', 'Cant.', 'Poço', 'Rio', 'Tot.San', 'Sem San.', '%SemSan.']];
+      sortedD.forEach(p => hene.push([p.provincia, ri(p.agg_total), ri(p.agg_electricidade), ri(p.agg_gerador), ri(p.agg_solar), ri(p.agg_eolica), ri(p.agg_lanterna), ri(p.agg_vela), ri(p.agg_nenhum), +pc(p.agg_electricidade, p.agg_total), ri(p.comb_gas || 0), ri(p.comb_elec || 0), ri(p.comb_lenha || 0), ri(p.comb_carvao_veg || 0), ri(p.comb_petroleo || 0), ri(p.agua_total), ri(p.agua_dentro_casa), ri(p.agua_quintal), ri(p.agua_sem_acesso), +pc(p.agua_sem_acesso, p.agua_total), ri(p.fonte_canalizada || 0), ri(p.fonte_poco || 0), ri(p.fonte_rio || 0), ri(p.san_total || 0), ri(p.san_nenhum || 0), p.san_total ? +pc(p.san_nenhum, p.san_total) : 0]));
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(hene), 'Energia Combustível Água');
+
+      const hhab = [['CENSO 2024 — HABITAÇÃO E MATERIAIS DE CONSTRUÇÃO'], [''],
+      ['Província', 'Tot.Hab', 'Vivenda', 'Convencional', 'Apartamento', 'Cubata', 'Barraca', '%Prec.', 'Par.Cimento', 'Par.Adobe', 'Par.Pau-pique', 'Par.Tijolo', 'Par.Zinco', 'Par.Madeira', 'Par.Pedra', 'Tec.Zinco', 'Tec.Lusalite', 'Tec.Telha', 'Tec.Capim', 'Tec.Betão', 'Piso.Cerâmica', 'Piso.Cimento', 'Piso.Madeira', 'Piso.Terra']];
+      sortedD.forEach(p => hhab.push([p.provincia, ri(p.hab_total), ri(p.hab_vivenda), ri(p.hab_convencional), ri(p.hab_apartamento), ri(p.hab_cubata), ri(p.hab_barraca), +pc(p.hab_cubata + p.hab_barraca, p.hab_total), ri(p.par_cimento || 0), ri(p.par_adobe || 0), ri(p.par_pauapique || 0), ri(p.par_tijolo || 0), ri(p.par_zinco || 0), ri(p.par_madeira || 0), ri(p.par_pedra || 0), ri(p.tec_zinco || 0), ri(p.tec_lusalite || 0), ri(p.tec_telha || 0), ri(p.tec_capim || 0), ri(p.tec_betao || 0), ri(p.piso_ceramica || 0), ri(p.piso_cimento || 0), ri(p.piso_madeira || 0), ri(p.piso_terra || 0)]));
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(hhab), 'Habitação e Materiais');
+
+      XLSX.writeFile(wb, 'Censo2024_Angola_INE_Completo.xlsx');
+      XLSX.writeFile(wb, 'QUADROS ANEXOS DOS RESULTADOS DEFINITIVOS RGPH 2024.xlsx');
+    }
+
+    function exportProv() {
+      if (!SEL) { alert('Seleccione uma província primeiro.'); return; }
+      const p = SEL, wb = XLSX.utils.book_new();
+      const rows = [
+        [`CENSO 2024 — ${p.provincia.toUpperCase()} — INE ANGOLA`], [''],
+        ['POPULAÇÃO'], ['Total', ri(p.pop_total)], ['Homens', ri(p.pop_homens || p.pop_total - p.pop_mulheres)], ['Mulheres', ri(p.pop_mulheres)],
+        ['Urbana', ri(p.pop_urbana), +pc(p.pop_urbana, p.pop_urbana + p.pop_rural) + '%'], ['Rural', ri(p.pop_rural)],
+        ['0–14 anos', ri(p.idade_0_14), +pc(p.idade_0_14, p.pop_total) + '%'], ['15–64 anos', ri(p.idade_15_64)], ['65+ anos', ri(p.idade_65mais)], [''],
+        ['LITERACIA E DOCUMENTAÇÃO'], ['Taxa Literacia Total', p.lit_taxa + '%'], ['Homens', p.lit_homens + '%'], ['Mulheres', p.lit_mulheres + '%'],
+        ['c/ Registo Nascimento', ri(p.reg_com_registo), +pc(p.reg_com_registo, p.reg_total_pop) + '%'], ['c/ Bilhete de Identidade', ri(p.bi_com_bi), +pc(p.bi_com_bi, p.bi_total_pop) + '%'], [''],
+        ['EDUCAÇÃO (18+ anos)'], ['Primário', ri(p.edu_primario)], ['I Ciclo Sec.', ri(p.edu_i_sec)], ['II Ciclo Sec.', ri(p.edu_ii_sec)], ['Superior', ri(p.edu_superior)], ['Nenhum', ri(p.edu_nenhum)], [''],
+        ['ESTADO CIVIL'], ['Solteiro(a)', ri(p.civil_solteiro || 0)], ['Casado(a)/União', ri(p.civil_casado || 0)], ['Separado(a)', ri(p.civil_separado || 0)], ['Divorciado(a)', ri(p.civil_divorciado || 0)], ['Viúvo(a)', ri(p.civil_viuvo || 0)], [''],
+        ['ENERGIA'], ['Tot. Agg.', ri(p.agg_total)], ['Electricidade', ri(p.agg_electricidade), +pc(p.agg_electricidade, p.agg_total) + '%'], ['Gerador', ri(p.agg_gerador)], ['Solar', ri(p.agg_solar)], ['Eólica', ri(p.agg_eolica)], ['Lanterna', ri(p.agg_lanterna)], ['Vela', ri(p.agg_vela)], ['Sem Iluminação', ri(p.agg_nenhum)], [''],
+        ['COMBUSTÍVEL'], ['Gás', ri(p.comb_gas || 0)], ['Electricidade', ri(p.comb_elec || 0)], ['Lenha', ri(p.comb_lenha || 0)], ['Carvão Vegetal', ri(p.comb_carvao_veg || 0)], ['Petróleo', ri(p.comb_petroleo || 0)], ['Não Cozinha', ri(p.comb_nao_coz || 0)], [''],
+        ['ÁGUA E SANEAMENTO'], ['Água Dentro de Casa', ri(p.agua_dentro_casa), +pc(p.agua_dentro_casa, p.agua_total) + '%'], ['Água no Quintal', ri(p.agua_quintal)], ['Sem Acesso à Rede', ri(p.agua_sem_acesso), +pc(p.agua_sem_acesso, p.agua_total) + '%'], ['Fonte Canalizada', ri(p.fonte_canalizada || 0)], ['Poço/Furo', ri(p.fonte_poco || 0)], ['Rio/Lago', ri(p.fonte_rio || 0)], ['Sem Sanitário', ri(p.san_nenhum || 0), p.san_total ? +pc(p.san_nenhum, p.san_total) + '%' : ''], [''],
+        ['HABITAÇÃO'], ['Total', ri(p.hab_total)], ['Vivenda', ri(p.hab_vivenda)], ['Convencional', ri(p.hab_convencional)], ['Apartamento', ri(p.hab_apartamento)], ['Cubata', ri(p.hab_cubata)], ['Barraca/Chapa', ri(p.hab_barraca)], [''],
+        ['PAREDES'], ['Cimento/Bloco', ri(p.par_cimento || 0)], ['Adobe', ri(p.par_adobe || 0)], ['Pau-a-pique', ri(p.par_pauapique || 0)], ['Tijolo', ri(p.par_tijolo || 0)], ['Zinco', ri(p.par_zinco || 0)], ['Madeira', ri(p.par_madeira || 0)], ['Pedra', ri(p.par_pedra || 0)], [''],
+        ['TECTO'], ['Zinco', ri(p.tec_zinco || 0)], ['Lusalite', ri(p.tec_lusalite || 0)], ['Telha', ri(p.tec_telha || 0)], ['Capim/Palha', ri(p.tec_capim || 0)], ['Placa de Betão', ri(p.tec_betao || 0)], [''],
+        ['PISO'], ['Cerâmica', ri(p.piso_ceramica || 0)], ['Cimento', ri(p.piso_cimento || 0)], ['Madeira/Soalho', ri(p.piso_madeira || 0)], ['Terra Batida', ri(p.piso_terra || 0)],
+      ];
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(rows), p.provincia.substring(0, 31));
+      XLSX.writeFile(wb, `Censo2024_${p.provincia.replace(/[\s\/]/g, '_')}_INE.xlsx`);
+    }
+
+    // ═══════════ CHATBOT ═══════════
+    const CTX = `És o Assistente do Censo Demográfico 2024 de Angola do INE. Responde SEMPRE em Português de Angola. Dados reais de 21 províncias: ${JSON.stringify(D.map(p => ({ p: p.provincia, pop: ri(p.pop_total), urb: +pc(p.pop_urbana, p.pop_urbana + p.pop_rural), lit: p.lit_taxa, lit_h: p.lit_homens, lit_m: p.lit_mulheres, elec: +pc(p.agg_electricidade, p.agg_total), sem_ag: +pc(p.agua_sem_acesso, p.agua_total), sem_san: p.san_total ? +pc(p.san_nenhum, p.san_total) : null, reg: +pc(p.reg_com_registo, p.reg_total_pop), bi: +pc(p.bi_com_bi, p.bi_total_pop), lenha: +pc(p.comb_lenha || 0, p.comb_total || 1), cub_bar: +pc((p.hab_cubata + p.hab_barraca) || 0, p.hab_total || 1), sup: p.edu_superior || 0, jov: +pc(p.idade_0_14, p.pop_total) })))}. Total nac: ${fm(TOT)} hab. Literacia média: ${NAT_LIT.toFixed(1)}%. Responde apenas com dados do Censo 2024.`;
+    document.getElementById('fabB').onclick = () => { const c = document.getElementById('chatP'); c.style.display = c.style.display === 'block' ? 'none' : 'block'; };
+    async function sendChat() {
+      const inp = document.getElementById('cInp'); const q = inp.value.trim(); if (!q) return; inp.value = '';
+      const ms = document.getElementById('cMsg');
+      ms.innerHTML += `<div class="um">${q}</div>`;
+      const tid = 't' + Date.now();
+      ms.innerHTML += `<div class="bm" id="${tid}"><div class="ty"><span></span><span></span><span></span></div></div>`;
+      ms.scrollTop = ms.scrollHeight;
+      try {
+        const resp = await fetch('https://api.anthropic.com/v1/messages', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 800, system: CTX, messages: [{ role: 'user', content: q }] }) });
+        const data = await resp.json();
+        const txt = data.content?.map(b => b.text || '').join('') || 'Sem resposta.';
+        document.getElementById(tid).remove();
+        ms.innerHTML += `<div class="bm">${txt}</div>`;
+      } catch (e) { document.getElementById(tid).remove(); ms.innerHTML += `<div class="bm">Erro de ligação. Consulte <a href="https://www.ine.gov.ao" target="_blank" style="color:var(--r)">www.ine.gov.ao</a></div>`; }
+      ms.scrollTop = ms.scrollHeight;
+    }
+
+
+    // ══ REPORTS PAGE ══
+    const FILE_MAP = {
+      'Luanda': { pdf: 'Relatorio_Provincial_Luanda_Censo2024.pdf', xlsx: 'Excel_Provincial_Luanda_Censo2024.xlsx', rank: 1 },
+      'Huíla': { pdf: 'Relatorio_Provincial_Huila_Censo2024.pdf', xlsx: 'Excel_Provincial_Huila_Censo2024.xlsx', rank: 2 },
+      'Huambo': { pdf: 'Relatorio_Provincial_Huambo_Censo2024.pdf', xlsx: 'Excel_Provincial_Huambo_Censo2024.xlsx', rank: 3 },
+      'Benguela': { pdf: 'Relatorio_Provincial_Benguela_Censo2024.pdf', xlsx: 'Excel_Provincial_Benguela_Censo2024.xlsx', rank: 4 },
+      'Cuanza Sul': { pdf: 'Relatorio_Provincial_Cuanza_Sul_Censo2024.pdf', xlsx: 'Excel_Provincial_Cuanza_Sul_Censo2024.xlsx', rank: 5 },
+      'Bié': { pdf: 'Relatorio_Provincial_Bie_Censo2024.pdf', xlsx: 'Excel_Provincial_Bie_Censo2024.xlsx', rank: 6 },
+      'Uíge': { pdf: 'Relatorio_Provincial_Uige_Censo2024.pdf', xlsx: 'Excel_Provincial_Uige_Censo2024.xlsx', rank: 7 },
+      'Cunene': { pdf: 'Relatorio_Provincial_Cunene_Censo2024.pdf', xlsx: 'Excel_Provincial_Cunene_Censo2024.xlsx', rank: 8 },
+      'Lunda Norte': { pdf: 'Relatorio_Provincial_Lunda_Norte_Censo2024.pdf', xlsx: 'Excel_Provincial_Lunda_Norte_Censo2024.xlsx', rank: 9 },
+      'Icolo e Bengo': { pdf: 'Relatorio_Provincial_Icolo_e_Bengo_Censo2024.pdf', xlsx: 'Excel_Provincial_Icolo_e_Bengo_Censo2024.xlsx', rank: 10 },
+      'Malanje': { pdf: 'Relatorio_Provincial_Malanje_Censo2024.pdf', xlsx: 'Excel_Provincial_Malanje_Censo2024.xlsx', rank: 11 },
+      'Cabinda': { pdf: 'Relatorio_Provincial_Cabinda_Censo2024.pdf', xlsx: 'Excel_Provincial_Cabinda_Censo2024.xlsx', rank: 12 },
+      'Lunda Sul': { pdf: 'Relatorio_Provincial_Lunda_Sul_Censo2024.pdf', xlsx: 'Excel_Provincial_Lunda_Sul_Censo2024.xlsx', rank: 13 },
+      'Namibe': { pdf: 'Relatorio_Provincial_Namibe_Censo2024.pdf', xlsx: 'Excel_Provincial_Namibe_Censo2024.xlsx', rank: 14 },
+      'Bengo': { pdf: 'Relatorio_Provincial_Bengo_Censo2024.pdf', xlsx: 'Excel_Provincial_Bengo_Censo2024.xlsx', rank: 15 },
+      'Zaire': { pdf: 'Relatorio_Provincial_Zaire_Censo2024.pdf', xlsx: 'Excel_Provincial_Zaire_Censo2024.xlsx', rank: 16 },
+      'Cuanza Norte': { pdf: 'Relatorio_Provincial_Cuanza_Norte_Censo2024.pdf', xlsx: 'Excel_Provincial_Cuanza_Norte_Censo2024.xlsx', rank: 17 },
+      'Moxico': { pdf: 'Relatorio_Provincial_Moxico_Censo2024.pdf', xlsx: 'Excel_Provincial_Moxico_Censo2024.xlsx', rank: 18 },
+      'Cubango': { pdf: 'Relatorio_Provincial_Cubango_Censo2024.pdf', xlsx: 'Excel_Provincial_Cubango_Censo2024.xlsx', rank: 19 },
+      'Moxico Leste': { pdf: 'Relatorio_Provincial_Moxico_Leste_Censo2024.pdf', xlsx: 'Excel_Provincial_Moxico_Leste_Censo2024.xlsx', rank: 20 },
+      'Cuando ': { pdf: 'Relatorio_Provincial_Cuando_Cubango_Censo2024.pdf', xlsx: 'Excel_Provincial_Cuando_Cubango_Censo2024.xlsx', rank: 21 },
+    };
+    const selSet = new Set();
+
+    function toggleChk(nome, rank, checked, chipEl) {
+      const chk = document.getElementById('chk' + rank);
+      const chip = document.getElementById('chip' + rank) || chipEl;
+      const row = document.getElementById('rep-row-' + rank);
+      if (checked) {
+        selSet.add(nome);
+        if (chk) chk.checked = true;
+        if (chip) chip.classList.add('sel3');
+        if (row) row.style.background = 'var(--rl)';
+      } else {
+        selSet.delete(nome);
+        if (chk) chk.checked = false;
+        if (chip) chip.classList.remove('sel3');
+        if (row) row.style.background = '';
+      }
+      updatePanel();
+    }
+
+    function selTodas(forceVal) {
+      const val = (forceVal === undefined) ? true : forceVal;
+      Object.entries(FILE_MAP).forEach(([nome, info]) => toggleChk(nome, info.rank, val));
+      const ca = document.getElementById('chkAll');
+      if (ca) ca.checked = val;
+    }
+
+    function selNenhuma() {
+      selTodas(false);
+      const ca = document.getElementById('chkAll');
+      if (ca) ca.checked = false;
+    }
+
+    function updatePanel() {
+      const area = document.getElementById('repPanel');
+      if (!area) return;
+      const sel = [...selSet].sort((a, b) => FILE_MAP[a].rank - FILE_MAP[b].rank);
+      if (!sel.length) { area.innerHTML = ''; return; }
+      const svgDl = '<svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor"><path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/><path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z"/></svg>';
+      let h = '<div style="background:var(--wh);border:1px solid var(--bd);border-radius:10px;padding:1.2rem 1.4rem;box-shadow:var(--s1);display:flex;flex-wrap:wrap;gap:.8rem;align-items:flex-start">'
+        + '<div style="flex:100%;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--bd);padding-bottom:.6rem;margin-bottom:.2rem">'
+        + '<span style="font-size:.86rem;font-weight:600;color:var(--ink)">' + sel.length + ' Provínc' + (sel.length === 1 ? 'ia' : 'ias') + ' Seleccionada' + (sel.length === 1 ? '' : 's') + '</span>'
+        + '<span style="font-size:.7rem;color:var(--i5)">' + sel.join(' · ') + '</span>'
+        + '</div>';
+      sel.forEach(nome => {
+        const info = FILE_MAP[nome];
+        h += '<div style="display:flex;flex-direction:column;gap:.35rem;min-width:155px">'
+          + '<p style="font-size:.7rem;font-weight:600;color:var(--ink)">' + nome + '</p>'
+          + '<a class="dlb dlr" style="font-size:.65rem" href="' + info.pdf + '" download="' + info.pdf + '">' + svgDl + ' PDF</a>'
+          + '<a class="dlb dlg" style="font-size:.65rem" href="' + info.xlsx + '" download="' + info.xlsx + '">' + svgDl + ' Excel</a>'
+          + '</div>';
+      });
+      h += '</div>';
+      area.innerHTML = h;
+    }
+
+    function dlLote(fmt) {
+      const sel = [...selSet].sort((a, b) => FILE_MAP[a].rank - FILE_MAP[b].rank);
+      if (!sel.length) { alert('Seleccione pelo menos uma província primeiro.'); return; }
+      sel.forEach((nome, i) => {
+        const info = FILE_MAP[nome];
+        const fname = fmt === 'pdf' ? info.pdf : info.xlsx;
+        setTimeout(() => {
+          const a = document.createElement('a');
+          a.href = fname; a.download = fname;
+          document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        }, i * 450);
+      });
+    }
+
+    function quickExport(nome) { const p = D.find(d => d.provincia === nome); if (p) { SEL = p; exportProv(); } }
+
+    document.getElementById('cSend').onclick = sendChat;
+    document.getElementById('cInp').onkeyup = e => { if (e.key === 'Enter') sendChat(); };
+  </script>
+</body>
+
+</html>
