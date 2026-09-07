@@ -6,8 +6,11 @@
       "use": "@vercel/node"
     },
     {
-      "src": "index.html",
-      "use": "@vercel/static"
+      "src": "**/*.{html,css,js,json,geojson,png,jpg,jpeg,svg,ico,pdf,docx}",
+      "use": "@vercel/static",
+      "config": {
+        "excludeFiles": "api/**"
+      }
     }
   ],
   "routes": [
