@@ -1,30 +1,3 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "api/**/*.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "**/*.{html,css,js,json,geojson,png,jpg,jpeg,svg,ico,pdf,docx}",
-      "use": "@vercel/static",
-      "config": {
-        "excludeFiles": "api/**"
-      }
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/documents",
-      "dest": "/api/documents.js"
-    },
-    {
-      "src": "/api/upload",
-      "dest": "/api/upload.js"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/$1"
-    }
-  ]
+  "version": 2
 }
