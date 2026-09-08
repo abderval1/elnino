@@ -541,6 +541,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (state.charts.dist || state.charts.comparison) {
       updateCharts();
     }
+
+    // Preserve and ensure online users counter is properly displayed after language change
+    if (typeof window._refreshOnlineCountDisplay === 'function') {
+      window._refreshOnlineCountDisplay();
+    }
   }
 
   // Mapeamento de normalização de nomes de províncias
@@ -2534,12 +2539,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Sistema de Monitorização de Utilizadores Online em Tempo Real (SSE + Stream Instantâneo + Beacon no fecho)
+  // Sistema de Monitorização de Utilizadores Online em Tempo Real (BroadcastChannel + SSE + REST Vercel + Cross-Tab)
   function initOnlineUsersTracker() {
-    const countEl = document.getElementById('online-users-count');
-    if (!countEl) return;
+    let currentOnlineVal = 1;
 
-    // Gerar ou recuperar ID de sessão único para este utilizador/aba
+    // Gerar ou recuperar ID de sessão único para este separador/dispositivo
     let sessionId = sessionStorage.getItem('elnino_session_id');
     if (!sessionId) {
       sessionId = 'sess_' + Math.random().toString(36).substring(2, 12) + '_' + Date.now();
@@ -2547,23 +2551,76 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateCounterDisplay(num) {
-      if (countEl && typeof num === 'number') {
-        const val = Math.max(1, num);
-        // Animação visual suave ao atualizar o número
-        if (countEl.textContent !== String(val)) {
+      if (typeof num === 'number' && !isNaN(num)) {
+        currentOnlineVal = Math.max(1, num);
+      }
+      const countEl = document.getElementById('online-users-count');
+      if (countEl) {
+        const valStr = String(currentOnlineVal);
+        if (countEl.textContent !== valStr) {
           countEl.style.transition = 'transform 0.15s ease, opacity 0.15s ease';
           countEl.style.transform = 'scale(1.25)';
           setTimeout(() => {
-            countEl.textContent = val;
+            countEl.textContent = valStr;
             countEl.style.transform = 'scale(1)';
           }, 150);
         } else {
-          countEl.textContent = val;
+          countEl.textContent = valStr;
         }
       }
     }
 
-    // 1. Canal em Tempo Real com Server-Sent Events (SSE): latência zero ao abrir e ao fechar abas
+    window._refreshOnlineCountDisplay = () => {
+      updateCounterDisplay(currentOnlineVal);
+    };
+
+    // 1. Cross-Tab & Cross-Window Instant Synchronization via BroadcastChannel & localStorage
+    const TAB_KEY = 'elnino_active_tabs';
+    function registerTabPresence() {
+      try {
+        let tabs = JSON.parse(localStorage.getItem(TAB_KEY) || '{}');
+        const now = Date.now();
+        tabs[sessionId] = now;
+        // Limpar abas mortas há mais de 35 segundos
+        for (const [id, ts] of Object.entries(tabs)) {
+          if (now - ts > 35000) delete tabs[id];
+        }
+        localStorage.setItem(TAB_KEY, JSON.stringify(tabs));
+        const localActiveCount = Object.keys(tabs).length;
+        if (localActiveCount > currentOnlineVal) {
+          updateCounterDisplay(localActiveCount);
+        }
+      } catch (e) {}
+    }
+
+    function removeTabPresence() {
+      try {
+        let tabs = JSON.parse(localStorage.getItem(TAB_KEY) || '{}');
+        delete tabs[sessionId];
+        localStorage.setItem(TAB_KEY, JSON.stringify(tabs));
+      } catch (e) {}
+    }
+
+    if (window.BroadcastChannel) {
+      try {
+        const bc = new BroadcastChannel('elnino_online_channel');
+        bc.onmessage = (ev) => {
+          if (ev.data && typeof ev.data.count === 'number') {
+            updateCounterDisplay(ev.data.count);
+          } else if (ev.data && ev.data.action === 'ping') {
+            registerTabPresence();
+            let tabs = JSON.parse(localStorage.getItem(TAB_KEY) || '{}');
+            bc.postMessage({ count: Math.max(1, Object.keys(tabs).length) });
+          }
+        };
+        bc.postMessage({ action: 'ping' });
+      } catch (e) {}
+    }
+
+    registerTabPresence();
+    setInterval(registerTabPresence, 10000);
+
+    // 2. Canal em Tempo Real com Server-Sent Events (SSE): latência zero quando suportado
     let eventSource = null;
     function connectSSE() {
       try {
@@ -2578,27 +2635,26 @@ document.addEventListener('DOMContentLoaded', () => {
             } catch (err) {}
           };
           eventSource.onerror = () => {
-            // Em caso de falha de conexão, fecha e tenta novamente em 5 segundos
             if (eventSource) {
               eventSource.close();
               eventSource = null;
             }
-            setTimeout(connectSSE, 5000);
+            // Tentar novamente após 15 segundos se falhar
+            setTimeout(connectSSE, 15000);
           };
         }
-      } catch (e) {
-        // SSE não suportado no ambiente (ex: visualização file://)
-      }
+      } catch (e) {}
     }
 
-    // 2. Notificação Instantânea de Desconexão (quando o utilizador fecha a aba ou o navegador)
+    // 3. Notificação Instantânea de Desconexão (quando o utilizador fecha a aba ou o navegador)
     function notifyLeave() {
+      removeTabPresence();
       try {
         if (eventSource) {
           eventSource.close();
           eventSource = null;
         }
-        const leaveUrl = `/api/online/leave?sessionId=${encodeURIComponent(sessionId)}`;
+        const leaveUrl = `/api/online?action=leave&sessionId=${encodeURIComponent(sessionId)}`;
         if (navigator.sendBeacon) {
           navigator.sendBeacon(leaveUrl, '');
         } else {
@@ -2610,8 +2666,9 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('beforeunload', notifyLeave);
     window.addEventListener('pagehide', notifyLeave);
 
-    // 3. Fallback Heartbeat REST para manter a sessão viva
+    // 4. Heartbeat REST para servidor Vercel Serverless / Node Server
     async function sendHeartbeat() {
+      registerTabPresence();
       try {
         const resp = await fetch(`/api/online?sessionId=${encodeURIComponent(sessionId)}`, {
           method: 'GET',
@@ -2621,17 +2678,26 @@ document.addEventListener('DOMContentLoaded', () => {
           const data = await resp.json();
           if (data && typeof data.onlineCount === 'number') {
             updateCounterDisplay(data.onlineCount);
+            return;
           }
         }
       } catch (err) {}
+
+      // Fallback local se estiver offline ou em rede isolada
+      try {
+        let tabs = JSON.parse(localStorage.getItem(TAB_KEY) || '{}');
+        updateCounterDisplay(Math.max(1, Object.keys(tabs).length));
+      } catch (e) {
+        updateCounterDisplay(1);
+      }
     }
 
-    // Iniciar SSE imediatamente para latência zero
+    // Iniciar fluxos imediatamente
     connectSSE();
     sendHeartbeat();
 
-    // Heartbeat leve a cada 15 segundos
-    setInterval(sendHeartbeat, 15000);
+    // Heartbeat regular a cada 10 segundos
+    setInterval(sendHeartbeat, 10000);
   }
 
   // Inicializar Sequência da Aplicação

@@ -758,6 +758,16 @@ path.leaflet-sarcof-hatch,
     margin: 0;
   }
 
+  /* Keep online counter badge visible and properly sized on mobile */
+  .badge-online {
+    padding: 4px 8px !important;
+    font-size: 0.72rem !important;
+    display: inline-flex !important;
+  }
+  .badge-online span {
+    display: inline !important;
+  }
+
   /* Hide extra buttons from header on mobile */
   #btn-quick-censo,
   #btn-quick-docs,
