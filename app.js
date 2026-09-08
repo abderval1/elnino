@@ -1523,6 +1523,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 <div style="font-size:0.67rem; color:#f8fafc; font-weight:600;">${lName}</div>
                 <div style="font-size:0.62rem; color:#94a3b8; line-height:1.2; margin-top:2px;">${lFreq}</div>
+                <div style="margin-top:4px; display:flex; flex-wrap:wrap; gap:3px;">
+                  <a href="https://www.inamet.gov.ao/" target="_blank" rel="noopener" style="font-size:0.58rem; color:#38bdf8; text-decoration:none; background:rgba(56,189,248,0.1); padding:1px 4px; border-radius:3px; border:1px solid rgba(56,189,248,0.25);">↗ INAMET</a>
+                  <a href="https://www.sadc.int/themes/meteorology-climate/climate-services" target="_blank" rel="noopener" style="font-size:0.58rem; color:#38bdf8; text-decoration:none; background:rgba(56,189,248,0.1); padding:1px 4px; border-radius:3px; border:1px solid rgba(56,189,248,0.25);">↗ SARCOF</a>
+                  <a href="https://fews.net/southern-africa/angola" target="_blank" rel="noopener" style="font-size:0.58rem; color:#38bdf8; text-decoration:none; background:rgba(56,189,248,0.1); padding:1px 4px; border-radius:3px; border:1px solid rgba(56,189,248,0.25);">↗ FEWS NET</a>
+                </div>
               </div>
 
               <div style="background:rgba(255,255,255,0.04); padding:6px 8px; border-radius:6px; border:1px solid rgba(245,158,11,0.2);">
@@ -1534,8 +1539,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 <div style="font-size:0.67rem; color:#f8fafc; font-weight:600;">${iName}</div>
                 <div style="font-size:0.62rem; color:#94a3b8; line-height:1.2; margin-top:2px;">${iDesc}</div>
+                <div style="margin-top:4px; display:flex; flex-wrap:wrap; gap:3px;">
+                  <a href="https://www.sadc.int/programmes/disaster-risk-reduction" target="_blank" rel="noopener" style="font-size:0.58rem; color:#f59e0b; text-decoration:none; background:rgba(245,158,11,0.1); padding:1px 4px; border-radius:3px; border:1px solid rgba(245,158,11,0.25);">↗ SADC RVAA</a>
+                  <a href="https://vam.wfp.org/" target="_blank" rel="noopener" style="font-size:0.58rem; color:#f59e0b; text-decoration:none; background:rgba(245,158,11,0.1); padding:1px 4px; border-radius:3px; border:1px solid rgba(245,158,11,0.25);">↗ WFP VAM</a>
+                  <a href="https://www.fao.org/giews/country-brief/country/AGO/en" target="_blank" rel="noopener" style="font-size:0.58rem; color:#f59e0b; text-decoration:none; background:rgba(245,158,11,0.1); padding:1px 4px; border-radius:3px; border:1px solid rgba(245,158,11,0.25);">↗ FAO GIEWS</a>
+                </div>
               </div>
             </div>
+
 
             <!-- Mathematical Calculation Result -->
             <div style="background:rgba(0,0,0,0.3); padding:6px 8px; border-radius:6px; font-size:0.68rem; margin-bottom:6px; color:#cbd5e1; border-left:3px solid ${badgeColor};">
