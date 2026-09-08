@@ -27,35 +27,46 @@
           <i class="fa-solid fa-earth-africa"></i>
         </div>
         <div class="brand-title">
-          <h1>El Niño WebGIS Portal</h1>
-          <p>Risco Climático El Niño & Base Demográfica Oficial INE Angola (Censo 2024 & Estimativas 2025–2027)</p>
+          <h1 data-i18n="app_title">El Niño WebGIS Portal</h1>
+          <p data-i18n="app_subtitle">Risco Climático El Niño & Base Demográfica Oficial INE Angola (Censo 2024 & Estimativas 2025–2027)</p>
         </div>
       </div>
       
+      <!-- Mobile hamburger button -->
+      <button class="hamburger-btn" id="btn-hamburger" aria-label="Abrir painel" title="Abrir painel">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+
       <div class="header-badges">
+        <!-- Language Switcher -->
+        <div class="lang-switch" id="lang-switch" title="Mudar Idioma / Change Language">
+          <button class="lang-btn active" data-lang="pt">PT</button>
+          <button class="lang-btn" data-lang="en">EN</button>
+        </div>
+
         <div class="badge badge-live">
           <span class="badge-dot"></span>
-          SARCOF-33 Active
+          <span data-i18n="badge_sarcof_active">SARCOF-33 Ativo</span>
         </div>
-        <div class="badge" id="hdr-formula-badge" style="background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.4); color: #34d399;" title="Fórmula Oficial Selecionada">
+        <div class="badge" id="hdr-formula-badge" style="background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.4); color: #34d399;" title="Fórmula Oficial Selecionada / Selected Official Formula">
           <i class="fa-solid fa-square-root-variable"></i>
           <span id="hdr-formula-name">UNDRR / IPCC</span>
         </div>
         <a href="https://censo2024.ine.gov.ao/" target="_blank" class="badge" style="background: rgba(225, 29, 72, 0.15); border-color: rgba(225, 29, 72, 0.4); color: #fb7185; text-decoration: none; cursor: pointer;" title="INE Angola — Censo 2024 & Estimativas 2025-2027">
           <i class="fa-solid fa-users"></i>
-          INE Angola Oficial: <span id="hdr-pop-year">2024 (36.6M hab)</span>
+          <span data-i18n="hdr_ine_badge">INE Angola Oficial:</span> <span id="hdr-pop-year">2024 (36.6M hab)</span>
         </a>
         <button class="btn-header" id="btn-open-fonte-modal" style="background: rgba(14, 165, 233, 0.15); border-color: rgba(14, 165, 233, 0.4); color: #38bdf8;">
           <i class="fa-solid fa-graduation-cap"></i>
-          Fontes Clicáveis & Metodologia
+          <span data-i18n="btn_methodology">Fontes Clicáveis & Metodologia</span>
         </button>
         <button class="btn-header" id="btn-quick-censo">
           <i class="fa-solid fa-table-list"></i>
-          Tabela Censo / Projeções
+          <span data-i18n="btn_table_censo">Tabela Censo / Projeções</span>
         </button>
         <button class="btn-header" id="btn-quick-docs">
           <i class="fa-solid fa-file-pdf"></i>
-          Relatórios PDF
+          <span data-i18n="btn_reports_pdf">Relatórios PDF</span>
         </button>
       </div>
     </header>
@@ -63,20 +74,27 @@
     <!-- Main Workspace -->
     <div class="main-workspace">
       
+      <!-- Mobile overlay backdrop -->
+      <div class="mobile-overlay" id="mobile-overlay"></div>
+
       <!-- Sidebar Control Panel -->
-      <aside class="sidebar">
+      <aside class="sidebar" id="sidebar">
         <div class="sidebar-tabs">
           <button class="tab-btn active" data-tab="tab-layers">
-            <i class="fa-solid fa-layer-group"></i> Camadas
+            <i class="fa-solid fa-layer-group"></i> <span data-i18n="tab_layers">Camadas</span>
           </button>
           <button class="tab-btn" data-tab="tab-censo">
-            <i class="fa-solid fa-calculator"></i> Risco & Censo
+            <i class="fa-solid fa-calculator"></i> <span data-i18n="tab_risk_censo">Risco & Censo</span>
           </button>
           <button class="tab-btn" data-tab="tab-analytics">
-            <i class="fa-solid fa-chart-pie"></i> Análise
+            <i class="fa-solid fa-chart-pie"></i> <span data-i18n="tab_analytics">Análise</span>
           </button>
           <button class="tab-btn" data-tab="tab-docs">
-            <i class="fa-solid fa-file-lines"></i> Relatórios
+            <i class="fa-solid fa-file-lines"></i> <span data-i18n="tab_reports">Relatórios</span>
+          </button>
+          <!-- Mobile close button -->
+          <button class="sidebar-close-btn" id="btn-sidebar-close" aria-label="Fechar painel">
+            <i class="fa-solid fa-xmark"></i>
           </button>
         </div>
 
@@ -88,20 +106,19 @@
             <!-- Base Map Selection -->
             <div class="control-group">
               <div class="control-title">
-                <i class="fa-solid fa-map"></i> Mapa de Fundo (BaseMap)
+                <i class="fa-solid fa-map"></i> <span data-i18n="ctrl_basemap">Mapa de Fundo (BaseMap)</span>
               </div>
               <select id="select-basemap" class="select-control">
-                <option value="cartodark" selected>CartoDB Dark Matter (Escuro)</option>
-                <option value="osm">OpenStreetMap Standard</option>
+                <option value="osm" selected>OpenStreetMap Standard</option>
                 <option value="esri-sat">Esri Satellite (Satélite HD)</option>
-                <option value="cartolight">CartoDB Positron (Claro)</option>
+                <option value="esri-topo">Esri Topográfico (Relevo / Topografia)</option>
               </select>
             </div>
 
             <!-- Demographic Base Year Selector -->
             <div class="control-group" style="border-color: rgba(225,29,72,0.4); background: rgba(225,29,72,0.05);">
               <div class="control-title" style="color:#fb7185;">
-                <i class="fa-solid fa-calendar-days"></i> Ano da Base Demográfica INE
+                <i class="fa-solid fa-calendar-days"></i> <span data-i18n="ctrl_demographic_year">Ano da Base Demográfica INE</span>
               </div>
               <select id="select-demographic-year" class="select-control" style="border-color: rgba(225,29,72,0.5);">
                 <option value="2024" selected>Censo INE 2024 (Oficial: 36.604.682 hab)</option>
@@ -114,7 +131,7 @@
             <!-- Climate Season Layer Select -->
             <div class="control-group">
               <div class="control-title">
-                <i class="fa-solid fa-cloud-sun-rain"></i> Temporada Climática SARCOF
+                <i class="fa-solid fa-cloud-sun-rain"></i> <span data-i18n="ctrl_season">Temporada Climática SARCOF</span>
               </div>
               <select id="select-season" class="select-control">
                 <option value="OND" selected>Outubro - Dezembro 2026 (OND)</option>
@@ -125,11 +142,11 @@
             <!-- Multi-Layer Checkboxes (Simultaneous Layers) -->
             <div class="control-group">
               <div class="control-title">
-                <i class="fa-solid fa-layer-group"></i> Camadas de Angola DPA (Simultâneas)
+                <i class="fa-solid fa-layer-group"></i> <span data-i18n="ctrl_angola_layers">Camadas de Angola DPA (Simultâneas)</span>
               </div>
               
               <div class="toggle-row">
-                <span class="toggle-label"><i class="fa-solid fa-draw-polygon" style="color:#0284c7;"></i> Zonas SARCOF-33 (SADC)</span>
+                <span class="toggle-label"><i class="fa-solid fa-draw-polygon" style="color:#00D2D2;"></i> <span data-i18n="layer_sarcof">Zonas SARCOF-33 (SADC)</span></span>
                 <label class="switch">
                   <input type="checkbox" id="chk-layer-sarcof" checked>
                   <span class="slider"></span>
@@ -137,7 +154,7 @@
               </div>
 
               <div class="toggle-row">
-                <span class="toggle-label"><i class="fa-solid fa-map-location-dot" style="color:#e11d48;"></i> Angola - Províncias (21)</span>
+                <span class="toggle-label"><i class="fa-solid fa-map-location-dot" style="color:#e11d48;"></i> <span data-i18n="layer_provincias">Angola - Províncias (21)</span></span>
                 <label class="switch">
                   <input type="checkbox" id="chk-layer-provincias" checked>
                   <span class="slider"></span>
@@ -145,7 +162,7 @@
               </div>
 
               <div class="toggle-row">
-                <span class="toggle-label"><i class="fa-solid fa-city" style="color:#f59e0b;"></i> Angola - Municípios (326)</span>
+                <span class="toggle-label"><i class="fa-solid fa-city" style="color:#f59e0b;"></i> <span data-i18n="layer_municipios">Angola - Municípios (326)</span></span>
                 <label class="switch">
                   <input type="checkbox" id="chk-layer-municipios">
                   <span class="slider"></span>
@@ -153,7 +170,7 @@
               </div>
 
               <div class="toggle-row">
-                <span class="toggle-label"><i class="fa-solid fa-house-chimney-window" style="color:#10b981;"></i> Angola - Comunas (542)</span>
+                <span class="toggle-label"><i class="fa-solid fa-house-chimney-window" style="color:#10b981;"></i> <span data-i18n="layer_comunas">Angola - Comunas (542)</span></span>
                 <label class="switch">
                   <input type="checkbox" id="chk-layer-comunas">
                   <span class="slider"></span>
@@ -164,10 +181,10 @@
             <!-- Map Labels On / Off Toggle -->
             <div class="control-group">
               <div class="control-title">
-                <i class="fa-solid fa-tags"></i> Rótulos no Mapa (Labels On/Off)
+                <i class="fa-solid fa-tags"></i> <span data-i18n="ctrl_map_labels">Rótulos no Mapa (Labels On/Off)</span>
               </div>
               <div class="toggle-row">
-                <span class="toggle-label">Exibir Nomes Geográficos no Mapa</span>
+                <span class="toggle-label" data-i18n="lbl_show_names">Exibir Nomes Geográficos no Mapa</span>
                 <label class="switch">
                   <input type="checkbox" id="toggle-labels">
                   <span class="slider"></span>
@@ -175,29 +192,29 @@
               </div>
             </div>
 
-            <!-- Precipitation Category Filter -->
+            <!-- Precipitation Category Filter (Aligned with SARCOF image) -->
             <div class="control-group">
               <div class="control-title">
-                <i class="fa-solid fa-filter"></i> Categoria de Precipitação
+                <i class="fa-solid fa-filter"></i> <span data-i18n="ctrl_category">Categoria de Precipitação</span>
               </div>
               <select id="select-category" class="select-control">
-                <option value="ALL">Todas as Categorias</option>
-                <option value="1">Acima da Normal (AN)</option>
-                <option value="2">Normal a Acima da Normal (N-AN)</option>
-                <option value="3">Normal a Abaixo da Normal (N-BN)</option>
-                <option value="4">Abaixo da Normal / Seca (BN)</option>
+                <option value="ALL">Todas as Categorias / All</option>
+                <option value="1">🟫 Abaixo da Normal / Seca (BN) — #C4A482</option>
+                <option value="2">🟨 Normal a Abaixo da Normal (N-BN) — #FFE600</option>
+                <option value="3">🟦 Normal a Acima da Normal (N-AN) — #00D2D2</option>
+                <option value="4">🟦 Acima da Normal (AN) — #0000CD</option>
               </select>
             </div>
 
             <!-- Search & High Confidence Toggles -->
             <div class="control-group">
               <div class="control-title">
-                <i class="fa-solid fa-magnifying-glass"></i> Pesquisar Região / Município
+                <i class="fa-solid fa-magnifying-glass"></i> <span data-i18n="ctrl_search">Pesquisar Região / Município</span>
               </div>
-              <input type="text" id="input-search" class="input-control" placeholder="Ex: Namacunde, Gambos, Cunene, Huíla...">
+              <input type="text" id="input-search" class="input-control" placeholder="Ex: Namacunde, Gambos, Cunene, Huíla..." data-i18n-placeholder="search_placeholder">
               
               <div class="toggle-row" style="margin-top: 6px;">
-                <span class="toggle-label">Sobreposição de Alta Confiança</span>
+                <span class="toggle-label" data-i18n="lbl_high_confidence">Sobreposição de Alta Confiança (Hachurado)</span>
                 <label class="switch">
                   <input type="checkbox" id="toggle-confidence" checked>
                   <span class="slider"></span>
@@ -216,8 +233,8 @@
                 <i class="fa-solid fa-square-root-variable"></i> Modelo Oficial de Cálculo
               </div>
               <select id="select-formula-model" class="select-control" style="border-color: rgba(16,185,129,0.5);">
-                <option value="IPC_FIES_INE" selected>⭐ Matriz de Risco (1984-2025) & FIES INE (ODS 2.1.2)</option>
-                <option value="UNDRR_IPCC">UNDRR / IPCC — Equação Geral do Risco (R = H × E × V)</option>
+                <option value="UNDRR_IPCC" selected>⭐ UNDRR / IPCC — Equação Geral do Risco (R = H × E × V)</option>
+                <option value="IPC_FIES_INE">Matriz de Risco (1984-2025) & FIES INE (ODS 2.1.2)</option>
                 <option value="IPC_FEWSNET">IPC / FEWS NET — População em Necessidade (PIN / Fase 3+)</option>
                 <option value="WFP_FAO_SADC">PAM / FAO / SADC — Modelo Agropastoril & Preços</option>
               </select>
@@ -333,31 +350,45 @@
 
       <!-- Central Map View -->
       <main class="map-view-container">
+        <!-- SVG Pattern Definitions for Leaflet High Confidence Overlay -->
+        <svg style="display:none; width:0; height:0; position:absolute;">
+          <defs>
+            <pattern id="sarcof-hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+              <line x1="0" y1="0" x2="0" y2="8" stroke="#1e293b" stroke-width="2.2" />
+              <line x1="0" y1="0" x2="0" y2="8" stroke="#ffffff" stroke-width="0.7" opacity="0.6" />
+            </pattern>
+          </defs>
+        </svg>
+
         <div id="map"></div>
 
-        <!-- Floating Map Legend -->
+        <!-- Floating Map Legend (Strictly matched with SARCOF image) -->
         <div class="map-legend-card" id="map-legend">
-          <div class="legend-title">Previsão Climática SARCOF-33</div>
+          <div class="legend-title" data-i18n="legend_title">Previsão Climática SARCOF-33</div>
           <div class="legend-items">
-            <div class="legend-item">
-              <div class="legend-color" style="background: #0284c7;"></div>
-              <span>Acima da Normal (AN)</span>
+            <div class="legend-item" title="High confidence / Alta confiança">
+              <div class="legend-hatch"></div>
+              <span data-i18n="legend_high_conf">Alta Confiança (Hachurado)</span>
             </div>
             <div class="legend-item">
-              <div class="legend-color" style="background: #06b6d4;"></div>
-              <span>Normal a Acima da Normal (N-AN)</span>
+              <div class="legend-color" style="background: #C4A482;"></div>
+              <span data-i18n="legend_below_normal">Abaixo da Normal (BN) / Seca</span>
             </div>
             <div class="legend-item">
-              <div class="legend-color" style="background: #f59e0b;"></div>
-              <span>Normal a Abaixo da Normal (N-BN)</span>
+              <div class="legend-color" style="background: #FFE600;"></div>
+              <span data-i18n="legend_norm_below">Normal a Abaixo da Normal (N-BN)</span>
             </div>
             <div class="legend-item">
-              <div class="legend-color" style="background: #ef4444;"></div>
-              <span>Abaixo da Normal / Seca (BN)</span>
+              <div class="legend-color" style="background: #00D2D2;"></div>
+              <span data-i18n="legend_norm_above">Normal a Acima da Normal (N-AN)</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background: #0000CD;"></div>
+              <span data-i18n="legend_above_normal">Acima da Normal (AN)</span>
             </div>
             <div class="legend-item" style="margin-top: 4px; padding-top: 4px; border-top: 1px dashed rgba(255,255,255,0.1);">
               <div class="legend-color" style="background: #e11d48; opacity: 0.7;"></div>
-              <span>Angola - Limites DPA (Prov/Mun/Com)</span>
+              <span data-i18n="legend_dpa">Angola - Limites DPA 2025 (Prov/Mun/Com)</span>
             </div>
           </div>
         </div>
@@ -369,41 +400,41 @@
             <button class="btn-close" id="btn-close-inspector">&times;</button>
           </div>
           <div class="info-row">
-            <span class="info-label">Tipo de Camada:</span>
+            <span class="info-label" data-i18n="insp_layer_type">Tipo de Camada:</span>
             <span class="info-val" id="insp-layer-type">Província</span>
           </div>
           <div class="info-row">
-            <span class="info-label">Área Oficial DPA (ha):</span>
+            <span class="info-label" data-i18n="insp_area_ha">Área Oficial DPA (ha):</span>
             <span class="info-val" id="insp-area-ha" style="color:#38bdf8;">0 ha</span>
           </div>
           <div class="info-row">
-            <span class="info-label">Área Oficial DPA (km²):</span>
+            <span class="info-label" data-i18n="insp_area_km2">Área Oficial DPA (km²):</span>
             <span class="info-val" id="insp-area-km2">0 km²</span>
           </div>
           <div class="info-row">
-            <span class="info-label">Densidade Demográfica:</span>
+            <span class="info-label" data-i18n="insp_density">Densidade Demográfica:</span>
             <span class="info-val" id="insp-density" style="color:#6ee7b7;">0 hab/km²</span>
           </div>
           <div class="info-row">
-            <span class="info-label">População Total INE:</span>
+            <span class="info-label" data-i18n="insp_pop_total">População Total INE:</span>
             <span class="info-val" id="insp-pop-censo" style="color:#f59e0b;">-</span>
           </div>
           <div class="info-row">
-            <span class="info-label">Risco Climático (V):</span>
+            <span class="info-label" data-i18n="insp_risk_factor">Risco Climático (V):</span>
             <span class="info-val" id="insp-category">-</span>
           </div>
           <div class="info-row">
-            <span class="info-label">Pessoas Afetadas (Est.):</span>
+            <span class="info-label" data-i18n="insp_pop_affected">Pessoas Afetadas (Est.):</span>
             <span class="info-val" id="insp-pop-affected" style="color:#ef4444; font-size:0.95rem;">-</span>
           </div>
           <div class="info-row">
-            <span class="info-label">Famílias Afetadas (5,2/fam):</span>
+            <span class="info-label" data-i18n="insp_families_affected">Famílias Afetadas (5,2/fam):</span>
             <span class="info-val" id="insp-families-affected" style="color:#fcd34d; font-weight:700;">-</span>
           </div>
           
           <!-- IVC Panel: Indicadores de Vulnerabilidade do Censo 2024 -->
           <div id="insp-ivc-panel" style="background: rgba(15,23,42,0.8); border: 1px solid rgba(56,189,248,0.2); border-radius: 8px; padding: 10px; margin: 8px 0;">
-            <div style="color:#64748b; font-size:0.75rem; text-align:center; padding:4px;">Clique numa província para ver o IVC do Censo 2024</div>
+            <div style="color:#64748b; font-size:0.75rem; text-align:center; padding:4px;" data-i18n="insp_click_prov">Clique numa província para ver o IVC do Censo 2024</div>
           </div>
 
           <!-- Formula Box -->
@@ -411,16 +442,16 @@
             <strong id="insp-calc-title" style="color:#38bdf8;">Cálculo Oficial:</strong><br/>
             <span id="insp-calc-detail">P_afetada = 0 × 1.0 × 0.85</span><br/>
             <a id="insp-calc-link" href="https://www.undrr.org/terminology/disaster-risk" target="_blank" class="formula-link-btn" style="margin-top:6px;">
-              <i class="fa-solid fa-arrow-up-right-from-square"></i> Ver Padrão Oficial da ONU / FEWS NET
+              <i class="fa-solid fa-arrow-up-right-from-square"></i> <span data-i18n="insp_see_un_standard">Ver Padrão Oficial da ONU / FEWS NET</span>
             </a>
           </div>
 
           <div style="display: flex; gap: 8px; margin-top: 12px;">
             <button class="btn-header" id="btn-view-censo-row" style="flex: 1; justify-content: center; background: rgba(225,29,72,0.2); border-color: rgba(225,29,72,0.5); color: #fb7185;">
-              <i class="fa-solid fa-table-list"></i> Tabela Censo
+              <i class="fa-solid fa-table-list"></i> <span data-i18n="btn_censo_table">Tabela Censo</span>
             </button>
             <button class="btn-header" id="btn-view-region-pdf" style="flex: 1; justify-content: center;">
-              <i class="fa-solid fa-file-pdf"></i> PDF SARCOF
+              <i class="fa-solid fa-file-pdf"></i> <span data-i18n="btn_pdf_sarcof">PDF SARCOF</span>
             </button>
           </div>
         </div>
@@ -590,35 +621,35 @@
       </div>
       <div style="padding: 16px; overflow-y: auto; flex: 1;">
         <div class="table-tabs">
-          <button class="table-tab-btn active" id="btn-tab-prov"><i class="fa-solid fa-map-location-dot"></i> 21 Províncias de Angola</button>
-          <button class="table-tab-btn" id="btn-tab-mun"><i class="fa-solid fa-city"></i> 326 Municípios (DPA 2025)</button>
-          <input type="text" class="table-filter-input" id="table-filter-input" placeholder="Pesquisar província ou município...">
+          <button class="table-tab-btn active" id="btn-tab-prov"><i class="fa-solid fa-map-location-dot"></i> <span data-i18n="tbl_tab_prov">21 Províncias de Angola</span></button>
+          <button class="table-tab-btn" id="btn-tab-mun"><i class="fa-solid fa-city"></i> <span data-i18n="tbl_tab_mun">326 Municípios (DPA 2025)</span></button>
+          <input type="text" class="table-filter-input" id="table-filter-input" placeholder="Pesquisar província ou município..." data-i18n-placeholder="tbl_search_placeholder">
           <button class="btn-header" id="btn-export-csv" style="padding: 6px 12px; font-size: 0.78rem;">
-            <i class="fa-solid fa-file-csv"></i> Exportar Dados CSV
+            <i class="fa-solid fa-file-csv"></i> <span data-i18n="btn_export_csv">Exportar Dados CSV</span>
           </button>
         </div>
         
         <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">
-          Dados oficiais do INE para o ano de <strong><span class="lbl-year-active">2024</span></strong> cruzados com a mancha de previsão SARCOF-33 e calculados pelo modelo <strong style="color:#34d399;" id="lbl-active-formula-title">UNDRR / IPCC</strong>.
+          <span data-i18n="tbl_meta_prefix">Dados oficiais do INE para o ano de</span> <strong><span class="lbl-year-active">2024</span></strong> <span data-i18n="tbl_meta_middle">cruzados com a mancha de previsão SARCOF-33 e calculados pelo modelo</span> <strong style="color:#34d399;" id="lbl-active-formula-title">UNDRR / IPCC</strong>.
         </p>
 
         <div style="overflow-x: auto;">
           <table class="censo-table" id="censo-data-table">
             <thead>
               <tr id="censo-table-head-row">
-                <th>Unidade Administrativa</th>
-                <th>Província</th>
-                <th>Área DPA (km²)</th>
-                <th>Densidade (hab/km²)</th>
-                <th>População (<span class="lbl-year-active">2024</span>)</th>
-                <th>Urbana / Rural</th>
-                <th>Classificação SARCOF</th>
-                <th>Pessoas Afetadas</th>
-                <th>Famílias (5,2/fam)</th>
-                <th title="Índice de Vulnerabilidade Composto (IVC) — Censo 2024 INE: água + saneamento + electricidade + habitação">IVC Censo 2024 ⓘ</th>
-                <th title="Escala de Experiência de Insegurança Alimentar Severa — INE Angola / FAO Relatório Fev 2026 (ODS 2.1.2)">% FIES Severa (INE) ⓘ</th>
-                <th title="Matriz de Tendências Históricas 1984-2025: Likelihood (1-5) × Impact (1-5)">Score de Risco (1-25) ⓘ</th>
-                <th>Fonte Oficial</th>
+                <th data-i18n="th_admin_unit">Unidade Administrativa</th>
+                <th data-i18n="th_province">Província</th>
+                <th data-i18n="th_area">Área DPA (km²)</th>
+                <th data-i18n="th_density">Densidade (hab/km²)</th>
+                <th><span data-i18n="th_pop">População</span> (<span class="lbl-year-active">2024</span>)</th>
+                <th data-i18n="th_urban_rural">Urbana / Rural</th>
+                <th data-i18n="th_sarcof_class">Classificação SARCOF</th>
+                <th data-i18n="th_affected_pop">Pessoas Afetadas</th>
+                <th data-i18n="th_affected_families">Famílias (5,2/fam)</th>
+                <th data-i18n="th_ivc" title="Índice de Vulnerabilidade Composto (IVC) — Censo 2024 INE: água + saneamento + electricidade + habitação">IVC Censo 2024 ⓘ</th>
+                <th data-i18n="th_fies" title="Escala de Experiência de Insegurança Alimentar Severa — INE Angola / FAO Relatório Fev 2026 (ODS 2.1.2)">% FIES Severa (INE) ⓘ</th>
+                <th data-i18n="th_risk_score" title="Matriz de Tendências Históricas 1984-2025: Likelihood (1-5) × Impact (1-5)">Score de Risco (1-25) ⓘ</th>
+                <th data-i18n="th_source">Fonte Oficial</th>
               </tr>
             </thead>
             <tbody id="censo-table-body">
@@ -646,6 +677,6 @@
   <script src="/vendor/leaflet.js"></script>
   <script src="/vendor/chart.js"></script>
   <!-- Main App Script -->
-  <script src="app.js"></script>
+  <script src="app.js?v=20260907_v8"></script>
 </body>
 </html>
