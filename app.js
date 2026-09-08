@@ -42,7 +42,6 @@ document.addEventListener('DOMContentLoaded', () => {
     geoJsonLayers: {
       sarcof: null,
       sarcofHatch: null,
-      angolaHatch: null,
       provincias: null,
       municipios: null,
       comunas: null
@@ -977,7 +976,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Render High Confidence Hatching Overlay Layer
-  // Render High Confidence Hatching Overlay Layer (SADC Regional)
   function renderHighConfidenceOverlay(geoJson) {
     ensureSvgPattern();
     const layerGroup = L.geoJSON(geoJson, {
@@ -985,87 +983,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const p = feature.properties || {};
         if (state.activeCategory !== 'ALL' && String(p.finalcode) !== String(state.activeCategory)) return false;
         return p.is_high_confidence === true || p.confidence_overlay === 'high confidence';
-      },
-      style: () => ({
-        className: 'leaflet-sarcof-hatch',
-        fillColor: 'url(#sarcof-hatch)',
-        fillOpacity: 0.95,
-        weight: 0,
-        stroke: false,
-        interactive: false
-      }),
-      onEachFeature: (feature, layer) => {
-        const applyHatch = () => {
-          ensureSvgPattern();
-          if (layer._path) {
-            layer._path.classList.add('leaflet-sarcof-hatch');
-            layer._path.setAttribute('fill', 'url(#sarcof-hatch)');
-            layer._path.setAttribute('fill-opacity', '0.95');
-            layer._path.setAttribute('stroke', 'none');
-            layer._path.style.setProperty('fill', 'url(#sarcof-hatch)', 'important');
-            layer._path.style.setProperty('fill-opacity', '0.95', 'important');
-            layer._path.style.setProperty('pointer-events', 'none', 'important');
-          }
-        };
-        applyHatch();
-        if (typeof requestAnimationFrame !== 'undefined') requestAnimationFrame(applyHatch);
-        setTimeout(applyHatch, 50);
-        setTimeout(applyHatch, 200);
-      }
-    }).addTo(state.map);
-
-    ensureSvgPattern();
-    return layerGroup;
-  }
-
-  // Determine if an Angola feature (Província / Município / Comuna) falls in the High Confidence Hatched zone for the active season
-  function isAngolaFeatureHighConfidence(feature, typeKey, season) {
-    const activeS = season || state.activeSeason || 'OND';
-    const props = feature ? (feature.properties || {}) : {};
-    const provName = normalizeProvName(props.Nome_Prov || props.PROVINCIA || props.NAME || '').toLowerCase();
-
-    // 1. Spatial centroid check using Turf.js against SADC high confidence polygons
-    if (typeof turf !== 'undefined' && state.geoJsonData && state.geoJsonData[activeS]) {
-      try {
-        if (feature.geometry) {
-          const pt = turf.centroid(feature);
-          if (pt) {
-            const sarcofFc = state.geoJsonData[activeS];
-            for (let i = 0; i < sarcofFc.features.length; i++) {
-              const sf = sarcofFc.features[i];
-              const isHigh = sf.properties.is_high_confidence === true || sf.properties.confidence_overlay === 'high confidence';
-              if (isHigh && turf.booleanPointInPolygon(pt, sf)) {
-                return true;
-              }
-            }
-          }
-        }
-      } catch (e) {
-        // Fallback to calibrated classification below
-      }
-    }
-
-    // 2. Calibrated Official SARCOF-33 Statement & Maps:
-    // JFM (Jan-Mar 2027): High confidence covers the southern drought corridor (Cunene, Cubango, Cuando, Namibe, Huíla)
-    // OND (Oct-Dec 2026): High confidence covers both northern cyan zone and southern border brown zone
-    const jfmHighProvs = ['cunene', 'cubango', 'cuando', 'namibe', 'huíla', 'huila'];
-    if (activeS === 'JFM') {
-      return jfmHighProvs.some(p => provName.includes(p));
-    } else {
-      return true;
-    }
-  }
-
-  // Render High Confidence Hatching Overlay for Angola Administrative Layers (Províncias / Municípios / Comunas)
-  function renderAngolaHighConfidenceOverlay(geoJson, typeKey) {
-    ensureSvgPattern();
-    const layerGroup = L.geoJSON(geoJson, {
-      filter: (feature) => {
-        if (state.activeCategory !== 'ALL') {
-          const code = getSarcofForAngolaFeature(feature, typeKey, state.activeSeason);
-          if (String(code) !== String(state.activeCategory)) return false;
-        }
-        return isAngolaFeatureHighConfidence(feature, typeKey, state.activeSeason);
       },
       style: () => ({
         className: 'leaflet-sarcof-hatch',
@@ -1109,14 +1026,12 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    // 1. SADC Regional Base Layer
     if (state.layersEnabled.sarcof && state.geoJsonData[state.activeSeason]) {
       state.geoJsonLayers.sarcof = renderGeoJsonCollection(state.geoJsonData[state.activeSeason], 'sarcof', {
         fillOpacity: 0.65, weight: 1.2, color: '#1e293b'
       });
     }
 
-    // 2. Angola Províncias Layer
     if (state.layersEnabled.provincias && state.geoJsonData.PROVINCIAS) {
       state.geoJsonLayers.provincias = renderGeoJsonCollection(state.geoJsonData.PROVINCIAS, 'provincias', (feature) => {
         const code = getSarcofForAngolaFeature(feature, 'provincias', state.activeSeason);
@@ -1130,7 +1045,11 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // 3. Angola Municípios Layer
+    // High confidence hatching overlay (////) on top of SARCOF and Províncias
+    if (state.layersEnabled.sarcof && state.showHighConfidence && state.geoJsonData[state.activeSeason]) {
+      state.geoJsonLayers.sarcofHatch = renderHighConfidenceOverlay(state.geoJsonData[state.activeSeason]);
+    }
+
     if (state.layersEnabled.municipios && state.geoJsonData.MUNICIPIOS) {
       state.geoJsonLayers.municipios = renderGeoJsonCollection(state.geoJsonData.MUNICIPIOS, 'municipios', (feature) => {
         const code = getSarcofForAngolaFeature(feature, 'municipios', state.activeSeason);
@@ -1145,31 +1064,10 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // 4. Angola Comunas Layer
     if (state.layersEnabled.comunas && state.geoJsonData.COMUNAS) {
       state.geoJsonLayers.comunas = renderGeoJsonCollection(state.geoJsonData.COMUNAS, 'comunas', {
         fillColor: '#10b981', fillOpacity: 0.15, weight: 1, color: '#6ee7b7', dashArray: '2'
       });
-    }
-
-    // 5. High Confidence Hatching Overlays (////) on Top of Active Layers
-    if (state.showHighConfidence) {
-      // SADC Regional Hatching
-      if (state.layersEnabled.sarcof && state.geoJsonData[state.activeSeason]) {
-        state.geoJsonLayers.sarcofHatch = renderHighConfidenceOverlay(state.geoJsonData[state.activeSeason]);
-      }
-
-      // Angola Map Hatching (strictly on the parts matching OND / JFM high confidence)
-      const angolaKey = state.layersEnabled.provincias ? 'PROVINCIAS' :
-                        (state.layersEnabled.municipios ? 'MUNICIPIOS' :
-                        (state.layersEnabled.comunas ? 'COMUNAS' : null));
-      const angolaType = state.layersEnabled.provincias ? 'provincias' :
-                         (state.layersEnabled.municipios ? 'municipios' :
-                         (state.layersEnabled.comunas ? 'comunas' : null));
-
-      if (angolaKey && state.geoJsonData[angolaKey]) {
-        state.geoJsonLayers.angolaHatch = renderAngolaHighConfidenceOverlay(state.geoJsonData[angolaKey], angolaType);
-      }
     }
 
     updateGlobalStats();
