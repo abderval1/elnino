@@ -49,11 +49,24 @@ function getDocumentList() {
   return docs;
 }
 
+// Active Online Users tracking (sessions active in the last 45 seconds)
+const activeSessions = new Map();
+const SESSION_TIMEOUT_MS = 45000;
+
+function cleanupSessions() {
+  const now = Date.now();
+  for (const [id, lastSeen] of activeSessions.entries()) {
+    if (now - lastSeen > SESSION_TIMEOUT_MS) {
+      activeSessions.delete(id);
+    }
+  }
+}
+
 const server = http.createServer((req, res) => {
   // CORS Headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Session-Id');
 
   if (req.method === 'OPTIONS') {
     res.writeHead(204);
@@ -63,6 +76,19 @@ const server = http.createServer((req, res) => {
 
   const parsedUrl = new URL(req.url, `http://${req.headers.host}`);
   let pathname = parsedUrl.pathname;
+
+  // API Endpoint: Online users counter & heartbeat
+  if (pathname === '/api/online') {
+    cleanupSessions();
+    const sessionId = req.headers['x-session-id'] || parsedUrl.searchParams.get('sessionId');
+    if (sessionId) {
+      activeSessions.set(sessionId, Date.now());
+    }
+    const count = Math.max(1, activeSessions.size);
+    res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' });
+    res.end(JSON.stringify({ onlineCount: count, timestamp: Date.now() }));
+    return;
+  }
 
   // API Endpoint: list available documents
   if (pathname === '/api/documents' && req.method === 'GET') {

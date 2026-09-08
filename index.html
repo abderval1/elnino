@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="/vendor/leaflet.css">
   
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="styles.css?v=20260908_v16">
+  <link rel="stylesheet" href="styles.css?v=20260908_v17">
 </head>
 <body>
   <div class="app-container">
@@ -47,6 +47,11 @@
         <div class="badge badge-live">
           <span class="badge-dot"></span>
           <span data-i18n="badge_sarcof_active">SARCOF-33 Ativo</span>
+        </div>
+        <!-- Live Online Users Counter -->
+        <div class="badge badge-online" id="badge-online-counter" title="Utilizadores ativos agora no portal / Active users online right now">
+          <span class="badge-dot-online"></span>
+          <span id="online-users-text"><span id="online-users-count">1</span> <span data-i18n="badge_online_users">online</span></span>
         </div>
         <div class="badge" id="hdr-formula-badge" style="background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.4); color: #34d399;" title="Fórmula Oficial Selecionada / Selected Official Formula">
           <i class="fa-solid fa-square-root-variable"></i>
@@ -1100,6 +1105,6 @@
   <script src="/vendor/leaflet.js"></script>
   <script src="/vendor/chart.js"></script>
   <!-- Main App Script -->
-  <script src="app.js?v=20260908_v16"></script>
+  <script src="app.js?v=20260908_v17"></script>
 </body>
 </html>

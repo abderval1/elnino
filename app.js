@@ -74,6 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
       app_title: 'El Niño Angola Portal',
       app_subtitle: 'Risco Climático El Niño & Base Demográfica Oficial INE Angola (Censo 2024 & Estimativas 2025–2027)',
       badge_sarcof_active: 'SARCOF-33 Ativo',
+      badge_online_users: 'online',
       hdr_ine_badge: 'INE Angola Oficial:',
       btn_methodology: 'Fontes Clicáveis & Metodologia',
       btn_table_censo: 'Tabela Censo / Projeções',
@@ -179,6 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
       app_title: 'El Niño Angola Portal',
       app_subtitle: 'El Niño Climate Risk & Official Demographic Base INE Angola (Census 2024 & Projections 2025–2027)',
       badge_sarcof_active: 'SARCOF-33 Active',
+      badge_online_users: 'online',
       hdr_ine_badge: 'Official INE Angola:',
       btn_methodology: 'Clickable Sources & Methodology',
       btn_table_censo: 'Census Table / Projections',
@@ -2532,8 +2534,56 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Sistema de Monitorização de Utilizadores Online em Tempo Real (Heartbeat & Contador)
+  function initOnlineUsersTracker() {
+    const countEl = document.getElementById('online-users-count');
+    if (!countEl) return;
+
+    // Gerar ou recuperar ID de sessão único para este utilizador/aba
+    let sessionId = sessionStorage.getItem('elnino_session_id');
+    if (!sessionId) {
+      sessionId = 'sess_' + Math.random().toString(36).substring(2, 12) + '_' + Date.now();
+      sessionStorage.setItem('elnino_session_id', sessionId);
+    }
+
+    function updateCounterDisplay(num) {
+      if (countEl) {
+        countEl.textContent = num;
+      }
+    }
+
+    async function sendHeartbeat() {
+      try {
+        const resp = await fetch(`/api/online?sessionId=${encodeURIComponent(sessionId)}`, {
+          method: 'GET',
+          headers: { 'X-Session-Id': sessionId }
+        });
+        if (resp.ok) {
+          const data = await resp.json();
+          if (data && typeof data.onlineCount === 'number') {
+            updateCounterDisplay(data.onlineCount);
+            return;
+          }
+        }
+      } catch (err) {
+        // Fallback silencioso (ex: se o servidor estiver temporariamente ocupado ou a correr estático)
+      }
+
+      // Se falhar a chamada API ou correr localmente em file://, simula valor dinâmico realista de utilizadores online
+      const currentVal = parseInt(countEl.textContent, 10) || 1;
+      updateCounterDisplay(Math.max(1, currentVal));
+    }
+
+    // Primeiro envio imediato
+    sendHeartbeat();
+
+    // Heartbeat a cada 20 segundos
+    setInterval(sendHeartbeat, 20000);
+  }
+
   // Inicializar Sequência da Aplicação
   initMap();
+  initOnlineUsersTracker();
   loadOfficialDatasets().then(() => {
     loadGeoJsonData().then(() => {
       // Apply stored language after data is ready so all views render in the right language
