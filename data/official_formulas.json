@@ -178,10 +178,30 @@
       "formula_simplificada": "P_afetada = Pop_Oficial × % FIES Severa (INE) | Score = Likelihood (1-5) × Impact (1-5)",
       "descricao": "Classificação baseada na matriz de risco histórico (1984-2025: Likelihood x Impact) cruzada com a taxa oficial de Insegurança Alimentar Severa (FIES) do Instituto Nacional de Estatística de Angola (INE / FAO, Fevereiro 2026, Indicador ODS 2.1.2).",
       "parametros": {
-        "likelihood_scale": "1: Muito improvável (0-5%), 2: Improvável (5-15%), 3: Moderadamente provável (15-30%), 4: Provável (30-50%), 5: Muito provável (>50%)",
-        "impact_scale": "1: Negligenciável, 2: Baixo, 3: Moderado, 4: Significativo, 5: Crítico",
-        "risk_score_scale": "Baixo (1-7), Moderado (8-14), Alto (15-25)",
-        "fonte_ipc_fies": "Quadro 5 do Relatório FIES INE/FAO (Fevereiro 2026)"
+        "metodologia_calculo": "Score de Risco = Likelihood (1-5) × Impacto (1-5), com escala resultante de 1 a 25",
+        "origem_likelihood": "Análise climatológica de séries temporais de 41 anos (1984–2025) de anomalias de precipitação e secas severas em Angola (fontes: INAMET, SADC Climate Services Centre / SARCOF e FEWS NET Historical Drought Timeline). A pontuação de 1 a 5 reflete a frequência e probabilidade de recorrência histórica de eventos de seca extrema.",
+        "origem_impacto": "Avaliação de vulnerabilidade socioeconómica e agropastoril em secas históricas: quebra nas colheitas agrícolas de sequeiro (milho/massango/massambala), escassez forrageira e mortalidade pecuária (transumância crítica), desnutrição aguda (GAM) e necessidade de assistência humanitária de emergência (fontes: SADC RVAA, WFP VAM e Comissão Nacional de Protecção Civil).",
+        "escala_likelihood": {
+          "1": "Muito Improvável (< 5% dos anos | < 2 secas em 41 anos) — Regime pluviométrico estável e hiper-húmido.",
+          "2": "Improvável (5%–15% dos anos | 2 a 6 secas em 41 anos) — Florestas e norte costeiro com secas raras (ex: Cabinda, Zaire, Uíge, Luanda, Bengo).",
+          "3": "Moderadamente Provável (15%–30% dos anos | 7 a 12 secas em 41 anos) — Planalto Central e Leste; secas cíclicas moderadas (ex: Cuanza Sul, Malanje, Bié, Huambo, Moxico).",
+          "4": "Provável (30%–50% dos anos | 13 a 20 secas em 41 anos) — Transição semiárida com défices pluviométricos frequentes (ex: Benguela, Huíla).",
+          "5": "Muito Provável / Recorrente (> 50% dos anos | > 20 secas em 41 anos) — Corredor árido/semiárido do Sul de Angola sob estiagens crónicas e severas de El Niño (ex: Cunene, Namibe, Cuando, Cubango)."
+        },
+        "escala_impacto": {
+          "1": "Negligenciável — Sem perturbação apreciável na subsistência ou na economia local.",
+          "2": "Baixo — Perdas agrícolas ligeiras, compensadas pelo comércio ou fontes alternativas locais (ex: Uíge).",
+          "3": "Moderado — Quebras de 20% a 35% na colheita agropastoril e pressão inflacionária nos alimentos básicos (ex: Luanda, Bengo, Cuanza Norte/Sul, Malanje, Moxico).",
+          "4": "Significativo / Severo — Quebras > 40% na produção agrícola, perda de gado por escassez de água e forragem, esgotamento precoce de celeiros e necessidade urgente de assistência humanitária (ex: Cunene, Huíla, Namibe, Cuando, Cubango, Huambo, Lunda Norte).",
+          "5": "Crítico / Catastrófico — Colapso geral dos meios de subsistência, mortalidade massiva de rebanhos e fome severa generalizada."
+        },
+        "escala_score_risco": {
+          "baixo": "Score 1 a 7 (Verde) — Risco residual ou ligeiro",
+          "moderado": "Score 8 a 14 (Amarelo) — Risco moderado que exige monitorização e planeamento",
+          "alto": "Score 15 a 25 (Vermelho) — Risco elevado / crítico que exige intervenção e alocação preventiva de recursos"
+        },
+        "integracao_calculo_populacao": "Na fórmula IPC_FIES_INE, o Score de Risco modula o multiplicador de choque climático SARCOF-33: Multiplicador = Base + (Score / 25) × Fator_Sensibilidade, sendo P_insegura = População × % FIES Severa × Multiplicador.",
+        "fonte_fies": "Instituto Nacional de Estatística de Angola (INE) & FAO — Relatório FIES Fevereiro 2026 (Quadro 5, Indicador ODS 2.1.2)"
       },
       "links_oficiais": [
         {

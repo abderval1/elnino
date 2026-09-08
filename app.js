@@ -349,6 +349,85 @@ document.addEventListener('DOMContentLoaded', () => {
     return state.currentLang === 'en' ? cfg.nameEn : cfg.namePt;
   }
 
+  // Definições Oficiais da Matriz de Risco Histórico de Secas em Angola (1984-2025)
+  // Base: Análise climatológica de 41 anos (INAMET / SADC SARCOF / FEWS NET) & Avaliação de Vulnerabilidade (SADC RVAA / Protecção Civil)
+  const riskMatrixDefinitions = {
+    likelihood: {
+      1: {
+        pt: 'Muito Improvável',
+        en: 'Very Unlikely',
+        freqPt: '< 5% dos anos (< 2 secas em 41 anos)',
+        freqEn: '< 5% of years (< 2 droughts in 41 yrs)',
+        descPt: 'Regime pluvial estável e hiper-húmido; secas severas quase ausentes no histórico 1984-2025.',
+        descEn: 'Stable hyper-humid rainfall regime; severe droughts virtually absent in 1984-2025 record.'
+      },
+      2: {
+        pt: 'Improvável',
+        en: 'Unlikely',
+        freqPt: '5% a 15% dos anos (2 a 6 secas em 41 anos)',
+        freqEn: '5% to 15% of years (2 to 6 droughts in 41 yrs)',
+        descPt: 'Secas raras e isoladas (ex.: Cabinda, Zaire, Uíge, Luanda, Bengo, Cuanza Norte).',
+        descEn: 'Rare and isolated droughts (e.g. Cabinda, Zaire, Uige, Luanda, Bengo, Cuanza Norte).'
+      },
+      3: {
+        pt: 'Moderadamente Provável',
+        en: 'Moderately Likely',
+        freqPt: '15% a 30% dos anos (7 a 12 secas em 41 anos)',
+        freqEn: '15% to 30% of years (7 to 12 droughts in 41 yrs)',
+        descPt: 'Secas cíclicas associadas a episódios moderados de El Niño no Planalto Central e Leste (ex.: Cuanza Sul, Malanje, Bié, Huambo, Moxico, Lunda Sul/Norte).',
+        descEn: 'Cyclical droughts associated with moderate El Niño in Central/Eastern plateaus (e.g. Cuanza Sul, Malanje, Bie, Huambo, Moxico).'
+      },
+      4: {
+        pt: 'Provável',
+        en: 'Likely',
+        freqPt: '30% a 50% dos anos (13 a 20 secas em 41 anos)',
+        freqEn: '30% to 50% of years (13 to 20 droughts in 41 yrs)',
+        descPt: 'Zona de transição semiárida com défices pluviométricos e estiagens frequentes (ex.: Benguela, Huíla).',
+        descEn: 'Semi-arid transition zone with frequent rainfall deficits and dry spells (e.g. Benguela, Huila).'
+      },
+      5: {
+        pt: 'Muito Provável / Recorrente',
+        en: 'Very Likely / Recurrent',
+        freqPt: '> 50% dos anos (> 20 secas em 41 anos)',
+        freqEn: '> 50% of years (> 20 droughts in 41 yrs)',
+        descPt: 'Corredor árido/semiárido do Sul de Angola sob impacto crónico e recorrente de secas de El Niño (ex.: Cunene, Namibe, Cuando, Cubango).',
+        descEn: 'Arid/semi-arid Southern corridor under chronic, recurrent El Niño drought (e.g. Cunene, Namibe, Cuando, Cubango).'
+      }
+    },
+    impact: {
+      1: {
+        pt: 'Negligenciável',
+        en: 'Negligible',
+        descPt: 'Impacto residual; agricultura e subsistência sem perdas apreciáveis.',
+        descEn: 'Residual impact; agriculture and livelihoods without appreciable loss.'
+      },
+      2: {
+        pt: 'Baixo',
+        en: 'Low',
+        descPt: 'Perdas agrícolas ligeiras, compensadas por comércio ou fontes alternativas locais (ex.: Uíge).',
+        descEn: 'Minor agricultural losses, offset by trade or alternative sources (e.g. Uige).'
+      },
+      3: {
+        pt: 'Moderado',
+        en: 'Moderate',
+        descPt: 'Quebra de 20% a 35% na colheita agropastoril e pressão inflacionária nos alimentos básicos (ex.: Luanda, Bengo, Cuanza Sul, Malanje, Moxico).',
+        descEn: '20% to 35% agropastoral harvest loss and food price inflation (e.g. Luanda, Bengo, Cuanza Sul, Malanje, Moxico).'
+      },
+      4: {
+        pt: 'Significativo / Severo',
+        en: 'Significant / Severe',
+        descPt: 'Quebra > 40% na produção agrícola, perda de pastagens/mortalidade de gado, esgotamento precoce de celeiros e necessidade urgente de assistência humanitária (ex.: Cunene, Huíla, Namibe, Cuando, Cubango, Huambo, Lunda Norte).',
+        descEn: 'Harvest loss > 40%, severe pasture/water deficit, livestock losses, urgent humanitarian assistance needed (e.g. Cunene, Huila, Namibe, Cuando, Cubango).'
+      },
+      5: {
+        pt: 'Crítico / Catastrófico',
+        en: 'Critical / Catastrophic',
+        descPt: 'Colapso dos meios de subsistência, perda massiva de rebanhos e desnutrição aguda severa generalizada.',
+        descEn: 'Livelihood collapse, massive livestock mortality, and widespread severe acute malnutrition.'
+      }
+    }
+  };
+
   // Dynamic determination of SARCOF Zone & Code for Angola features in OND vs JFM
   // Based strictly on SARCOF-33 official statement & geospatial polygon intersections:
   // - OND (Out-Nov-Dez 2026):
@@ -876,11 +955,19 @@ document.addEventListener('DOMContentLoaded', () => {
       const effectiveRate = Math.min(0.95, fiesRate * climateMultiplier);
       affectedPop = Math.round(totalPop * effectiveRate);
 
-      formulaTitle = state.currentLang === 'en' ? 'Risk Matrix (1984-2025) & INE FIES (SDG 2.1.2)' : 'Matriz de Risco (1984-2025) & FIES INE (ODS 2.1.2)';
+      const isEn = state.currentLang === 'en';
+      const lDef = riskMatrixDefinitions.likelihood[riskMat.likelihood] || riskMatrixDefinitions.likelihood[3];
+      const iDef = riskMatrixDefinitions.impact[riskMat.impact] || riskMatrixDefinitions.impact[3];
+      const lName = isEn ? lDef.en : lDef.pt;
+      const iName = isEn ? iDef.en : iDef.pt;
+
+      formulaTitle = isEn ? 'Risk Matrix (1984-2025) & INE FIES (SDG 2.1.2)' : 'Matriz de Risco (1984-2025) & FIES INE (ODS 2.1.2)';
       officialOrg = 'INE Angola (FIES Fev 2026) & Matriz de Risco 1984-2025';
       officialUrl = 'https://www.ine.gov.ao/publicacoes/detalhes/NTA0Mzg%3D';
-      const numFmt = state.currentLang === 'en' ? 'en-US' : 'pt-PT';
-      formulaSteps = `P_insegura = Pop (${totalPop.toLocaleString(numFmt)}) × FIES (${fiesSev}%) × Choque SARCOF (${climateMultiplier.toFixed(2)}x) = ${affectedPop.toLocaleString(numFmt)} hab. | Matriz: L(${riskMat.likelihood}) × I(${riskMat.impact}) = Score ${riskMat.score}`;
+      const numFmt = isEn ? 'en-US' : 'pt-PT';
+      formulaSteps = isEn
+        ? `[Step 1 - Risk Matrix 1984-2025]: Likelihood L(${riskMat.likelihood}/5: ${lName}) × Impact I(${riskMat.impact}/5: ${iName}) = Score ${riskMat.score}/25 (${riskMat.rank}) | [Step 2 - Climate Shock]: SARCOF Multiplier = ${climateMultiplier.toFixed(2)}x | [Step 3 - Affected Pop]: Pop (${totalPop.toLocaleString(numFmt)}) × FIES (${fiesSev}%) × ${climateMultiplier.toFixed(2)}x = ${affectedPop.toLocaleString(numFmt)} people`
+        : `[Passo 1 - Matriz de Risco 1984-2025]: Likelihood L(${riskMat.likelihood}/5: ${lName}) × Impacto I(${riskMat.impact}/5: ${iName}) = Score ${riskMat.score}/25 (${riskMat.rank}) | [Passo 2 - Choque SARCOF]: Multiplicador = ${climateMultiplier.toFixed(2)}x | [Passo 3 - População Insegura]: Pop (${totalPop.toLocaleString(numFmt)}) × FIES (${fiesSev}%) × ${climateMultiplier.toFixed(2)}x = ${affectedPop.toLocaleString(numFmt)} hab.`;
 
     } else if (state.formulaModel === 'CUSTOM') {
       // 5. FÓRMULA PERSONALIZADA PELO UTILIZADOR COM DADOS DO SISTEMA
@@ -1395,14 +1482,76 @@ document.addEventListener('DOMContentLoaded', () => {
             <span style="font-size:0.85rem; font-weight:700; color:${risk.fiesSeveraPct > 30 ? '#ef4444' : risk.fiesSeveraPct > 15 ? '#f59e0b' : '#34d399'};">${risk.fiesSeveraPct}%</span>
           </div>
           ${bar(parseFloat(risk.fiesSeveraPct), risk.fiesSeveraPct > 30 ? '#ef4444' : risk.fiesSeveraPct > 15 ? '#f59e0b' : '#34d399')}
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px; font-size:0.7rem;">
-            <span style="color:#94a3b8;">Matriz de Risco Histórico (1984-2025):</span>
-            <span class="badge" style="background:${(risk.riskMatrix && risk.riskMatrix.score >= 15) ? '#ef4444' : (risk.riskMatrix && risk.riskMatrix.score >= 8) ? '#f59e0b' : '#10b981'}; font-size:0.68rem;">
-              Score: ${risk.riskMatrix ? risk.riskMatrix.score : '-'} (${risk.riskMatrix ? risk.riskMatrix.rank : '-'}) — L:${risk.riskMatrix ? risk.riskMatrix.likelihood : 3} × I:${risk.riskMatrix ? risk.riskMatrix.impact : 3}
-            </span>
-          </div>
         </div>
       ` : ''}
+
+      ${risk.riskMatrix ? (() => {
+        const rm = risk.riskMatrix;
+        const isEn = state.currentLang === 'en';
+        const lObj = riskMatrixDefinitions.likelihood[rm.likelihood] || riskMatrixDefinitions.likelihood[3];
+        const iObj = riskMatrixDefinitions.impact[rm.impact] || riskMatrixDefinitions.impact[3];
+        const lName = isEn ? lObj.en : lObj.pt;
+        const lFreq = isEn ? lObj.freqEn : lObj.freqPt;
+        const iName = isEn ? iObj.en : iObj.pt;
+        const iDesc = isEn ? iObj.descEn : iObj.descPt;
+        const badgeColor = rm.score >= 15 ? '#ef4444' : rm.score >= 8 ? '#f59e0b' : '#10b981';
+        const rankLabel = rm.score >= 15 ? (isEn ? 'HIGH RISK' : 'RISCO ALTO') : rm.score >= 8 ? (isEn ? 'MODERATE RISK' : 'RISCO MODERADO') : (isEn ? 'LOW RISK' : 'RISCO BAIXO');
+
+        return `
+          <div style="margin-top:12px; padding:10px; background:rgba(15,23,42,0.85); border:1px solid rgba(255,255,255,0.12); border-radius:8px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+              <span style="font-size:0.75rem; color:#f8fafc; font-weight:700;">
+                <i class="fa-solid fa-table-cells" style="color:#f59e0b;"></i> ${isEn ? 'Drought Risk Matrix (1984–2025)' : 'Matriz de Risco Histórico (1984–2025)'}
+              </span>
+              <span class="badge" style="background:${badgeColor}; color:#fff; font-size:0.7rem; font-weight:700;">
+                ${isEn ? 'Score' : 'Pontuação'}: ${rm.score}/25 — ${rankLabel}
+              </span>
+            </div>
+
+            <div style="font-size:0.68rem; color:#cbd5e1; margin-bottom:8px; line-height:1.4;">
+              <strong style="color:#38bdf8;">${isEn ? 'Formula' : 'Fórmula'}:</strong> <code>${isEn ? 'Likelihood (L) × Impact (I) = Risk Score' : 'Likelihood (L) × Impacto (I) = Score de Risco'}</code>
+            </div>
+
+            <!-- Likelihood & Impact Metrics Grid -->
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:6px; margin-bottom:8px;">
+              <div style="background:rgba(255,255,255,0.04); padding:6px 8px; border-radius:6px; border:1px solid rgba(56,189,248,0.2);">
+                <div style="font-size:0.65rem; color:#94a3b8; text-transform:uppercase; font-weight:600;">
+                  ${isEn ? 'Likelihood (L)' : 'Likelihood (Probabilidade)'}
+                </div>
+                <div style="font-size:0.85rem; font-weight:700; color:#38bdf8;">
+                  L = ${rm.likelihood} / 5
+                </div>
+                <div style="font-size:0.67rem; color:#f8fafc; font-weight:600;">${lName}</div>
+                <div style="font-size:0.62rem; color:#94a3b8; line-height:1.2; margin-top:2px;">${lFreq}</div>
+              </div>
+
+              <div style="background:rgba(255,255,255,0.04); padding:6px 8px; border-radius:6px; border:1px solid rgba(245,158,11,0.2);">
+                <div style="font-size:0.65rem; color:#94a3b8; text-transform:uppercase; font-weight:600;">
+                  ${isEn ? 'Impact (I)' : 'Impacto Agropastoril (I)'}
+                </div>
+                <div style="font-size:0.85rem; font-weight:700; color:#f59e0b;">
+                  I = ${rm.impact} / 5
+                </div>
+                <div style="font-size:0.67rem; color:#f8fafc; font-weight:600;">${iName}</div>
+                <div style="font-size:0.62rem; color:#94a3b8; line-height:1.2; margin-top:2px;">${iDesc}</div>
+              </div>
+            </div>
+
+            <!-- Mathematical Calculation Result -->
+            <div style="background:rgba(0,0,0,0.3); padding:6px 8px; border-radius:6px; font-size:0.68rem; margin-bottom:6px; color:#cbd5e1; border-left:3px solid ${badgeColor};">
+              <div><strong>${isEn ? 'Exact Calculation' : 'Cálculo Exato'}:</strong> <code>${rm.likelihood} (Likelihood) × ${rm.impact} (Impacto) = ${rm.score}</code> / 25 (${rankLabel})</div>
+              <div style="color:#94a3b8; font-size:0.62rem; margin-top:2px;">
+                ${isEn ? 'Historical Record (41 years: 1984–2025): INAMET, SADC SARCOF, FEWS NET & SADC RVAA.' : 'Base Histórica de 41 anos (1984–2025): INAMET, SADC SARCOF, FEWS NET e SADC RVAA.'}
+              </div>
+            </div>
+
+            <!-- Open Method Modal Button -->
+            <button onclick="document.getElementById('fonte-modal').classList.add('active');" style="width:100%; border:none; background:rgba(56,189,248,0.15); border:1px solid rgba(56,189,248,0.35); color:#38bdf8; padding:5px 8px; border-radius:4px; font-size:0.68rem; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;">
+              <i class="fa-solid fa-circle-info"></i> ${isEn ? 'View Full Risk Matrix Methodology & Sources' : 'Ver Metodologia Completa & Escala 5×5 da Matriz'}
+            </button>
+          </div>
+        `;
+      })() : ''}
     `;
   }
 

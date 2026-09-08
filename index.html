@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="/vendor/leaflet.css">
   
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="styles.css?v=20260908_v14">
+  <link rel="stylesheet" href="styles.css?v=20260908_v15">
 </head>
 <body>
   <div class="app-container">
@@ -592,9 +592,249 @@
 
         </ul>
 
+        <!-- SECTION 3: Risk Matrix -->
+        <h4 style="color: #f59e0b; font-family: 'Outfit', sans-serif; font-size: 1.05rem; margin-bottom: 8px;">
+          3. Matriz de Risco Histórico de Secas em Angola (1984–2025: Likelihood × Impacto)
+        </h4>
+        <p style="margin-bottom: 12px; font-size: 0.82rem;">
+          A Matriz de Risco é um instrumento reconhecido internacionalmente pelo <strong>UNDRR / Quadro de Sendai 2015-2030</strong>, pela <strong>ISO 31010</strong> e pela <strong>FEMA</strong> para avaliação comparativa do risco de desastres naturais. Neste sistema, é aplicada a 41 anos de registos históricos de secas em Angola (1984–2025) com base em dados do <strong>INAMET</strong>, <strong>SADC Climate Services Centre (SARCOF)</strong> e <strong>FEWS NET</strong>.
+        </p>
+
+        <!-- Formula Box -->
+        <div style="background: rgba(15,23,42,0.9); padding: 12px 14px; border-radius: 8px; border: 1px solid rgba(245,158,11,0.4); margin-bottom: 14px;">
+          <div style="font-size: 0.85rem; font-weight: 700; color: #f59e0b; margin-bottom: 6px;">
+            <i class="fa-solid fa-square-root-variable"></i> Fórmula da Matriz de Risco
+          </div>
+          <code style="font-size: 0.85rem; color: #fcd34d;">Score de Risco = Likelihood (1–5) × Impacto (1–5) ∈ [1, 25]</code>
+          <div style="margin-top: 8px; font-size: 0.78rem; color: #cbd5e1; line-height: 1.5;">
+            <strong style="color: #10b981;">🟢 Score 1–7: BAIXO</strong> — Risco residual ou ligeiro; sem necessidade de resposta de emergência.<br/>
+            <strong style="color: #f59e0b;">🟡 Score 8–14: MODERADO</strong> — Risco moderado; exige monitorização, planeamento preventivo e pré-posicionamento de recursos.<br/>
+            <strong style="color: #ef4444;">🔴 Score 15–25: ALTO</strong> — Risco elevado / crítico; exige intervenção de emergência e alocação prioritária de recursos humanitários.
+          </div>
+        </div>
+
+        <!-- 5x5 Matrix Grid (visual) -->
+        <div style="overflow-x: auto; margin-bottom: 16px;">
+          <table style="border-collapse: collapse; font-size: 0.72rem; width: 100%; min-width: 400px;">
+            <thead>
+              <tr>
+                <th style="border: 1px solid rgba(255,255,255,0.15); padding: 6px 8px; color: #94a3b8; background: rgba(0,0,0,0.3);" colspan="2" rowspan="2">Likelihood → / Impacto ↓</th>
+                <th colspan="5" style="border: 1px solid rgba(255,255,255,0.15); padding: 6px 8px; text-align: center; color: #38bdf8; background: rgba(14,165,233,0.1);">
+                  Likelihood (L) — Probabilidade Histórica 1984–2025
+                </th>
+              </tr>
+              <tr>
+                <th style="border: 1px solid rgba(255,255,255,0.15); padding: 5px 6px; color: #38bdf8; text-align: center; background: rgba(14,165,233,0.07);">L1<br/><span style="font-weight:400; color:#64748b;">&lt;5%</span></th>
+                <th style="border: 1px solid rgba(255,255,255,0.15); padding: 5px 6px; color: #38bdf8; text-align: center; background: rgba(14,165,233,0.07);">L2<br/><span style="font-weight:400; color:#64748b;">5–15%</span></th>
+                <th style="border: 1px solid rgba(255,255,255,0.15); padding: 5px 6px; color: #38bdf8; text-align: center; background: rgba(14,165,233,0.07);">L3<br/><span style="font-weight:400; color:#64748b;">15–30%</span></th>
+                <th style="border: 1px solid rgba(255,255,255,0.15); padding: 5px 6px; color: #38bdf8; text-align: center; background: rgba(14,165,233,0.07);">L4<br/><span style="font-weight:400; color:#64748b;">30–50%</span></th>
+                <th style="border: 1px solid rgba(255,255,255,0.15); padding: 5px 6px; color: #38bdf8; text-align: center; background: rgba(14,165,233,0.07);">L5<br/><span style="font-weight:400; color:#64748b;">&gt;50%</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- I5 -->
+              <tr>
+                <th rowspan="5" style="border: 1px solid rgba(255,255,255,0.15); padding: 6px 4px; color: #f59e0b; text-align: center; writing-mode: vertical-rl; transform: rotate(180deg); background: rgba(245,158,11,0.07);">
+                  Impacto (I) — Severidade Agropastoril
+                </th>
+                <td style="border: 1px solid rgba(255,255,255,0.15); padding: 5px 6px; font-weight:700; color: #f59e0b; background: rgba(245,158,11,0.07); text-align:center;">I5<br/><span style="font-weight:400; color:#64748b; font-size:0.65rem;">Catastrófico</span></td>
+                <td style="border: 1px solid rgba(255,255,255,0.15); padding: 5px; text-align:center; background: rgba(16,185,129,0.2); color:#34d399; font-weight:700;">5</td>
+                <td style="border: 1px solid rgba(255,255,255,0.15); padding: 5px; text-align:center; background: rgba(16,185,129,0.2); color:#34d399; font-weight:700;">10</td>
+                <td style="border: 1px solid rgba(255,255,255,0.15); padding: 5px; text-align:center; background: rgba(245,158,11,0.3); color:#fcd34d; font-weight:700;">15</td>
+                <td style="border: 1px solid rgba(255,255,255,0.15); padding: 5px; text-align:center; background: rgba(239,68,68,0.35); color:#fca5a5; font-weight:700;">20</td>
+                <td style="border: 1px solid rgba(255,255,255,0.15); padding: 5px; text-align:center; background: rgba(239,68,68,0.5); color:#fca5a5; font-weight:800;">25</td>
+              </tr>
+              <!-- I4 -->
+              <tr>
+                <td style="border: 1px solid rgba(255,255,255,0.15); padding: 5px 6px; font-weight:700; color: #f59e0b; background: rgba(245,158,11,0.07); text-align:center;">I4<br/><span style="font-weight:400; color:#64748b; font-size:0.65rem;">Severo</span></td>
+                <td style="border: 1px solid rgba(255,255,255,0.15); padding: 5px; text-align:center; background: rgba(16,185,129,0.2); color:#34d399; font-weight:700;">4</td>
+                <td style="border: 1px solid rgba(255,255,255,0.15); padding: 5px; text-align:center; background: rgba(16,185,129,0.2); color:#34d399; font-weight:700;">8</td>
+                <td style="border: 1px solid rgba(255,255,255,0.15); padding: 5px; text-align:center; background: rgba(245,158,11,0.3); color:#fcd34d; font-weight:700;">12</td>
+                <td style="border: 1px solid rgba(255,255,255,0.15); padding: 5px; text-align:center; background: rgba(245,158,11,0.3); color:#fcd34d; font-weight:700;">16</td>
+                <td style="border: 1px solid rgba(255,255,255,0.15); padding: 5px; text-align:center; background: rgba(239,68,68,0.35); color:#fca5a5; font-weight:700;">20</td>
+              </tr>
+              <!-- I3 -->
+              <tr>
+                <td style="border: 1px solid rgba(255,255,255,0.15); padding: 5px 6px; font-weight:700; color: #f59e0b; background: rgba(245,158,11,0.07); text-align:center;">I3<br/><span style="font-weight:400; color:#64748b; font-size:0.65rem;">Moderado</span></td>
+                <td style="border: 1px solid rgba(255,255,255,0.15); padding: 5px; text-align:center; background: rgba(16,185,129,0.2); color:#34d399; font-weight:700;">3</td>
+                <td style="border: 1px solid rgba(255,255,255,0.15); padding: 5px; text-align:center; background: rgba(16,185,129,0.2); color:#34d399; font-weight:700;">6</td>
+                <td style="border: 1px solid rgba(255,255,255,0.15); padding: 5px; text-align:center; background: rgba(245,158,11,0.3); color:#fcd34d; font-weight:700;">9</td>
+                <td style="border: 1px solid rgba(255,255,255,0.15); padding: 5px; text-align:center; background: rgba(245,158,11,0.3); color:#fcd34d; font-weight:700;">12</td>
+                <td style="border: 1px solid rgba(255,255,255,0.15); padding: 5px; text-align:center; background: rgba(239,68,68,0.35); color:#fca5a5; font-weight:700;">15</td>
+              </tr>
+              <!-- I2 -->
+              <tr>
+                <td style="border: 1px solid rgba(255,255,255,0.15); padding: 5px 6px; font-weight:700; color: #f59e0b; background: rgba(245,158,11,0.07); text-align:center;">I2<br/><span style="font-weight:400; color:#64748b; font-size:0.65rem;">Baixo</span></td>
+                <td style="border: 1px solid rgba(255,255,255,0.15); padding: 5px; text-align:center; background: rgba(16,185,129,0.2); color:#34d399; font-weight:700;">2</td>
+                <td style="border: 1px solid rgba(255,255,255,0.15); padding: 5px; text-align:center; background: rgba(16,185,129,0.2); color:#34d399; font-weight:700;">4</td>
+                <td style="border: 1px solid rgba(255,255,255,0.15); padding: 5px; text-align:center; background: rgba(16,185,129,0.2); color:#34d399; font-weight:700;">6</td>
+                <td style="border: 1px solid rgba(255,255,255,0.15); padding: 5px; text-align:center; background: rgba(16,185,129,0.2); color:#34d399; font-weight:700;">8</td>
+                <td style="border: 1px solid rgba(255,255,255,0.15); padding: 5px; text-align:center; background: rgba(245,158,11,0.3); color:#fcd34d; font-weight:700;">10</td>
+              </tr>
+              <!-- I1 -->
+              <tr>
+                <td style="border: 1px solid rgba(255,255,255,0.15); padding: 5px 6px; font-weight:700; color: #f59e0b; background: rgba(245,158,11,0.07); text-align:center;">I1<br/><span style="font-weight:400; color:#64748b; font-size:0.65rem;">Negligenciável</span></td>
+                <td style="border: 1px solid rgba(255,255,255,0.15); padding: 5px; text-align:center; background: rgba(16,185,129,0.2); color:#34d399; font-weight:700;">1</td>
+                <td style="border: 1px solid rgba(255,255,255,0.15); padding: 5px; text-align:center; background: rgba(16,185,129,0.2); color:#34d399; font-weight:700;">2</td>
+                <td style="border: 1px solid rgba(255,255,255,0.15); padding: 5px; text-align:center; background: rgba(16,185,129,0.2); color:#34d399; font-weight:700;">3</td>
+                <td style="border: 1px solid rgba(255,255,255,0.15); padding: 5px; text-align:center; background: rgba(16,185,129,0.2); color:#34d399; font-weight:700;">4</td>
+                <td style="border: 1px solid rgba(255,255,255,0.15); padding: 5px; text-align:center; background: rgba(16,185,129,0.2); color:#34d399; font-weight:700;">5</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Likelihood Levels Detail -->
+        <div style="margin-bottom: 14px;">
+          <h5 style="color: #38bdf8; font-size: 0.9rem; margin-bottom: 8px;"><i class="fa-solid fa-calendar-days"></i> Escala de Likelihood (Probabilidade de Seca — Série de 41 anos: 1984–2025)</h5>
+          <table style="width:100%; border-collapse: collapse; font-size: 0.75rem;">
+            <thead>
+              <tr style="background: rgba(14,165,233,0.1);">
+                <th style="border: 1px solid rgba(255,255,255,0.1); padding: 5px 7px; color:#38bdf8; text-align:left;">Nível</th>
+                <th style="border: 1px solid rgba(255,255,255,0.1); padding: 5px 7px; color:#38bdf8;">Classificação</th>
+                <th style="border: 1px solid rgba(255,255,255,0.1); padding: 5px 7px; color:#38bdf8;">Frequência Histórica</th>
+                <th style="border: 1px solid rgba(255,255,255,0.1); padding: 5px 7px; color:#38bdf8; text-align:left;">Províncias Representativas</th>
+                <th style="border: 1px solid rgba(255,255,255,0.1); padding: 5px 7px; color:#38bdf8; text-align:left;">Fonte</th>
+              </tr>
+            </thead>
+            <tbody style="color: #cbd5e1;">
+              <tr>
+                <td style="border: 1px solid rgba(255,255,255,0.08); padding: 5px 7px; font-weight:700; color:#38bdf8; text-align:center;">L1</td>
+                <td style="border: 1px solid rgba(255,255,255,0.08); padding: 5px 7px; font-weight:600;">Muito Improvável</td>
+                <td style="border: 1px solid rgba(255,255,255,0.08); padding: 5px 7px;">&lt; 5% dos anos (&lt; 2 secas em 41 anos)</td>
+                <td style="border: 1px solid rgba(255,255,255,0.08); padding: 5px 7px;">Regime hiper-húmido (raro em Angola)</td>
+                <td style="border: 1px solid rgba(255,255,255,0.08); padding: 5px 7px;"><a href="https://www.inamet.gov.ao/" target="_blank" style="color:#38bdf8;">INAMET</a></td>
+              </tr>
+              <tr style="background:rgba(255,255,255,0.02);">
+                <td style="border: 1px solid rgba(255,255,255,0.08); padding: 5px 7px; font-weight:700; color:#38bdf8; text-align:center;">L2</td>
+                <td style="border: 1px solid rgba(255,255,255,0.08); padding: 5px 7px; font-weight:600;">Improvável</td>
+                <td style="border: 1px solid rgba(255,255,255,0.08); padding: 5px 7px;">5%–15% (2 a 6 secas em 41 anos)</td>
+                <td style="border: 1px solid rgba(255,255,255,0.08); padding: 5px 7px;">Cabinda, Zaire, Uíge, Luanda, Bengo, Cuanza Norte, Icolo e Bengo</td>
+                <td style="border: 1px solid rgba(255,255,255,0.08); padding: 5px 7px;"><a href="https://fews.net/southern-africa/angola" target="_blank" style="color:#38bdf8;">FEWS NET</a></td>
+              </tr>
+              <tr>
+                <td style="border: 1px solid rgba(255,255,255,0.08); padding: 5px 7px; font-weight:700; color:#38bdf8; text-align:center;">L3</td>
+                <td style="border: 1px solid rgba(255,255,255,0.08); padding: 5px 7px; font-weight:600;">Moderadamente Provável</td>
+                <td style="border: 1px solid rgba(255,255,255,0.08); padding: 5px 7px;">15%–30% (7 a 12 secas em 41 anos)</td>
+                <td style="border: 1px solid rgba(255,255,255,0.08); padding: 5px 7px;">Cuanza Sul, Malanje, Bié, Huambo, Moxico, Lunda Sul, Lunda Norte</td>
+                <td style="border: 1px solid rgba(255,255,255,0.08); padding: 5px 7px;"><a href="https://www.sadc.int/themes/meteorology-climate/climate-services" target="_blank" style="color:#38bdf8;">SARCOF</a></td>
+              </tr>
+              <tr style="background:rgba(255,255,255,0.02);">
+                <td style="border: 1px solid rgba(255,255,255,0.08); padding: 5px 7px; font-weight:700; color:#38bdf8; text-align:center;">L4</td>
+                <td style="border: 1px solid rgba(255,255,255,0.08); padding: 5px 7px; font-weight:600;">Provável</td>
+                <td style="border: 1px solid rgba(255,255,255,0.08); padding: 5px 7px;">30%–50% (13 a 20 secas em 41 anos)</td>
+                <td style="border: 1px solid rgba(255,255,255,0.08); padding: 5px 7px;">Benguela, Huíla</td>
+                <td style="border: 1px solid rgba(255,255,255,0.08); padding: 5px 7px;"><a href="https://fews.net/southern-africa/angola" target="_blank" style="color:#38bdf8;">FEWS NET</a></td>
+              </tr>
+              <tr>
+                <td style="border: 1px solid rgba(255,255,255,0.08); padding: 5px 7px; font-weight:700; color:#38bdf8; text-align:center;">L5</td>
+                <td style="border: 1px solid rgba(255,255,255,0.08); padding: 5px 7px; font-weight:600;">Muito Provável / Recorrente</td>
+                <td style="border: 1px solid rgba(255,255,255,0.08); padding: 5px 7px;">&gt;50% (&gt; 20 secas em 41 anos)</td>
+                <td style="border: 1px solid rgba(255,255,255,0.08); padding: 5px 7px;">Cunene, Namibe, Cuando Cubango, Moxico Leste</td>
+                <td style="border: 1px solid rgba(255,255,255,0.08); padding: 5px 7px;"><a href="https://www.inamet.gov.ao/" target="_blank" style="color:#38bdf8;">INAMET</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Impact Levels Detail -->
+        <div style="margin-bottom: 14px;">
+          <h5 style="color: #f59e0b; font-size: 0.9rem; margin-bottom: 8px;"><i class="fa-solid fa-wheat-awn-circle-exclamation"></i> Escala de Impacto (Severidade Agropastoril & Humanitária)</h5>
+          <table style="width:100%; border-collapse: collapse; font-size: 0.75rem;">
+            <thead>
+              <tr style="background: rgba(245,158,11,0.1);">
+                <th style="border: 1px solid rgba(255,255,255,0.1); padding: 5px 7px; color:#f59e0b; text-align:left;">Nível</th>
+                <th style="border: 1px solid rgba(255,255,255,0.1); padding: 5px 7px; color:#f59e0b;">Classificação</th>
+                <th style="border: 1px solid rgba(255,255,255,0.1); padding: 5px 7px; color:#f59e0b; text-align:left;">Descrição Técnica</th>
+                <th style="border: 1px solid rgba(255,255,255,0.1); padding: 5px 7px; color:#f59e0b; text-align:left;">Fonte</th>
+              </tr>
+            </thead>
+            <tbody style="color: #cbd5e1;">
+              <tr>
+                <td style="border: 1px solid rgba(255,255,255,0.08); padding: 5px 7px; font-weight:700; color:#f59e0b; text-align:center;">I1</td>
+                <td style="border: 1px solid rgba(255,255,255,0.08); padding: 5px 7px; font-weight:600;">Negligenciável</td>
+                <td style="border: 1px solid rgba(255,255,255,0.08); padding: 5px 7px;">Sem perturbação apreciável na subsistência; agricultura e gado sem perdas relevantes.</td>
+                <td style="border: 1px solid rgba(255,255,255,0.08); padding: 5px 7px;"><a href="https://www.sadc.int/programmes/disaster-risk-reduction" target="_blank" style="color:#38bdf8;">SADC RVAA</a></td>
+              </tr>
+              <tr style="background:rgba(255,255,255,0.02);">
+                <td style="border: 1px solid rgba(255,255,255,0.08); padding: 5px 7px; font-weight:700; color:#f59e0b; text-align:center;">I2</td>
+                <td style="border: 1px solid rgba(255,255,255,0.08); padding: 5px 7px; font-weight:600;">Baixo</td>
+                <td style="border: 1px solid rgba(255,255,255,0.08); padding: 5px 7px;">Perdas agrícolas ligeiras (&lt;15%); compensadas por comércio ou fontes alternativas locais.</td>
+                <td style="border: 1px solid rgba(255,255,255,0.08); padding: 5px 7px;"><a href="https://vam.wfp.org/" target="_blank" style="color:#38bdf8;">WFP VAM</a></td>
+              </tr>
+              <tr>
+                <td style="border: 1px solid rgba(255,255,255,0.08); padding: 5px 7px; font-weight:700; color:#f59e0b; text-align:center;">I3</td>
+                <td style="border: 1px solid rgba(255,255,255,0.08); padding: 5px 7px; font-weight:600;">Moderado</td>
+                <td style="border: 1px solid rgba(255,255,255,0.08); padding: 5px 7px;">Quebra de 20%–35% na colheita agropastoril; pressão inflacionária nos alimentos básicos (milho, massango, massambala).</td>
+                <td style="border: 1px solid rgba(255,255,255,0.08); padding: 5px 7px;"><a href="https://www.fao.org/giews/country-brief/country/AGO/en" target="_blank" style="color:#38bdf8;">FAO GIEWS</a></td>
+              </tr>
+              <tr style="background:rgba(255,255,255,0.02);">
+                <td style="border: 1px solid rgba(255,255,255,0.08); padding: 5px 7px; font-weight:700; color:#f59e0b; text-align:center;">I4</td>
+                <td style="border: 1px solid rgba(255,255,255,0.08); padding: 5px 7px; font-weight:600;">Significativo / Severo</td>
+                <td style="border: 1px solid rgba(255,255,255,0.08); padding: 5px 7px;">Quebra &gt;40% na produção; perda de gado por escassez de água e forragem; esgotamento de celeiros; assistência humanitária urgente.</td>
+                <td style="border: 1px solid rgba(255,255,255,0.08); padding: 5px 7px;"><a href="https://www.sadc.int/programmes/disaster-risk-reduction" target="_blank" style="color:#38bdf8;">SADC RVAA</a></td>
+              </tr>
+              <tr>
+                <td style="border: 1px solid rgba(255,255,255,0.08); padding: 5px 7px; font-weight:700; color:#f59e0b; text-align:center;">I5</td>
+                <td style="border: 1px solid rgba(255,255,255,0.08); padding: 5px 7px; font-weight:600;">Crítico / Catastrófico</td>
+                <td style="border: 1px solid rgba(255,255,255,0.08); padding: 5px 7px;">Colapso geral dos meios de subsistência; mortalidade massiva de rebanhos; fome severa e desnutrição aguda (GAM) generalizada.</td>
+                <td style="border: 1px solid rgba(255,255,255,0.08); padding: 5px 7px;"><a href="https://www.ipcinfo.org/ipc-manual/" target="_blank" style="color:#38bdf8;">IPC 3.1</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Province Risk Values Table -->
+        <div style="margin-bottom: 14px;">
+          <h5 style="color: #a78bfa; font-size: 0.9rem; margin-bottom: 8px;"><i class="fa-solid fa-map-location-dot"></i> Valores por Província (21 Províncias de Angola)</h5>
+          <table style="width:100%; border-collapse: collapse; font-size: 0.72rem;">
+            <thead>
+              <tr style="background: rgba(167,139,250,0.1);">
+                <th style="border: 1px solid rgba(255,255,255,0.1); padding: 5px 7px; color:#a78bfa;">Província</th>
+                <th style="border: 1px solid rgba(255,255,255,0.1); padding: 5px 7px; color:#a78bfa; text-align:center;">L</th>
+                <th style="border: 1px solid rgba(255,255,255,0.1); padding: 5px 7px; color:#a78bfa; text-align:center;">I</th>
+                <th style="border: 1px solid rgba(255,255,255,0.1); padding: 5px 7px; color:#a78bfa; text-align:center;">Score</th>
+                <th style="border: 1px solid rgba(255,255,255,0.1); padding: 5px 7px; color:#a78bfa; text-align:center;">Classificação</th>
+              </tr>
+            </thead>
+            <tbody style="color: #cbd5e1;">
+              <tr><td style="border:1px solid rgba(255,255,255,0.08); padding:4px 7px;">Cabinda</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; color:#38bdf8;">2</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; color:#f59e0b;">3</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; font-weight:700; color:#34d399;">6</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center;"><span style="background:#10b981; color:#fff; padding:2px 6px; border-radius:3px; font-size:0.65rem;">Baixo</span></td></tr>
+              <tr style="background:rgba(255,255,255,0.02);"><td style="border:1px solid rgba(255,255,255,0.08); padding:4px 7px;">Zaire</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; color:#38bdf8;">2</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; color:#f59e0b;">3</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; font-weight:700; color:#34d399;">6</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center;"><span style="background:#10b981; color:#fff; padding:2px 6px; border-radius:3px; font-size:0.65rem;">Baixo</span></td></tr>
+              <tr><td style="border:1px solid rgba(255,255,255,0.08); padding:4px 7px;">Uíge</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; color:#38bdf8;">2</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; color:#f59e0b;">2</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; font-weight:700; color:#34d399;">4</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center;"><span style="background:#10b981; color:#fff; padding:2px 6px; border-radius:3px; font-size:0.65rem;">Baixo</span></td></tr>
+              <tr style="background:rgba(255,255,255,0.02);"><td style="border:1px solid rgba(255,255,255,0.08); padding:4px 7px;">Luanda</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; color:#38bdf8;">2</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; color:#f59e0b;">3</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; font-weight:700; color:#34d399;">6</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center;"><span style="background:#10b981; color:#fff; padding:2px 6px; border-radius:3px; font-size:0.65rem;">Baixo</span></td></tr>
+              <tr><td style="border:1px solid rgba(255,255,255,0.08); padding:4px 7px;">Bengo</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; color:#38bdf8;">2</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; color:#f59e0b;">3</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; font-weight:700; color:#34d399;">6</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center;"><span style="background:#10b981; color:#fff; padding:2px 6px; border-radius:3px; font-size:0.65rem;">Baixo</span></td></tr>
+              <tr style="background:rgba(255,255,255,0.02);"><td style="border:1px solid rgba(255,255,255,0.08); padding:4px 7px;">Cuanza Norte</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; color:#38bdf8;">2</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; color:#f59e0b;">3</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; font-weight:700; color:#34d399;">6</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center;"><span style="background:#10b981; color:#fff; padding:2px 6px; border-radius:3px; font-size:0.65rem;">Baixo</span></td></tr>
+              <tr><td style="border:1px solid rgba(255,255,255,0.08); padding:4px 7px;">Icolo e Bengo</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; color:#38bdf8;">2</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; color:#f59e0b;">3</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; font-weight:700; color:#34d399;">6</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center;"><span style="background:#10b981; color:#fff; padding:2px 6px; border-radius:3px; font-size:0.65rem;">Baixo</span></td></tr>
+              <tr style="background:rgba(255,255,255,0.02);"><td style="border:1px solid rgba(255,255,255,0.08); padding:4px 7px;">Cuanza Sul</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; color:#38bdf8;">3</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; color:#f59e0b;">3</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; font-weight:700; color:#fcd34d;">9</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center;"><span style="background:#f59e0b; color:#000; padding:2px 6px; border-radius:3px; font-size:0.65rem;">Moderado</span></td></tr>
+              <tr><td style="border:1px solid rgba(255,255,255,0.08); padding:4px 7px;">Malanje</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; color:#38bdf8;">3</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; color:#f59e0b;">3</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; font-weight:700; color:#fcd34d;">9</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center;"><span style="background:#f59e0b; color:#000; padding:2px 6px; border-radius:3px; font-size:0.65rem;">Moderado</span></td></tr>
+              <tr style="background:rgba(255,255,255,0.02);"><td style="border:1px solid rgba(255,255,255,0.08); padding:4px 7px;">Bié</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; color:#38bdf8;">3</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; color:#f59e0b;">3</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; font-weight:700; color:#fcd34d;">9</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center;"><span style="background:#f59e0b; color:#000; padding:2px 6px; border-radius:3px; font-size:0.65rem;">Moderado</span></td></tr>
+              <tr><td style="border:1px solid rgba(255,255,255,0.08); padding:4px 7px;">Moxico</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; color:#38bdf8;">3</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; color:#f59e0b;">3</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; font-weight:700; color:#fcd34d;">9</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center;"><span style="background:#f59e0b; color:#000; padding:2px 6px; border-radius:3px; font-size:0.65rem;">Moderado</span></td></tr>
+              <tr style="background:rgba(255,255,255,0.02);"><td style="border:1px solid rgba(255,255,255,0.08); padding:4px 7px;">Lunda Sul</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; color:#38bdf8;">3</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; color:#f59e0b;">3</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; font-weight:700; color:#fcd34d;">9</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center;"><span style="background:#f59e0b; color:#000; padding:2px 6px; border-radius:3px; font-size:0.65rem;">Moderado</span></td></tr>
+              <tr><td style="border:1px solid rgba(255,255,255,0.08); padding:4px 7px;">Lunda Norte</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; color:#38bdf8;">3</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; color:#f59e0b;">4</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; font-weight:700; color:#fcd34d;">12</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center;"><span style="background:#f59e0b; color:#000; padding:2px 6px; border-radius:3px; font-size:0.65rem;">Moderado</span></td></tr>
+              <tr style="background:rgba(255,255,255,0.02);"><td style="border:1px solid rgba(255,255,255,0.08); padding:4px 7px;">Huambo</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; color:#38bdf8;">3</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; color:#f59e0b;">4</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; font-weight:700; color:#fcd34d;">12</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center;"><span style="background:#f59e0b; color:#000; padding:2px 6px; border-radius:3px; font-size:0.65rem;">Moderado</span></td></tr>
+              <tr><td style="border:1px solid rgba(255,255,255,0.08); padding:4px 7px;">Benguela</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; color:#38bdf8;">4</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; color:#f59e0b;">3</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; font-weight:700; color:#fcd34d;">12</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center;"><span style="background:#f59e0b; color:#000; padding:2px 6px; border-radius:3px; font-size:0.65rem;">Moderado</span></td></tr>
+              <tr style="background:rgba(255,255,255,0.02);"><td style="border:1px solid rgba(255,255,255,0.08); padding:4px 7px;">Huíla</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; color:#38bdf8;">4</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; color:#f59e0b;">4</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; font-weight:700; color:#fca5a5;">16</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center;"><span style="background:#ef4444; color:#fff; padding:2px 6px; border-radius:3px; font-size:0.65rem;">Alto</span></td></tr>
+              <tr><td style="border:1px solid rgba(255,255,255,0.08); padding:4px 7px;">Namibe</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; color:#38bdf8;">5</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; color:#f59e0b;">4</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; font-weight:700; color:#fca5a5;">20</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center;"><span style="background:#ef4444; color:#fff; padding:2px 6px; border-radius:3px; font-size:0.65rem;">Alto</span></td></tr>
+              <tr style="background:rgba(255,255,255,0.02);"><td style="border:1px solid rgba(255,255,255,0.08); padding:4px 7px;">Cunene</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; color:#38bdf8;">5</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; color:#f59e0b;">4</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; font-weight:700; color:#fca5a5;">20</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center;"><span style="background:#ef4444; color:#fff; padding:2px 6px; border-radius:3px; font-size:0.65rem;">Alto</span></td></tr>
+              <tr><td style="border:1px solid rgba(255,255,255,0.08); padding:4px 7px;">Cuando Cubango</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; color:#38bdf8;">5</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; color:#f59e0b;">4</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; font-weight:700; color:#fca5a5;">20</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center;"><span style="background:#ef4444; color:#fff; padding:2px 6px; border-radius:3px; font-size:0.65rem;">Alto</span></td></tr>
+              <tr style="background:rgba(255,255,255,0.02);"><td style="border:1px solid rgba(255,255,255,0.08); padding:4px 7px;">Moxico Leste</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; color:#38bdf8;">5</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; color:#f59e0b;">4</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center; font-weight:700; color:#fca5a5;">20</td><td style="border:1px solid rgba(255,255,255,0.08); padding:4px; text-align:center;"><span style="background:#ef4444; color:#fff; padding:2px 6px; border-radius:3px; font-size:0.65rem;">Alto</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Official Links for Risk Matrix -->
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; font-size: 0.75rem; margin-bottom: 8px;">
+          <a href="https://www.inamet.gov.ao/" target="_blank" style="color: #38bdf8; text-decoration: underline;">↗ INAMET — Instituto Nacional de Meteorologia e Geofísica de Angola</a>
+          <a href="https://www.sadc.int/themes/meteorology-climate/climate-services" target="_blank" style="color: #38bdf8; text-decoration: underline;">↗ SADC SARCOF — Séries Pluviométricas 1984–2025</a>
+          <a href="https://fews.net/southern-africa/angola" target="_blank" style="color: #38bdf8; text-decoration: underline;">↗ FEWS NET Angola — Historial de Secas</a>
+          <a href="https://www.sadc.int/programmes/disaster-risk-reduction" target="_blank" style="color: #38bdf8; text-decoration: underline;">↗ SADC RVAA — Avaliação de Vulnerabilidade Agropastoril</a>
+          <a href="https://www.undrr.org/terminology/risk-matrix" target="_blank" style="color: #38bdf8; text-decoration: underline;">↗ UNDRR — Terminologia de Matriz de Risco</a>
+        </div>
+
       </div>
     </div>
   </div>
+
 
   <!-- Modal Construtor de Fórmula Personalizada / Custom Formula Builder Modal -->
   <div class="pdf-modal" id="modal-custom-formula">
@@ -800,7 +1040,7 @@
                 <th data-i18n="th_affected_families">Famílias (5,2/fam)</th>
                 <th data-i18n="th_ivc" title="Carência de Acesso a Água Potável/Segura — Censo 2024 INE / Indicador ODS 6.1.1">Carência Água (ODS 6.1) ⓘ</th>
                 <th data-i18n="th_fies" title="Escala de Experiência de Insegurança Alimentar Severa — INE Angola / FAO Relatório Fev 2026 (ODS 2.1.2)">% FIES Severa (INE) ⓘ</th>
-                <th data-i18n="th_risk_score" title="Matriz de Tendências Históricas 1984-2025: Likelihood (1-5) × Impact (1-5)">Score de Risco (1-25) ⓘ</th>
+                <th data-i18n="th_risk_score" title="📊 MATRIZ DE RISCO HISTÓRICO (1984-2025) | Fórmula: Score = Likelihood (L: 1-5) × Impacto (I: 1-5) | ESCALA: 🟢 Score 1-7 = BAIXO (risco residual) | 🟡 Score 8-14 = MODERADO (planeamento preventivo) | 🔴 Score 15-25 = ALTO (intervenção urgente) | Likelihood baseado em séries pluviométricas de 41 anos (INAMET/SARCOF/FEWS NET). Impacto baseado em perdas agropastoris, mortalidade pecuária e assistência humanitária (SADC RVAA / WFP VAM). Clique em ⓘ Fontes para ver escala completa 5×5.">Score de Risco (1-25) ⓘ</th>
                 <th data-i18n="th_source">Fonte Oficial</th>
               </tr>
             </thead>
@@ -829,6 +1069,6 @@
   <script src="/vendor/leaflet.js"></script>
   <script src="/vendor/chart.js"></script>
   <!-- Main App Script -->
-  <script src="app.js?v=20260908_v14"></script>
+  <script src="app.js?v=20260908_v15"></script>
 </body>
 </html>
