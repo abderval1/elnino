@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>El Niño SADC & Angola WebGIS - Risco Climático & Modelo Dasimétrico</title>
+  <title>El Niño SADC & Angola - Risco Climático & Modelo Dasimétrico</title>
   
   <!-- Google Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="/vendor/leaflet.css">
   
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="styles.css?v=20260908_v9">
+  <link rel="stylesheet" href="styles.css?v=20260908_v11">
 </head>
 <body>
   <div class="app-container">
@@ -27,7 +27,7 @@
           <i class="fa-solid fa-earth-africa"></i>
         </div>
         <div class="brand-title">
-          <h1 data-i18n="app_title">El Niño WebGIS Portal</h1>
+          <h1 data-i18n="app_title">El Niño Angola Portal</h1>
           <p data-i18n="app_subtitle">Risco Climático El Niño & Base Demográfica Oficial INE Angola (Censo 2024 & Estimativas 2025–2027)</p>
         </div>
       </div>
@@ -350,15 +350,6 @@
 
       <!-- Central Map View -->
       <main class="map-view-container">
-        <!-- SVG Pattern Definitions for Leaflet High Confidence Overlay -->
-        <svg style="display:none; width:0; height:0; position:absolute;">
-          <defs>
-            <pattern id="sarcof-hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-              <line x1="0" y1="0" x2="0" y2="8" stroke="#1e293b" stroke-width="2.2" />
-              <line x1="0" y1="0" x2="0" y2="8" stroke="#ffffff" stroke-width="0.7" opacity="0.6" />
-            </pattern>
-          </defs>
-        </svg>
 
         <div id="map"></div>
 
@@ -677,6 +668,6 @@
   <script src="/vendor/leaflet.js"></script>
   <script src="/vendor/chart.js"></script>
   <!-- Main App Script -->
-  <script src="app.js?v=20260908_v9"></script>
+  <script src="app.js?v=20260908_v11"></script>
 </body>
 </html>

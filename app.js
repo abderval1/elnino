@@ -498,12 +498,12 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       // Keep pattern alive after map view resets in Chrome and Edge
-      state.map.on('zoomend moveend viewreset', () => {
+      state.map.on('zoomend moveend viewreset layeradd', () => {
         ensureSvgPattern();
-        const hatchPaths = document.querySelectorAll('.leaflet-sarcof-hatch path');
+        const hatchPaths = document.querySelectorAll('path.leaflet-sarcof-hatch, .leaflet-sarcof-hatch');
         hatchPaths.forEach(p => {
           p.setAttribute('fill', 'url(#sarcof-hatch)');
-          p.style.fill = 'url(#sarcof-hatch)';
+          p.style.setProperty('fill', 'url(#sarcof-hatch)', 'important');
         });
       });
 
@@ -951,32 +951,25 @@ document.addEventListener('DOMContentLoaded', () => {
         const pattern = document.createElementNS('http://www.w3.org/2000/svg', 'pattern');
         pattern.setAttribute('id', 'sarcof-hatch');
         pattern.setAttribute('patternUnits', 'userSpaceOnUse');
-        pattern.setAttribute('width', '8');
-        pattern.setAttribute('height', '8');
-        pattern.setAttribute('patternTransform', 'rotate(45)');
+        pattern.setAttribute('width', '10');
+        pattern.setAttribute('height', '10');
 
-        // Dark diagonal stripe
-        const lineDark = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-        lineDark.setAttribute('x1', '0');
-        lineDark.setAttribute('y1', '0');
-        lineDark.setAttribute('x2', '0');
-        lineDark.setAttribute('y2', '8');
-        lineDark.setAttribute('stroke', '#0f172a');
-        lineDark.setAttribute('stroke-width', '2.2');
-        lineDark.setAttribute('stroke-opacity', '0.75');
+        // Robust diagonal stripes (seamless 45-degree tile without matrix transform issues in Skia/Chromium)
+        const pathDark = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        pathDark.setAttribute('d', 'M-2,2 l4,-4 M0,10 l10,-10 M8,12 l4,-4');
+        pathDark.setAttribute('stroke', '#0f172a');
+        pathDark.setAttribute('stroke-width', '2.5');
+        pathDark.setAttribute('stroke-opacity', '0.85');
 
-        // Subtle light accent for contrast over dark colors
-        const lineLight = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-        lineLight.setAttribute('x1', '0');
-        lineLight.setAttribute('y1', '0');
-        lineLight.setAttribute('x2', '0');
-        lineLight.setAttribute('y2', '8');
-        lineLight.setAttribute('stroke', '#ffffff');
-        lineLight.setAttribute('stroke-width', '0.7');
-        lineLight.setAttribute('stroke-opacity', '0.45');
+        // Light accent stripe for high contrast over dark backgrounds
+        const pathLight = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        pathLight.setAttribute('d', 'M-2,7 l4,-4 M5,15 l10,-10 M3,3 l4,-4');
+        pathLight.setAttribute('stroke', '#ffffff');
+        pathLight.setAttribute('stroke-width', '0.8');
+        pathLight.setAttribute('stroke-opacity', '0.5');
 
-        pattern.appendChild(lineDark);
-        pattern.appendChild(lineLight);
+        pattern.appendChild(pathDark);
+        pattern.appendChild(pathLight);
         defs.appendChild(pattern);
       }
     });
@@ -991,10 +984,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (state.activeCategory !== 'ALL' && String(p.finalcode) !== String(state.activeCategory)) return false;
         return p.is_high_confidence === true || p.confidence_overlay === 'high confidence';
       },
-      className: 'leaflet-sarcof-hatch',
       style: () => ({
+        className: 'leaflet-sarcof-hatch',
         fillColor: 'url(#sarcof-hatch)',
-        fillOpacity: 0.92,
+        fillOpacity: 0.95,
         weight: 0,
         stroke: false,
         interactive: false
@@ -1003,17 +996,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const applyHatch = () => {
           ensureSvgPattern();
           if (layer._path) {
+            layer._path.classList.add('leaflet-sarcof-hatch');
             layer._path.setAttribute('fill', 'url(#sarcof-hatch)');
-            layer._path.setAttribute('fill-opacity', '0.92');
+            layer._path.setAttribute('fill-opacity', '0.95');
             layer._path.setAttribute('stroke', 'none');
-            layer._path.style.fill = 'url(#sarcof-hatch)';
-            layer._path.style.fillOpacity = '0.92';
-            layer._path.style.pointerEvents = 'none';
+            layer._path.style.setProperty('fill', 'url(#sarcof-hatch)', 'important');
+            layer._path.style.setProperty('fill-opacity', '0.95', 'important');
+            layer._path.style.setProperty('pointer-events', 'none', 'important');
           }
         };
         applyHatch();
-        setTimeout(applyHatch, 20);
-        setTimeout(applyHatch, 100);
+        if (typeof requestAnimationFrame !== 'undefined') requestAnimationFrame(applyHatch);
+        setTimeout(applyHatch, 50);
+        setTimeout(applyHatch, 200);
       }
     }).addTo(state.map);
 

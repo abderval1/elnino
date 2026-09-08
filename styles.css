@@ -384,10 +384,10 @@ input:checked + .slider:before { transform: translateX(18px); }
   box-shadow: 0 1px 3px rgba(0,0,0,0.4);
 }
 
-/* Chrome, Edge & Chromium SVG pattern rule */
+/* High-confidence hatch overlay styles across Chrome, Edge, Safari & Firefox */
+path.leaflet-sarcof-hatch,
+.leaflet-sarcof-hatch,
 .leaflet-sarcof-hatch path {
-  fill: url(#sarcof-hatch) !important;
-  fill-opacity: 0.92 !important;
   stroke: none !important;
   pointer-events: none !important;
 }
