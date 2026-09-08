@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="/vendor/leaflet.css">
   
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="styles.css?v=20260908_v15">
+  <link rel="stylesheet" href="styles.css?v=20260908_v16">
 </head>
 <body>
   <div class="app-container">
@@ -823,12 +823,43 @@
         </div>
 
         <!-- Official Links for Risk Matrix -->
-        <div style="display: flex; gap: 10px; flex-wrap: wrap; font-size: 0.75rem; margin-bottom: 8px;">
-          <a href="https://www.inamet.gov.ao/" target="_blank" style="color: #38bdf8; text-decoration: underline;">↗ INAMET — Instituto Nacional de Meteorologia e Geofísica de Angola</a>
-          <a href="https://www.sadc.int/themes/meteorology-climate/climate-services" target="_blank" style="color: #38bdf8; text-decoration: underline;">↗ SADC SARCOF — Séries Pluviométricas 1984–2025</a>
-          <a href="https://fews.net/southern-africa/angola" target="_blank" style="color: #38bdf8; text-decoration: underline;">↗ FEWS NET Angola — Historial de Secas</a>
-          <a href="https://www.sadc.int/programmes/disaster-risk-reduction" target="_blank" style="color: #38bdf8; text-decoration: underline;">↗ SADC RVAA — Avaliação de Vulnerabilidade Agropastoril</a>
-          <a href="https://www.undrr.org/terminology/risk-matrix" target="_blank" style="color: #38bdf8; text-decoration: underline;">↗ UNDRR — Terminologia de Matriz de Risco</a>
+        <div style="background: rgba(15,23,42,0.85); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 12px;">
+          <div style="font-size: 0.85rem; font-weight: 700; color: #f59e0b; margin-bottom: 8px;">
+            <i class="fa-solid fa-file-pdf" style="color: #ef4444;"></i> Relatórios Oficiais, Séries Temporais & Documentos Técnicos Clicáveis:
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px; font-size: 0.78rem;">
+            <div>
+              <strong style="color: #38bdf8;">• Para a Probabilidade / Likelihood (L):</strong><br/>
+              👉 <a href="https://reliefweb.int/report/angola/angola-food-security-outlook-update-august-2026-january-2027-crisis-ipc-phase-3-aligned-outcomes-persist-due-delayed-rainy-season" target="_blank" style="color: #38bdf8; text-decoration: underline;">
+                📄 ReliefWeb / FEWS NET — Relatório Oficial de Secas em Angola 2026–2027 (Relatório Completo em PDF)
+              </a><br/>
+              👉 <a href="https://fews.net/southern-africa/angola" target="_blank" style="color: #38bdf8; text-decoration: underline;">
+                📊 FEWS NET Southern Africa — Base de Dados de Monitorização de Secas em Angola
+              </a><br/>
+              👉 <a href="https://www.sadc.int/themes/meteorology-climate/climate-services" target="_blank" style="color: #38bdf8; text-decoration: underline;">
+                🌧️ SADC Climate Services Centre — Declarações Sazonais SARCOF & Séries de Precipitação 1984–2025
+              </a><br/>
+              👉 <a href="https://www.inamet.gov.ao/" target="_blank" style="color: #38bdf8; text-decoration: underline;">
+                📡 INAMET — Instituto Nacional de Meteorologia e Geofísica de Angola (Boletins Climáticos)
+              </a>
+            </div>
+
+            <div style="margin-top: 6px;">
+              <strong style="color: #f59e0b;">• Para o Impacto Agropastoril e Severidade Humanitária (I):</strong><br/>
+              👉 <a href="https://www.fao.org/giews/countrybrief/country/AGO" target="_blank" style="color: #f59e0b; text-decoration: underline;">
+                🌾 FAO GIEWS — Ficha Técnica de País Angola: Avaliação de Quebra de Safras e Preços de Alimentos (PDF)
+              </a><br/>
+              👉 <a href="https://vam.wfp.org/CountryPage_overview.aspx?iso3=AGO" target="_blank" style="color: #f59e0b; text-decoration: underline;">
+                📈 PAM / WFP VAM — Painel Oficial de Monitorização de Fome e Vulnerabilidade em Angola
+              </a><br/>
+              👉 <a href="https://www.ine.gov.ao/Arquivos/arquivosCarregados//Carregados/Publicacao_639070130147582882.pdf" target="_blank" style="color: #f59e0b; text-decoration: underline;">
+                📑 INE Angola & FAO — Relatório Oficial sobre a Escala FIES Fevereiro 2026 (Publicação Oficial em PDF)
+              </a><br/>
+              👉 <a href="https://www.sadc.int/programmes/disaster-risk-reduction" target="_blank" style="color: #f59e0b; text-decoration: underline;">
+                📋 SADC RVAA — Síntese Regional de Avaliação de Vulnerabilidade de Desastres e Agropastoril
+              </a>
+            </div>
+          </div>
         </div>
 
       </div>
@@ -1069,6 +1100,6 @@
   <script src="/vendor/leaflet.js"></script>
   <script src="/vendor/chart.js"></script>
   <!-- Main App Script -->
-  <script src="app.js?v=20260908_v15"></script>
+  <script src="app.js?v=20260908_v16"></script>
 </body>
 </html>

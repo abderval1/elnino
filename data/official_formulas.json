@@ -205,19 +205,27 @@
       },
       "links_oficiais": [
         {
-          "nome": "INE Angola - Relatório sobre a Escala de Experiência de Insegurança Alimentar (FIES) Fevereiro 2026",
-          "url": "https://www.ine.gov.ao/publicacoes/detalhes/NTA0Mzg%3D"
-        },
-        {
-          "nome": "Publicação Oficial PDF - INE FIES 2026",
+          "nome": "Relatório Oficial PDF - INE Angola & FAO FIES Fev 2026 (Quadro 5, ODS 2.1.2)",
           "url": "https://www.ine.gov.ao/Arquivos/arquivosCarregados//Carregados/Publicacao_639070130147582882.pdf"
         },
         {
-          "nome": "FAO - Voices of the Hungry / Food Insecurity Experience Scale (FIES) — Indicador ODS 2.1.2",
-          "url": "https://www.fao.org/in-action/voices-of-the-hungry/fies/en/"
+          "nome": "Relatório Técnico FEWS NET / ReliefWeb - Angola Food Security Outlook 2026–2027 (PDF)",
+          "url": "https://reliefweb.int/report/angola/angola-food-security-outlook-update-august-2026-january-2027-crisis-ipc-phase-3-aligned-outcomes-persist-due-delayed-rainy-season"
         },
         {
-          "nome": "FAO - SDG 2.1.2 Metadata (Prevalence of Moderate or Severe Food Insecurity)",
+          "nome": "FAO GIEWS - Ficha Técnica Oficial de País: Angola (Quebra de Safras, Preços e Previsões)",
+          "url": "https://www.fao.org/giews/countrybrief/country/AGO"
+        },
+        {
+          "nome": "SADC Climate Services Centre - Declarações Sazonais SARCOF & Dados Pluviométricos",
+          "url": "https://www.sadc.int/themes/meteorology-climate/climate-services"
+        },
+        {
+          "nome": "PAM / WFP VAM - Plataforma Oficial de Monitorização de Fome e Vulnerabilidade em Angola",
+          "url": "https://vam.wfp.org/CountryPage_overview.aspx?iso3=AGO"
+        },
+        {
+          "nome": "FAO - SDG 2.1.2 Metadata Oficial (Prevalência de Insegurança Alimentar Moderada ou Severa)",
           "url": "https://unstats.un.org/sdgs/metadata/files/Metadata-02-01-02.pdf"
         }
       ]

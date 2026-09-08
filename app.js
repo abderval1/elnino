@@ -1523,10 +1523,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 <div style="font-size:0.67rem; color:#f8fafc; font-weight:600;">${lName}</div>
                 <div style="font-size:0.62rem; color:#94a3b8; line-height:1.2; margin-top:2px;">${lFreq}</div>
-                <div style="margin-top:4px; display:flex; flex-wrap:wrap; gap:3px;">
-                  <a href="https://www.inamet.gov.ao/" target="_blank" rel="noopener" style="font-size:0.58rem; color:#38bdf8; text-decoration:none; background:rgba(56,189,248,0.1); padding:1px 4px; border-radius:3px; border:1px solid rgba(56,189,248,0.25);">↗ INAMET</a>
-                  <a href="https://www.sadc.int/themes/meteorology-climate/climate-services" target="_blank" rel="noopener" style="font-size:0.58rem; color:#38bdf8; text-decoration:none; background:rgba(56,189,248,0.1); padding:1px 4px; border-radius:3px; border:1px solid rgba(56,189,248,0.25);">↗ SARCOF</a>
-                  <a href="https://fews.net/southern-africa/angola" target="_blank" rel="noopener" style="font-size:0.58rem; color:#38bdf8; text-decoration:none; background:rgba(56,189,248,0.1); padding:1px 4px; border-radius:3px; border:1px solid rgba(56,189,248,0.25);">↗ FEWS NET</a>
+                <div style="margin-top:6px; display:flex; flex-direction:column; gap:3px;">
+                  <span style="font-size:0.6rem; color:#64748b; font-weight:600; text-transform:uppercase;">Relatórios & Séries Oficiais:</span>
+                  <a href="https://reliefweb.int/report/angola/angola-food-security-outlook-update-august-2026-january-2027-crisis-ipc-phase-3-aligned-outcomes-persist-due-delayed-rainy-season" target="_blank" rel="noopener" style="font-size:0.62rem; color:#38bdf8; text-decoration:none; background:rgba(56,189,248,0.1); padding:2px 6px; border-radius:3px; border:1px solid rgba(56,189,248,0.25); display:inline-block;" title="Relatório FEWS NET / ReliefWeb — Atualização de Secas Angola (PDF)">📄 FEWS NET / ReliefWeb — Relatório de Secas 2026-2027 (PDF)</a>
+                  <a href="https://fews.net/southern-africa/angola" target="_blank" rel="noopener" style="font-size:0.62rem; color:#38bdf8; text-decoration:none; background:rgba(56,189,248,0.1); padding:2px 6px; border-radius:3px; border:1px solid rgba(56,189,248,0.25); display:inline-block;" title="Base de Dados e Monitorização Contínua de Secas">📊 FEWS NET Angola — Monitor de Dados & Perspetivas</a>
+                  <a href="https://www.sadc.int/themes/meteorology-climate/climate-services" target="_blank" rel="noopener" style="font-size:0.62rem; color:#38bdf8; text-decoration:none; background:rgba(56,189,248,0.1); padding:2px 6px; border-radius:3px; border:1px solid rgba(56,189,248,0.25); display:inline-block;" title="Previsões Sazonais SARCOF e Séries de Chuva 1984-2025">🌧️ SADC CSC / SARCOF — Séries Pluviométricas Oficiais</a>
+                  <a href="https://www.inamet.gov.ao/" target="_blank" rel="noopener" style="font-size:0.62rem; color:#38bdf8; text-decoration:none; background:rgba(56,189,248,0.1); padding:2px 6px; border-radius:3px; border:1px solid rgba(56,189,248,0.25); display:inline-block;" title="Boletins Climatológicos do Instituto Nacional de Meteorologia de Angola">📡 INAMET Angola — Boletins Climatológicos Oficiais</a>
                 </div>
               </div>
 
@@ -1539,10 +1541,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 <div style="font-size:0.67rem; color:#f8fafc; font-weight:600;">${iName}</div>
                 <div style="font-size:0.62rem; color:#94a3b8; line-height:1.2; margin-top:2px;">${iDesc}</div>
-                <div style="margin-top:4px; display:flex; flex-wrap:wrap; gap:3px;">
-                  <a href="https://www.sadc.int/programmes/disaster-risk-reduction" target="_blank" rel="noopener" style="font-size:0.58rem; color:#f59e0b; text-decoration:none; background:rgba(245,158,11,0.1); padding:1px 4px; border-radius:3px; border:1px solid rgba(245,158,11,0.25);">↗ SADC RVAA</a>
-                  <a href="https://vam.wfp.org/" target="_blank" rel="noopener" style="font-size:0.58rem; color:#f59e0b; text-decoration:none; background:rgba(245,158,11,0.1); padding:1px 4px; border-radius:3px; border:1px solid rgba(245,158,11,0.25);">↗ WFP VAM</a>
-                  <a href="https://www.fao.org/giews/country-brief/country/AGO/en" target="_blank" rel="noopener" style="font-size:0.58rem; color:#f59e0b; text-decoration:none; background:rgba(245,158,11,0.1); padding:1px 4px; border-radius:3px; border:1px solid rgba(245,158,11,0.25);">↗ FAO GIEWS</a>
+                <div style="margin-top:6px; display:flex; flex-direction:column; gap:3px;">
+                  <span style="font-size:0.6rem; color:#64748b; font-weight:600; text-transform:uppercase;">Relatórios de Danos & Avaliações:</span>
+                  <a href="https://www.fao.org/giews/countrybrief/country/AGO" target="_blank" rel="noopener" style="font-size:0.62rem; color:#f59e0b; text-decoration:none; background:rgba(245,158,11,0.1); padding:2px 6px; border-radius:3px; border:1px solid rgba(245,158,11,0.25); display:inline-block;" title="FAO GIEWS — Relatório Técnico de Perdas de Colheitas e Preços em Angola">🌾 FAO GIEWS — Relatório Técnico Angola & Produção Cerealífera</a>
+                  <a href="https://vam.wfp.org/CountryPage_overview.aspx?iso3=AGO" target="_blank" rel="noopener" style="font-size:0.62rem; color:#f59e0b; text-decoration:none; background:rgba(245,158,11,0.1); padding:2px 6px; border-radius:3px; border:1px solid rgba(245,158,11,0.25); display:inline-block;" title="Painel Interativo de Dados de Vulnerabilidade e Fome do PAM em Angola">📈 PAM / WFP VAM — Base de Dados & Fome em Angola</a>
+                  <a href="https://www.sadc.int/programmes/disaster-risk-reduction" target="_blank" rel="noopener" style="font-size:0.62rem; color:#f59e0b; text-decoration:none; background:rgba(245,158,11,0.1); padding:2px 6px; border-radius:3px; border:1px solid rgba(245,158,11,0.25); display:inline-block;" title="Relatórios de Vulnerabilidade Agropastoril Regional SADC RVAA">📋 SADC RVAA — Síntese de Vulnerabilidade Agropastoril</a>
+                  <a href="https://www.ine.gov.ao/Arquivos/arquivosCarregados//Carregados/Publicacao_639070130147582882.pdf" target="_blank" rel="noopener" style="font-size:0.62rem; color:#f59e0b; text-decoration:none; background:rgba(245,158,11,0.1); padding:2px 6px; border-radius:3px; border:1px solid rgba(245,158,11,0.25); display:inline-block;" title="Relatório Oficial FIES INE Angola Fevereiro 2026 (PDF)">📑 INE Angola — Relatório Oficial FIES Fev 2026 (PDF)</a>
                 </div>
               </div>
             </div>
