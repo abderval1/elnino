@@ -1,4 +1,4 @@
-// El Niño SADC & Angola WebGIS - Sistema Oficial de Risco Climático & Modelo Dasimétrico SIG
+// El Niño SADC & Angola - Sistema Oficial de Risco Climático & Modelo Dasimétrico
 // Fontes Oficiais: INE Angola (Censo 2024 & Estimativas 2025-2027), SARCOF-33, FEWS NET, IPC, UNDRR, PAM, FAO
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Comprehensive Bilingual Dictionary (Português & English)
   const i18n = {
     pt: {
-      app_title: 'El Niño WebGIS Portal',
+      app_title: 'El Niño Angola Portal',
       app_subtitle: 'Risco Climático El Niño & Base Demográfica Oficial INE Angola (Censo 2024 & Estimativas 2025–2027)',
       badge_sarcof_active: 'SARCOF-33 Ativo',
       hdr_ine_badge: 'INE Angola Oficial:',
@@ -143,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
       cat_4: 'Acima da Normal (AN)'
     },
     en: {
-      app_title: 'El Niño WebGIS Portal',
+      app_title: 'El Niño Angola Portal',
       app_subtitle: 'El Niño Climate Risk & Official Demographic Base INE Angola (Census 2024 & Projections 2025–2027)',
       badge_sarcof_active: 'SARCOF-33 Active',
       hdr_ine_badge: 'Official INE Angola:',
@@ -1371,6 +1371,27 @@ document.addEventListener('DOMContentLoaded', () => {
     if (linkEl && f.links_oficiais && f.links_oficiais[0]) {
       linkEl.href = f.links_oficiais[0].url;
       linkEl.innerHTML = `<i class="fa-solid fa-arrow-up-right-from-square"></i> ${f.links_oficiais[0].nome}`;
+    }
+
+    // Add extra reference links for UNDRR/IPCC model
+    const extraLinksContainerId = 'formula-extra-links';
+    let extraLinksEl = document.getElementById(extraLinksContainerId);
+    if (!extraLinksEl) {
+      extraLinksEl = document.createElement('div');
+      extraLinksEl.id = extraLinksContainerId;
+      extraLinksEl.style.cssText = 'margin-top:6px;display:flex;flex-wrap:wrap;gap:6px;';
+      if (linkEl && linkEl.parentNode) linkEl.parentNode.insertBefore(extraLinksEl, linkEl.nextSibling);
+    }
+    if (model === 'UNDRR_IPCC') {
+      extraLinksEl.innerHTML = `
+        <a href="https://gfdrr.github.io/CCDR-tools/docs/intro-risk.html" target="_blank" rel="noopener" style="font-size:11px;color:#1a73e8;text-decoration:none;">
+          <i class="fa-solid fa-arrow-up-right-from-square"></i> GFDRR CCDR Risk Framework
+        </a>
+        <a href="https://www.undrr.org/building-risk-knowledge/understanding-risk" target="_blank" rel="noopener" style="font-size:11px;color:#1a73e8;text-decoration:none;">
+          <i class="fa-solid fa-arrow-up-right-from-square"></i> UNDRR Understanding Risk
+        </a>`;
+    } else {
+      extraLinksEl.innerHTML = '';
     }
 
     const activeTitle = document.getElementById('lbl-active-formula-title');
