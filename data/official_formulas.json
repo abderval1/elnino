@@ -59,6 +59,14 @@
         {
           "nome": "IPCC AR6 WGII - Impacts, Adaptation and Vulnerability",
           "url": "https://www.ipcc.ch/report/sixth-assessment-report-working-group-ii/"
+        },
+        {
+          "nome": "GFDRR - CCDR Risk Framework & Disaster Risk Assessment",
+          "url": "https://gfdrr.github.io/CCDR-tools/docs/intro-risk.html"
+        },
+        {
+          "nome": "UNDRR - Building Risk Knowledge / Understanding Risk",
+          "url": "https://www.undrr.org/building-risk-knowledge/understanding-risk"
         }
       ]
     },
@@ -183,6 +191,48 @@
         {
           "nome": "Publicação Oficial PDF - INE FIES 2026",
           "url": "https://www.ine.gov.ao/Arquivos/arquivosCarregados//Carregados/Publicacao_639070130147582882.pdf"
+        },
+        {
+          "nome": "FAO - Voices of the Hungry / Food Insecurity Experience Scale (FIES) — Indicador ODS 2.1.2",
+          "url": "https://www.fao.org/in-action/voices-of-the-hungry/fies/en/"
+        },
+        {
+          "nome": "FAO - SDG 2.1.2 Metadata (Prevalence of Moderate or Severe Food Insecurity)",
+          "url": "https://unstats.un.org/sdgs/metadata/files/Metadata-02-01-02.pdf"
+        }
+      ]
+    },
+    "CUSTOM": {
+      "id": "CUSTOM",
+      "nome": "Fórmula Personalizada pelo Utilizador / Custom Formula Builder",
+      "organizacao": "Definida pelo Utilizador com base nos dados disponíveis no sistema",
+      "formula_latex": "P_{afetada} = Pop_{Total} \\times \\sum (w_i \\times X_i)",
+      "formula_simplificada": "P_afetada = Pop_Oficial × (pesos e variáveis definidos pelo utilizador)",
+      "descricao": "Permite ao utilizador construir e ajustar a sua própria fórmula combinando variáveis oficiais disponíveis no sistema: FIES Severa (INE / ODS 2.1.2), Fatores de Choque Climático SARCOF-33 (V_clima), Indicadores do Censo INE 2024 (Água, Saneamento, Eletricidade, Habitação, Crianças) e Matriz de Risco Histórico (1984-2025). Todos os cálculos são executados em tempo real para as 21 províncias e 326 municípios.",
+      "parametros": {
+        "variaveis_disponiveis": {
+          "fies_severa": "% FIES Severa INE/FAO (ODS 2.1.2)",
+          "v_clima": "Fator de Vulnerabilidade Climática SARCOF-33 (0.0 a 0.85)",
+          "pct_sem_agua": "% Agregados sem acesso a água segura (Censo INE 2024)",
+          "pct_sem_san": "% Agregados sem saneamento básico (Censo INE 2024)",
+          "pct_sem_elec": "% Agregados sem eletricidade/solar/gerador (Censo INE 2024)",
+          "pct_hab_precaria": "% Habitações precárias (cubata + barraca) (Censo INE 2024)",
+          "pct_criancas": "% População de 0 a 14 anos (Censo INE 2024)",
+          "risk_score": "Score Matriz de Risco Histórico (1-25)"
+        }
+      },
+      "links_oficiais": [
+        {
+          "nome": "UNDRR - Sendai Framework for Disaster Risk Reduction 2015–2030",
+          "url": "https://www.undrr.org/publication/sendai-framework-disaster-risk-reduction-2015-2030"
+        },
+        {
+          "nome": "INE Angola - Portal Oficial do Censo 2024",
+          "url": "https://censo2024.ine.gov.ao/"
+        },
+        {
+          "nome": "FAO - Food Insecurity Experience Scale (FIES) — ODS 2.1.2",
+          "url": "https://www.fao.org/in-action/voices-of-the-hungry/fies/en/"
         }
       ]
     }

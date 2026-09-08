@@ -9,7 +9,22 @@ document.addEventListener('DOMContentLoaded', () => {
     currentLang: localStorage.getItem('elnino_lang') || 'pt', // 'pt' or 'en'
     activeSeason: 'OND', // OND or JFM
     demographicYear: '2024', // 2024, 2025, 2026, 2027
-    formulaModel: 'UNDRR_IPCC', // UNDRR_IPCC (default), IPC_FIES_INE, IPC_FEWSNET, WFP_FAO_SADC
+    formulaModel: 'UNDRR_IPCC', // UNDRR_IPCC (default), IPC_FIES_INE, IPC_FEWSNET, WFP_FAO_SADC, CUSTOM
+    customFormula: JSON.parse(localStorage.getItem('elnino_custom_formula') || 'null') || {
+      name: 'Fórmula Personalizada',
+      officialUrl: 'https://censo2024.ine.gov.ao/',
+      officialOrg: 'Utilizador / Parâmetros Customizados',
+      weights: {
+        v_clima: 50,
+        fies_severa: 30,
+        sem_agua: 20,
+        sem_san: 0,
+        sem_elec: 0,
+        hab_precaria: 0,
+        criancas_014: 0,
+        risk_score: 0
+      }
+    },
     activeCategory: 'ALL',
     showHighConfidence: true,
     showLabels: false,
@@ -132,7 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
       th_sarcof_class: 'Classificação SARCOF',
       th_affected_pop: 'Pessoas Afetadas',
       th_affected_families: 'Famílias (5,2/fam)',
-      th_ivc: 'IVC Censo 2024 ⓘ',
+      th_ivc: 'Carência Água (ODS 6.1) ⓘ',
       th_fies: '% FIES Severa (INE) ⓘ',
       th_risk_score: 'Score de Risco (1-25) ⓘ',
       th_source: 'Fonte Oficial',
@@ -140,7 +155,25 @@ document.addEventListener('DOMContentLoaded', () => {
       cat_1: 'Abaixo da Normal / Seca (BN)',
       cat_2: 'Normal a Abaixo da Normal (N-BN)',
       cat_3: 'Normal a Acima da Normal (N-AN)',
-      cat_4: 'Acima da Normal (AN)'
+      cat_4: 'Acima da Normal (AN)',
+      btn_custom_formula: 'Configurar Fórmula Personalizada',
+      custom_modal_title: 'Construtor de Fórmula Personalizada',
+      custom_modal_desc_title: 'Construa a sua própria fórmula com os dados oficiais do sistema',
+      custom_modal_desc_body: 'Defina a ponderação (%) das variáveis oficiais disponíveis no sistema. Os cálculos são executados em tempo real sobre a população oficial do INE para todas as 21 províncias e 326 municípios.',
+      custom_formula_name_label: 'Nome da Fórmula:',
+      custom_formula_link_label: 'Link / Fonte Oficial da Metodologia:',
+      custom_variables_title: 'Ponderação das Variáveis Oficiais Disponíveis',
+      var_v_clima: 'Anomalia Climática SARCOF-33 (V_clima)',
+      var_fies: 'Insegurança Alimentar Severa FIES INE/FAO (ODS 2.1.2)',
+      var_water: 'Sem Acesso a Água Potável/Segura (Censo INE 2024 / ODS 6.1)',
+      var_san: 'Sem Saneamento Básico Adequado (Censo INE 2024 / ODS 6.2)',
+      var_elec: 'Sem Eletricidade ou Energia Solar (Censo INE 2024 / ODS 7.1)',
+      var_hab: 'Habitação Precária: Cubata/Barraca (Censo INE 2024 / ODS 11.1)',
+      var_children: 'População Infantil 0-14 Anos (Censo INE 2024)',
+      var_risk: 'Matriz de Risco Histórico 1984-2025 (1-25)',
+      custom_formula_preview_title: 'Equação Matemática Resultante:',
+      btn_reset_defaults: 'Repor Padrões',
+      btn_apply_formula: 'Aplicar Fórmula e Calcular'
     },
     en: {
       app_title: 'El Niño Angola Portal',
@@ -177,8 +210,8 @@ document.addEventListener('DOMContentLoaded', () => {
       btn_open_censo_table: 'Open Census Table & INE Projections',
       chart_sadc_dist: 'SADC Forecast Distribution',
       chart_temporal_comp: 'Seasonal Comparison (OND vs JFM)',
-      chart_ivc_title: 'CVI — Vulnerability of 21 Provinces (Census 2024)',
-      chart_ivc_subtitle: 'Composite Index: water + sanitation + electricity + housing + age dependency',
+      chart_ivc_title: 'Living Conditions & Vulnerability (Census 2024)',
+      chart_ivc_subtitle: 'INE Census 2024 indicators: water, sanitation, electricity, housing, age dependency',
       chart_water_title: 'Water Access by Province (INE Census 2024)',
       chart_water_subtitle: '% Households without safe drinking water — Source: INE Census 2024',
       dropzone_title: 'Upload PDF Report',
@@ -200,7 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
       insp_risk_factor: 'Climate Risk (V):',
       insp_pop_affected: 'Affected People (Est.):',
       insp_families_affected: 'Affected Families (5.2/fam):',
-      insp_click_prov: 'Click on a province to view Census 2024 CVI',
+      insp_click_prov: 'Click on a province to view Census 2024 SDG Indicators',
       insp_see_un_standard: 'View Official UN / FEWS NET Standard',
       btn_censo_table: 'Census Table',
       btn_pdf_sarcof: 'SARCOF PDF',
@@ -219,7 +252,7 @@ document.addEventListener('DOMContentLoaded', () => {
       th_sarcof_class: 'SARCOF Classification',
       th_affected_pop: 'Affected People',
       th_affected_families: 'Families (5.2/fam)',
-      th_ivc: 'Census 2024 CVI ⓘ',
+      th_ivc: 'Water Deficit (SDG 6.1) ⓘ',
       th_fies: '% Severe FIES (INE) ⓘ',
       th_risk_score: 'Risk Score (1-25) ⓘ',
       th_source: 'Official Source',
@@ -227,7 +260,25 @@ document.addEventListener('DOMContentLoaded', () => {
       cat_1: 'Below-Normal / Drought (BN)',
       cat_2: 'Normal to Below-Normal (N-BN)',
       cat_3: 'Normal to Above-Normal (N-AN)',
-      cat_4: 'Above-Normal (AN)'
+      cat_4: 'Above-Normal (AN)',
+      btn_custom_formula: 'Configure Custom Formula',
+      custom_modal_title: 'Custom Formula Builder',
+      custom_modal_desc_title: 'Build your own formula using official system data',
+      custom_modal_desc_body: 'Define the percentage weights for official variables available in the system. Calculations execute in real-time on official INE population for all 21 provinces and 326 municipalities.',
+      custom_formula_name_label: 'Formula Name:',
+      custom_formula_link_label: 'Official Methodology Link / Source:',
+      custom_variables_title: 'Weighting of Available Official Variables',
+      var_v_clima: 'SARCOF-33 Climate Anomaly (V_clima)',
+      var_fies: 'Severe Food Insecurity FIES INE/FAO (SDG 2.1.2)',
+      var_water: 'Without Safe Water Access (INE Census 2024 / SDG 6.1)',
+      var_san: 'Without Adequate Sanitation (INE Census 2024 / SDG 6.2)',
+      var_elec: 'Without Electricity or Solar (INE Census 2024 / SDG 7.1)',
+      var_hab: 'Precarious Housing: Hut/Shack (INE Census 2024 / SDG 11.1)',
+      var_children: 'Children 0-14 Years (INE Census 2024)',
+      var_risk: 'Historical Risk Matrix 1984-2025 (1-25)',
+      custom_formula_preview_title: 'Resulting Mathematical Equation:',
+      btn_reset_defaults: 'Reset Defaults',
+      btn_apply_formula: 'Apply Formula & Calculate'
     }
   };
 
@@ -673,10 +724,10 @@ document.addEventListener('DOMContentLoaded', () => {
     return { total: 50000, urban: 25000, rural: 25000, homens: 24500, mulheres: 25500, areaKm2: null, density: null, isOfficial: false };
   }
 
-  // ÍNDICE DE VULNERABILIDADE COMPOSTO (IVC) — derivado dos indicadores oficiais do Censo 2024 INE
-  // Fontes: INE Angola Censo 2024 | UNDRR Sendai Framework | IPCC AR6 WGII (Exposure & Vulnerability)
-  // https://censo2024.ine.gov.ao/ | https://www.undrr.org/terminology/vulnerability
-  function computeCensusVulnerabilityIndex(censoData) {
+  // INDICADORES DE CONDIÇÕES DE VIDA & ODS (CENSO 2024 INE / ONU)
+  // Fontes Oficiais: INE Angola Censo 2024 | Metadados ODS da ONU (ODS 6.1.1, 6.2.1, 7.1.1, 11.1.1)
+  // https://censo2024.ine.gov.ao/ | https://unstats.un.org/sdgs/
+  function getCensusLivelihoodIndicators(censoData) {
     if (!censoData || !censoData.agua_total) return null;
 
     const total = censoData.agua_total || 1;
@@ -684,48 +735,41 @@ document.addEventListener('DOMContentLoaded', () => {
     const habTotal = censoData.hab_total || 1;
     const sanTotal = censoData.san_total || 1;
 
-    // 1. Acesso à água segura (% sem acesso — maior = mais vulnerável)
+    // 1. Acesso à água potável/segura (% sem acesso - ODS 6.1.1)
     const semAgua = censoData.agua_sem_acesso || 0;
-    const pctSemAgua = semAgua / total; // 0..1
+    const pctSemAgua = (semAgua / total) * 100;
 
-    // 2. Saneamento inadequado (% sem saneamento)
+    // 2. Saneamento básico (% sem saneamento - ODS 6.2.1)
     const semSan = censoData.san_nenhum || 0;
-    const pctSemSan = semSan / sanTotal;
+    const pctSemSan = (semSan / sanTotal) * 100;
 
-    // 3. Sem electricidade (% sem electricidade)
+    // 3. Eletricidade (% sem eletricidade/solar - ODS 7.1.1)
     const semElec = aggTotal - (censoData.agg_electricidade || 0) - (censoData.agg_solar || 0) - (censoData.agg_gerador || 0);
-    const pctSemElec = Math.max(0, semElec / aggTotal);
+    const pctSemElec = Math.max(0, (semElec / aggTotal) * 100);
 
-    // 4. Habitação precária (cubata + barraca como proporção do total)
+    // 4. Habitação precária (% cubata + barraca - ODS 11.1.1)
     const habPrecaria = (censoData.hab_cubata || 0) + (censoData.hab_barraca || 0);
-    const pctHabPrecaria = habPrecaria / habTotal;
+    const pctHabPrecaria = (habPrecaria / habTotal) * 100;
 
-    // 5. Dependência: população 0-14 anos (crianças — mais vulneráveis a malnutrição e doenças hídricas)
+    // 5. Demografia: crianças 0-14 anos (% dependência etária)
     const popTotal = censoData.pop_total || 1;
     const pop014 = censoData.idade_0_14 || 0;
-    const pctCriancas = pop014 / popTotal;
-
-    // Índice Composto: média ponderada dos 5 indicadores (escala 0..1)
-    // Pesos baseados em UNDRR Sendai & IPCC AR6 WGII (vulnerabilidade multidimensional)
-    const IVC = (
-      pctSemAgua    * 0.30 +  // Peso maior: água é o recurso crítico em secas de El Niño
-      pctSemSan     * 0.20 +  // Saneamento: indicador de resiliência básica
-      pctSemElec    * 0.15 +  // Electricidade: proxy de desenvolvimento e acesso a informação
-      pctHabPrecaria* 0.20 +  // Habitação: exposição física a eventos extremos
-      pctCriancas   * 0.15    // Composição etária: vulnerabilidade nutricional e hídrica
-    );
+    const pctCriancas = (pop014 / popTotal) * 100;
 
     return {
-      ivc: Math.min(1.0, IVC),
-      pctSemAgua: (pctSemAgua * 100).toFixed(1),
-      pctSemSan: (pctSemSan * 100).toFixed(1),
-      pctSemElec: (pctSemElec * 100).toFixed(1),
-      pctHabPrecaria: (pctHabPrecaria * 100).toFixed(1),
-      pctCriancas: (pctCriancas * 100).toFixed(1)
+      pctSemAgua: pctSemAgua.toFixed(1),
+      pctSemSan: pctSemSan.toFixed(1),
+      pctSemElec: pctSemElec.toFixed(1),
+      pctHabPrecaria: pctHabPrecaria.toFixed(1),
+      pctCriancas: pctCriancas.toFixed(1)
     };
   }
 
-  // MOTOR DE CÁLCULO DAS FÓRMULAS OFICIAIS (ONU / FEWS NET / SADC / INE)
+  // Alias para retrocompatibilidade
+  const computeCensusVulnerabilityIndex = getCensusLivelihoodIndicators;
+
+  // MOTOR DE CÁLCULO DAS FÓRMULAS OFICIAIS (ONU / FEWS NET / SADC / INE / CUSTOM)
+  // Normas estritas e aprovadas internacionalmente pelas Nações Unidas e governamentais
   function calculateOfficialFormula(demographics, categoryCode) {
     const codeKey = categoryCode || 3;
     const cfg = categoryConfig[codeKey] || categoryConfig[3];
@@ -733,9 +777,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const urbanPop = demographics.urban || Math.round(totalPop * 0.4);
     const ruralPop = demographics.rural || (totalPop - urbanPop);
 
-    // Índice de Vulnerabilidade Composto do Censo 2024 (se disponível)
-    const ivcData = demographics.censoDetails ? computeCensusVulnerabilityIndex(demographics.censoDetails) : null;
-    const ivcFactor = ivcData ? ivcData.ivc : null;
+    // Indicadores descritivos de Condições de Vida do Censo INE 2024
+    const livelihoodData = demographics.censoDetails ? getCensusLivelihoodIndicators(demographics.censoDetails) : null;
 
     let affectedPop = 0;
     let formulaSteps = '';
@@ -746,23 +789,16 @@ document.addEventListener('DOMContentLoaded', () => {
     if (state.formulaModel === 'UNDRR_IPCC') {
       // 1. EQUAÇÃO GERAL DO RISCO DE CATÁSTROFES (UNDRR SENDAI / IPCC AR6 WGII)
       // Risco = Perigo (H) × Exposição (E) × Vulnerabilidade (V)
-      // V é o V_clima base (SARCOF-33) ajustado pelo Índice de Vulnerabilidade Composto do Censo 2024
+      // Padrão Puro UNDRR / Sendai Framework 2015-2030 sem multiplicadores arbitrários
       const vClima = cfg.vFactor;
       const exposureE = 1.0;
-      // V_ajustado = V_clima × (1 + IVC × 0.3): populações mais vulneráveis têm impacto acrescido
-      // Fonte: IPCC AR6 WGII Capítulo 17 (Compound risks and cascading effects)
-      let vAdj = vClima;
-      let ivcNote = '';
-      if (ivcFactor !== null && vClima > 0) {
-        vAdj = Math.min(1.0, vClima * (1 + ivcFactor * 0.3));
-        ivcNote = ` [IVC=${(ivcFactor * 100).toFixed(0)}%]`;
-      }
-      affectedPop = Math.round(totalPop * exposureE * vAdj);
+      affectedPop = Math.round(totalPop * exposureE * vClima);
 
-      formulaTitle = 'UNDRR / IPCC — Equação Geral do Risco (R = H × E × V_ajustado)';
+      formulaTitle = state.currentLang === 'en' ? 'UNDRR / IPCC — Disaster Risk Equation (R = H × E × V)' : 'UNDRR / IPCC — Equação Geral do Risco (R = H × E × V)';
       officialOrg = 'UNDRR (Quadro de Sendai) & IPCC AR6 WGII';
       officialUrl = 'https://www.undrr.org/terminology/disaster-risk';
-      formulaSteps = `P_afetada = Pop (${totalPop.toLocaleString('pt-PT')}) × E (${exposureE}) × V (${vAdj.toFixed(3)}${ivcNote}) = ${affectedPop.toLocaleString('pt-PT')} hab.`;
+      const numFmt = state.currentLang === 'en' ? 'en-US' : 'pt-PT';
+      formulaSteps = `P_afetada = Pop (${totalPop.toLocaleString(numFmt)}) × E (${exposureE}) × V_clima (${vClima}) = ${affectedPop.toLocaleString(numFmt)} hab.`;
 
     } else if (state.formulaModel === 'IPC_FEWSNET') {
       // 2. POPULAÇÃO EM NECESSIDADE HUMANITÁRIA (IPC MANUAL 3.1 & FEWS NET)
@@ -782,16 +818,13 @@ document.addEventListener('DOMContentLoaded', () => {
         pinRate = 0.00;
         phaseDesc = state.currentLang === 'en' ? '0% in Acute Food Insecurity' : '0% em Insegurança Aguda';
       }
-      // Ajuste pelo IVC do Censo 2024 (populações mais vulneráveis têm taxas de fase 3+ mais elevadas)
-      if (ivcFactor !== null && pinRate > 0) {
-        pinRate = Math.min(0.90, pinRate * (1 + ivcFactor * 0.2));
-      }
 
       affectedPop = Math.round(totalPop * pinRate);
       formulaTitle = state.currentLang === 'en' ? 'IPC / FEWS NET — Population in Need (PIN / Phase 3+)' : 'IPC / FEWS NET — População em Necessidade (PIN / Fase 3+)';
       officialOrg = 'IPC Global Platform (Manual 3.1) & FEWS NET';
       officialUrl = 'https://www.ipcinfo.org/ipc-manual/';
-      formulaSteps = `PIN = Pop_Total (${totalPop.toLocaleString(state.currentLang === 'en' ? 'en-US' : 'pt-PT')}) × % IPC 3+ (${(pinRate * 100).toFixed(1)}%) = ${affectedPop.toLocaleString(state.currentLang === 'en' ? 'en-US' : 'pt-PT')} hab. (${phaseDesc})`;
+      const numFmt = state.currentLang === 'en' ? 'en-US' : 'pt-PT';
+      formulaSteps = `PIN = Pop_Total (${totalPop.toLocaleString(numFmt)}) × % IPC 3+ (${(pinRate * 100).toFixed(0)}%) = ${affectedPop.toLocaleString(numFmt)} hab. (${phaseDesc})`;
 
     } else if (state.formulaModel === 'WFP_FAO_SADC') {
       // 3. MODELO AGROPASTORIL E PREÇOS (PAM / FAO / SADC RVAA)
@@ -812,10 +845,6 @@ document.addEventListener('DOMContentLoaded', () => {
         rFactor = 0.00;
         uFactor = 0.00;
       }
-      // Ajuste pelo IVC do Censo 2024 para o sector rural
-      if (ivcFactor !== null && rFactor > 0) {
-        rFactor = Math.min(0.95, rFactor * (1 + ivcFactor * 0.25));
-      }
 
       const ruralAffected = Math.round(ruralPop * rFactor);
       const urbanAffected = Math.round(urbanPop * uFactor);
@@ -825,7 +854,7 @@ document.addEventListener('DOMContentLoaded', () => {
       officialOrg = state.currentLang === 'en' ? 'World Food Programme (VAM) & FAO (GIEWS)' : 'Programa Alimentar Mundial (VAM) & FAO (GIEWS)';
       officialUrl = 'https://vam.wfp.org/';
       const numFmt = state.currentLang === 'en' ? 'en-US' : 'pt-PT';
-      formulaSteps = `P_afetada = [Rural: ${ruralPop.toLocaleString(numFmt)} × ${(rFactor * 100).toFixed(1)}%] + [Urbano: ${urbanPop.toLocaleString(numFmt)} × ${uFactor * 100}%] = ${affectedPop.toLocaleString(numFmt)} hab.`;
+      formulaSteps = `P_afetada = [Rural: ${ruralPop.toLocaleString(numFmt)} × ${(rFactor * 100).toFixed(0)}%] + [Urbano: ${urbanPop.toLocaleString(numFmt)} × ${(uFactor * 100).toFixed(0)}%] = ${affectedPop.toLocaleString(numFmt)} hab.`;
 
     } else if (state.formulaModel === 'IPC_FIES_INE') {
       // 4. MATRIZ DE RISCO HISTÓRICO (1984-2025) & FIES INE (ODS 2.1.2)
@@ -834,11 +863,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const riskMat = demographics.riskMatrix || { likelihood: 3, impact: 3, score: 9, rank: 'Moderado' };
       const fiesRate = fiesSev / 100.0;
 
-      // Multiplicador de choque climático SARCOF-33:
-      // Code 1 (BN): Seca Severa -> 2.0x base + ajuste de matriz de risco
-      // Code 2 (N-BN): Estresse moderado -> 1.4x base
-      // Code 3 (N-AN): Condições agroclimáticas normais -> 0.7x base
-      // Code 4 (AN): Precipitação abundante -> 0.4x base
       let climateMultiplier = 1.0;
       if (codeKey === 1) {
         climateMultiplier = 1.8 + (riskMat.score / 25) * 0.4;
@@ -857,6 +881,46 @@ document.addEventListener('DOMContentLoaded', () => {
       officialUrl = 'https://www.ine.gov.ao/publicacoes/detalhes/NTA0Mzg%3D';
       const numFmt = state.currentLang === 'en' ? 'en-US' : 'pt-PT';
       formulaSteps = `P_insegura = Pop (${totalPop.toLocaleString(numFmt)}) × FIES (${fiesSev}%) × Choque SARCOF (${climateMultiplier.toFixed(2)}x) = ${affectedPop.toLocaleString(numFmt)} hab. | Matriz: L(${riskMat.likelihood}) × I(${riskMat.impact}) = Score ${riskMat.score}`;
+
+    } else if (state.formulaModel === 'CUSTOM') {
+      // 5. FÓRMULA PERSONALIZADA PELO UTILIZADOR COM DADOS DO SISTEMA
+      const cf = state.customFormula || {};
+      const w = cf.weights || { v_clima: 50, fies_severa: 30, sem_agua: 20 };
+      const numFmt = state.currentLang === 'en' ? 'en-US' : 'pt-PT';
+
+      const vClimaVal = cfg.vFactor; // 0..0.85
+      const fiesVal = (demographics.fiesSeveraPct ?? 15.0) / 100.0;
+      const aguaVal = livelihoodData ? (parseFloat(livelihoodData.pctSemAgua) / 100.0) : 0.40;
+      const sanVal = livelihoodData ? (parseFloat(livelihoodData.pctSemSan) / 100.0) : 0.50;
+      const elecVal = livelihoodData ? (parseFloat(livelihoodData.pctSemElec) / 100.0) : 0.60;
+      const habVal = livelihoodData ? (parseFloat(livelihoodData.pctHabPrecaria) / 100.0) : 0.30;
+      const childVal = livelihoodData ? (parseFloat(livelihoodData.pctCriancas) / 100.0) : 0.45;
+      const riskVal = ((demographics.riskMatrix?.score || 9) / 25.0);
+
+      const totalWeight = (w.v_clima || 0) + (w.fies_severa || 0) + (w.sem_agua || 0) + 
+                          (w.sem_san || 0) + (w.sem_elec || 0) + (w.hab_precaria || 0) + 
+                          (w.criancas_014 || 0) + (w.risk_score || 0);
+
+      let effectiveRate = 0;
+      if (totalWeight > 0) {
+        effectiveRate = (
+          (w.v_clima || 0) * vClimaVal +
+          (w.fies_severa || 0) * fiesVal +
+          (w.sem_agua || 0) * aguaVal +
+          (w.sem_san || 0) * sanVal +
+          (w.sem_elec || 0) * elecVal +
+          (w.hab_precaria || 0) * habVal +
+          (w.criancas_014 || 0) * childVal +
+          (w.risk_score || 0) * riskVal
+        ) / totalWeight;
+      }
+      effectiveRate = Math.min(1.0, Math.max(0.0, effectiveRate));
+      affectedPop = Math.round(totalPop * effectiveRate);
+
+      formulaTitle = cf.name || (state.currentLang === 'en' ? 'User Custom Formula' : 'Fórmula Personalizada pelo Utilizador');
+      officialOrg = cf.officialOrg || (state.currentLang === 'en' ? 'User-Defined Parameters' : 'Utilizador / Parâmetros Customizados');
+      officialUrl = cf.officialUrl || 'https://censo2024.ine.gov.ao/';
+      formulaSteps = `P_afetada = Pop (${totalPop.toLocaleString(numFmt)}) × Taxa Ponderada (${(effectiveRate * 100).toFixed(1)}%) = ${affectedPop.toLocaleString(numFmt)} hab.`;
     }
 
     // Famílias Afetadas: Base Oficial INE Angola = 5,2 pessoas por agregado familiar
@@ -872,7 +936,8 @@ document.addEventListener('DOMContentLoaded', () => {
       officialOrg,
       officialUrl,
       cfg,
-      ivcData
+      livelihoodData,
+      ivcData: livelihoodData
     };
   }
 
@@ -1257,20 +1322,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Render IVC Vulnerability Panel in Inspector
+  // Render Indicadores de Condições de Vida & ODS no Painel do Inspetor
   function renderIvcPanel(risk) {
     const panel = document.getElementById('insp-ivc-panel');
     if (!panel) return;
 
-    const ivc = risk.ivcData;
-    if (!ivc) {
-      panel.innerHTML = `<div style="color:#64748b; font-size:0.75rem; text-align:center; padding:8px;">IVC: sem dados do Censo 2024 disponíveis para esta unidade</div>`;
+    const indicators = risk.livelihoodData || risk.ivcData;
+    if (!indicators) {
+      panel.innerHTML = `<div style="color:#64748b; font-size:0.75rem; text-align:center; padding:8px;">Indicadores: sem dados do Censo 2024 disponíveis para esta unidade</div>`;
       return;
     }
-
-    const ivcPct = (ivc.ivc * 100).toFixed(1);
-    const ivcColor = ivc.ivc > 0.6 ? '#ef4444' : ivc.ivc > 0.4 ? '#f59e0b' : ivc.ivc > 0.2 ? '#06b6d4' : '#10b981';
-    const ivcLabel = ivc.ivc > 0.6 ? 'Muito Alta' : ivc.ivc > 0.4 ? 'Alta' : ivc.ivc > 0.2 ? 'Moderada' : 'Baixa';
 
     function bar(val, color) {
       return `<div style="width:100%; background:rgba(255,255,255,0.07); border-radius:3px; height:6px; overflow:hidden;">
@@ -1278,60 +1339,64 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     panel.innerHTML = `
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-        <span style="font-size:0.75rem; color:#94a3b8; font-weight:600;">Índice de Vulnerabilidade Composto (IVC)</span>
-        <span style="font-size:0.85rem; font-weight:700; color:${ivcColor};">▲ ${ivcPct}% <span style="font-size:0.7rem;">(${ivcLabel})</span></span>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+        <span style="font-size:0.75rem; color:#94a3b8; font-weight:700;">
+          <i class="fa-solid fa-chart-column" style="color:#38bdf8;"></i> Condições de Vida & ODS (Censo 2024 INE)
+        </span>
+        <span style="font-size:0.7rem; font-weight:600; color:#38bdf8; background:rgba(56,189,248,0.1); padding:2px 6px; border-radius:4px;">
+          ODS 6, 7, 11
+        </span>
       </div>
       <div style="font-size:0.65rem; color:#64748b; margin-bottom:8px; line-height:1.4;">
-        Calculado a partir do Censo INE 2024 — indicadores multidimensionais de vulnerabilidade (UNDRR/IPCC AR6 WGII)
-        <a href="https://www.undrr.org/terminology/vulnerability" target="_blank" style="color:#38bdf8; text-decoration:none;"> ↗ Metodologia</a>
+        Indicadores descritivos oficiais do Censo Geral da População e Habitação (INE Angola) alinhados aos ODS da ONU
+        <a href="https://censo2024.ine.gov.ao/" target="_blank" rel="noopener" style="color:#38bdf8; text-decoration:none;"> ↗ Censo 2024</a>
       </div>
       <div style="display:flex; flex-direction:column; gap:5px;">
         <div>
           <div style="display:flex; justify-content:space-between; font-size:0.7rem; margin-bottom:2px;">
-            <span style="color:#94a3b8;">🚰 Sem acesso a água segura</span>
-            <span style="color:#f59e0b; font-weight:600;">${ivc.pctSemAgua}%</span>
+            <span style="color:#94a3b8;">🚰 Sem acesso a água segura (ODS 6.1)</span>
+            <span style="color:#f59e0b; font-weight:600;">${indicators.pctSemAgua}%</span>
           </div>
-          ${bar(parseFloat(ivc.pctSemAgua), '#f59e0b')}
+          ${bar(parseFloat(indicators.pctSemAgua), '#f59e0b')}
         </div>
         <div>
           <div style="display:flex; justify-content:space-between; font-size:0.7rem; margin-bottom:2px;">
-            <span style="color:#94a3b8;">🚽 Sem saneamento básico</span>
-            <span style="color:#ef4444; font-weight:600;">${ivc.pctSemSan}%</span>
+            <span style="color:#94a3b8;">🚽 Sem saneamento básico (ODS 6.2)</span>
+            <span style="color:#ef4444; font-weight:600;">${indicators.pctSemSan}%</span>
           </div>
-          ${bar(parseFloat(ivc.pctSemSan), '#ef4444')}
+          ${bar(parseFloat(indicators.pctSemSan), '#ef4444')}
         </div>
         <div>
           <div style="display:flex; justify-content:space-between; font-size:0.7rem; margin-bottom:2px;">
-            <span style="color:#94a3b8;">💡 Sem electricidade/solar</span>
-            <span style="color:#a78bfa; font-weight:600;">${ivc.pctSemElec}%</span>
+            <span style="color:#94a3b8;">💡 Sem eletricidade/solar (ODS 7.1)</span>
+            <span style="color:#a78bfa; font-weight:600;">${indicators.pctSemElec}%</span>
           </div>
-          ${bar(parseFloat(ivc.pctSemElec), '#a78bfa')}
+          ${bar(parseFloat(indicators.pctSemElec), '#a78bfa')}
         </div>
         <div>
           <div style="display:flex; justify-content:space-between; font-size:0.7rem; margin-bottom:2px;">
-            <span style="color:#94a3b8;">🏠 Habitação precária (cubata/barraca)</span>
-            <span style="color:#fb7185; font-weight:600;">${ivc.pctHabPrecaria}%</span>
+            <span style="color:#94a3b8;">🏠 Habitação precária: cubata/barraca (ODS 11.1)</span>
+            <span style="color:#fb7185; font-weight:600;">${indicators.pctHabPrecaria}%</span>
           </div>
-          ${bar(parseFloat(ivc.pctHabPrecaria), '#fb7185')}
+          ${bar(parseFloat(indicators.pctHabPrecaria), '#fb7185')}
         </div>
         <div>
           <div style="display:flex; justify-content:space-between; font-size:0.7rem; margin-bottom:2px;">
-            <span style="color:#94a3b8;">👶 Pop. 0-14 anos (crianças)</span>
-            <span style="color:#38bdf8; font-weight:600;">${ivc.pctCriancas}%</span>
+            <span style="color:#94a3b8;">👶 População 0-14 anos (crianças)</span>
+            <span style="color:#38bdf8; font-weight:600;">${indicators.pctCriancas}%</span>
           </div>
-          ${bar(parseFloat(ivc.pctCriancas), '#38bdf8')}
+          ${bar(parseFloat(indicators.pctCriancas), '#38bdf8')}
         </div>
       </div>
       ${risk.fiesSeveraPct ? `
         <div style="margin-top:10px; padding-top:8px; border-top:1px solid rgba(255,255,255,0.08);">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-            <span style="font-size:0.75rem; color:#38bdf8; font-weight:600;">🌾 Insegurança Alimentar Severa (FIES INE / FAO)</span>
+            <span style="font-size:0.75rem; color:#38bdf8; font-weight:600;">🌾 Insegurança Alimentar Severa (FIES INE / FAO — ODS 2.1.2)</span>
             <span style="font-size:0.85rem; font-weight:700; color:${risk.fiesSeveraPct > 30 ? '#ef4444' : risk.fiesSeveraPct > 15 ? '#f59e0b' : '#34d399'};">${risk.fiesSeveraPct}%</span>
           </div>
           ${bar(parseFloat(risk.fiesSeveraPct), risk.fiesSeveraPct > 30 ? '#ef4444' : risk.fiesSeveraPct > 15 ? '#f59e0b' : '#34d399')}
           <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px; font-size:0.7rem;">
-            <span style="color:#94a3b8;">Matriz de Risco (1984-2025):</span>
+            <span style="color:#94a3b8;">Matriz de Risco Histórico (1984-2025):</span>
             <span class="badge" style="background:${(risk.riskMatrix && risk.riskMatrix.score >= 15) ? '#ef4444' : (risk.riskMatrix && risk.riskMatrix.score >= 8) ? '#f59e0b' : '#10b981'}; font-size:0.68rem;">
               Score: ${risk.riskMatrix ? risk.riskMatrix.score : '-'} (${risk.riskMatrix ? risk.riskMatrix.rank : '-'}) — L:${risk.riskMatrix ? risk.riskMatrix.likelihood : 3} × I:${risk.riskMatrix ? risk.riskMatrix.impact : 3}
             </span>
@@ -1345,6 +1410,22 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('inspector-card').classList.remove('active');
   });
 
+  // Função auxiliar para gerar texto de visualização da fórmula personalizada
+  function getCustomFormulaEquationText() {
+    const cf = state.customFormula || {};
+    const w = cf.weights || { v_clima: 50, fies_severa: 30, sem_agua: 20 };
+    const parts = [];
+    if (w.v_clima) parts.push(`${(w.v_clima/100).toFixed(2)}×V_clima`);
+    if (w.fies_severa) parts.push(`${(w.fies_severa/100).toFixed(2)}×%FIES`);
+    if (w.sem_agua) parts.push(`${(w.sem_agua/100).toFixed(2)}×%SemÁgua`);
+    if (w.sem_san) parts.push(`${(w.sem_san/100).toFixed(2)}×%SemSan`);
+    if (w.sem_elec) parts.push(`${(w.sem_elec/100).toFixed(2)}×%SemElec`);
+    if (w.hab_precaria) parts.push(`${(w.hab_precaria/100).toFixed(2)}×%HabPrec`);
+    if (w.criancas_014) parts.push(`${(w.criancas_014/100).toFixed(2)}×%Crianças`);
+    if (w.risk_score) parts.push(`${(w.risk_score/100).toFixed(2)}×RiskMat`);
+    return `P_afetada = Pop × (${parts.length ? parts.join(' + ') : 'pesos'})`;
+  }
+
   // Atualizar a Descrição da Fórmula no Painel
   function updateFormulaUI() {
     const model = state.formulaModel;
@@ -1353,44 +1434,65 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const f = formulas[model];
     const hdrBadge = document.getElementById('hdr-formula-name');
-    if (hdrBadge) hdrBadge.textContent = model === 'IPC_FIES_INE' ? 'FIES INE / IPC (ODS 2.1.2)' : model === 'UNDRR_IPCC' ? 'UNDRR / IPCC' : model === 'IPC_FEWSNET' ? 'IPC / FEWS NET' : 'PAM / FAO / SADC';
+    if (hdrBadge) {
+      hdrBadge.textContent = model === 'IPC_FIES_INE' ? 'FIES INE / IPC (ODS 2.1.2)' :
+                             model === 'UNDRR_IPCC' ? 'UNDRR / IPCC' :
+                             model === 'IPC_FEWSNET' ? 'IPC / FEWS NET' :
+                             model === 'CUSTOM' ? 'Personalizada / Custom' :
+                             'PAM / FAO / SADC';
+    }
 
     const titleEl = document.getElementById('formula-org-title');
     const eqEl = document.getElementById('formula-equation-code');
     const descEl = document.getElementById('formula-summary-text');
     const linkEl = document.getElementById('formula-official-link');
 
-    if (titleEl) titleEl.textContent = f.nome;
-    if (eqEl) eqEl.textContent = f.formula_simplificada;
-    if (descEl) descEl.textContent = f.descricao;
-    if (linkEl && f.links_oficiais && f.links_oficiais[0]) {
-      linkEl.href = f.links_oficiais[0].url;
-      linkEl.innerHTML = `<i class="fa-solid fa-arrow-up-right-from-square"></i> ${f.links_oficiais[0].nome}`;
+    if (model === 'CUSTOM') {
+      if (titleEl) titleEl.textContent = state.customFormula.name || f.nome;
+      if (eqEl) eqEl.textContent = getCustomFormulaEquationText();
+      if (descEl) descEl.textContent = f.descricao;
+    } else {
+      if (titleEl) titleEl.textContent = f.nome;
+      if (eqEl) eqEl.textContent = f.formula_simplificada;
+      if (descEl) descEl.textContent = f.descricao;
     }
 
-    // Add extra reference links for UNDRR/IPCC model
+    // Ocultar link único legado e renderizar container multi-links oficiais
+    if (linkEl) linkEl.style.display = 'none';
+
     const extraLinksContainerId = 'formula-extra-links';
     let extraLinksEl = document.getElementById(extraLinksContainerId);
     if (!extraLinksEl) {
       extraLinksEl = document.createElement('div');
       extraLinksEl.id = extraLinksContainerId;
-      extraLinksEl.style.cssText = 'margin-top:6px;display:flex;flex-wrap:wrap;gap:6px;';
+      extraLinksEl.style.cssText = 'margin-top:8px; display:flex; flex-direction:column; gap:6px;';
       if (linkEl && linkEl.parentNode) linkEl.parentNode.insertBefore(extraLinksEl, linkEl.nextSibling);
     }
-    if (model === 'UNDRR_IPCC') {
-      extraLinksEl.innerHTML = `
-        <a href="https://gfdrr.github.io/CCDR-tools/docs/intro-risk.html" target="_blank" rel="noopener" style="font-size:11px;color:#1a73e8;text-decoration:none;">
-          <i class="fa-solid fa-arrow-up-right-from-square"></i> GFDRR CCDR Risk Framework
-        </a>
-        <a href="https://www.undrr.org/building-risk-knowledge/understanding-risk" target="_blank" rel="noopener" style="font-size:11px;color:#1a73e8;text-decoration:none;">
-          <i class="fa-solid fa-arrow-up-right-from-square"></i> UNDRR Understanding Risk
-        </a>`;
-    } else {
-      extraLinksEl.innerHTML = '';
+
+    // Obter todos os links oficiais da fórmula selecionada
+    const allLinks = [];
+    if (model === 'CUSTOM' && state.customFormula?.officialUrl) {
+      allLinks.push({
+        nome: state.customFormula.officialOrg || 'Fonte / Metodologia Personalizada',
+        url: state.customFormula.officialUrl
+      });
+    }
+    if (f.links_oficiais && Array.isArray(f.links_oficiais)) {
+      f.links_oficiais.forEach(lk => allLinks.push(lk));
     }
 
+    let linksHtml = '';
+    allLinks.forEach(lk => {
+      linksHtml += `
+        <a href="${lk.url}" target="_blank" rel="noopener" class="formula-link-btn" style="font-size:0.7rem; padding:4px 8px; display:inline-flex; align-items:center; gap:6px; background:rgba(56,189,248,0.08); border:1px solid rgba(56,189,248,0.25); border-radius:4px; color:#38bdf8; text-decoration:none; transition:all 0.2s;">
+          <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.65rem;"></i> ${lk.nome}
+        </a>`;
+    });
+
+    extraLinksEl.innerHTML = linksHtml;
+
     const activeTitle = document.getElementById('lbl-active-formula-title');
-    if (activeTitle) activeTitle.textContent = f.nome;
+    if (activeTitle) activeTitle.textContent = model === 'CUSTOM' ? (state.customFormula.name || f.nome) : f.nome;
 
     updateGlobalStats();
     populateCensoTable();
@@ -1463,8 +1565,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const demo = getOfficialDemographics('provincias', { properties: { Nome_Prov: provName } });
         const code = getSarcofForAngolaFeature({ properties: { Nome_Prov: provName } }, 'provincias', state.activeSeason);
         const calc = calculateOfficialFormula(demo, code);
-        const ivcData = computeCensusVulnerabilityIndex(demo.censoDetails);
-        const ivcPct = ivcData ? `<span style="color:${ivcData.ivc > 0.5 ? '#ef4444' : ivcData.ivc > 0.3 ? '#f59e0b' : '#34d399'}; font-weight:700;">${(ivcData.ivc * 100).toFixed(0)}%</span>` : '<span style="color:#64748b;">-</span>';
+        const liveData = getCensusLivelihoodIndicators(demo.censoDetails);
+        const waterPct = liveData ? `<span style="color:${parseFloat(liveData.pctSemAgua) > 60 ? '#ef4444' : parseFloat(liveData.pctSemAgua) > 40 ? '#f59e0b' : '#34d399'}; font-weight:700;">${liveData.pctSemAgua}%</span>` : '<span style="color:#64748b;">-</span>';
 
         const areaStr = demo.areaKm2 ? `${Number(demo.areaKm2.toFixed(1)).toLocaleString(numFmt)} km²` : '-';
         const densityStr = demo.density ? `${Number(demo.density.toFixed(1)).toLocaleString(numFmt)} ${state.currentLang === 'en' ? 'pop/km²' : 'hab/km²'}` : (demo.areaKm2 && demo.total ? `${Number((demo.total / demo.areaKm2).toFixed(1)).toLocaleString(numFmt)} ${state.currentLang === 'en' ? 'pop/km²' : 'hab/km²'}` : '-');
@@ -1485,7 +1587,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <td><span class="badge" style="background:${calc.cfg.color}; color:${calc.cfg.textColor || '#fff'}; font-weight:700;">${calc.cfg.name}</span></td>
           <td style="color:#ef4444; font-weight:700;">${calc.affectedPop.toLocaleString(numFmt)} ${popUnit}</td>
           <td style="color:#fcd34d; font-weight:700;">${calc.affectedFamilies.toLocaleString(numFmt)} ${famUnit}</td>
-          <td>${ivcPct} <span style="font-size:0.65rem; color:#64748b;">IVC</span></td>
+          <td>${waterPct} <span style="font-size:0.65rem; color:#64748b;">Água</span></td>
           <td>${fiesStr} <span style="font-size:0.62rem; color:#64748b;">FIES</span></td>
           <td>${riskBadge}</td>
           <td>
@@ -1503,8 +1605,8 @@ document.addEventListener('DOMContentLoaded', () => {
       provKeys.forEach(provName => {
         const muns = state.ineData.municipios[provName] || {};
         const provObj = state.ineData.provincias[provName] || {};
-        const provIvcData = computeCensusVulnerabilityIndex(provObj.censo2024);
-        const provIvcPct = provIvcData ? `<span style="color:${provIvcData.ivc > 0.5 ? '#ef4444' : provIvcData.ivc > 0.3 ? '#f59e0b' : '#34d399'}; font-weight:700;">${(provIvcData.ivc * 100).toFixed(0)}%</span>` : '<span style="color:#64748b;">-</span>';
+        const provLive = getCensusLivelihoodIndicators(provObj.censo2024);
+        const provWater = provLive ? `<span style="color:${parseFloat(provLive.pctSemAgua) > 60 ? '#ef4444' : parseFloat(provLive.pctSemAgua) > 40 ? '#f59e0b' : '#34d399'}; font-weight:700;">${provLive.pctSemAgua}%</span>` : '<span style="color:#64748b;">-</span>';
 
         Object.keys(muns).forEach(munName => {
           if (query && !munName.toLowerCase().includes(query) && !provName.toLowerCase().includes(query)) return;
@@ -1531,7 +1633,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <td><span class="badge" style="background:${calc.cfg.color}; color:${calc.cfg.textColor || '#fff'}; font-weight:700;">${calc.cfg.name}</span></td>
             <td style="color:#ef4444; font-weight:700;">${calc.affectedPop.toLocaleString(numFmt)} ${popUnit}</td>
             <td style="color:#fcd34d; font-weight:700;">${calc.affectedFamilies.toLocaleString(numFmt)} ${famUnit}</td>
-            <td>${provIvcPct} <span style="font-size:0.65rem; color:#64748b;" title="IVC Provincial Censo 2024">Prov.</span></td>
+            <td>${provWater} <span style="font-size:0.65rem; color:#64748b;" title="Carência de Água Provincial Censo 2024 (ODS 6.1)">Prov.</span></td>
             <td>${fiesStr} <span style="font-size:0.62rem; color:#64748b;">FIES</span></td>
             <td>${riskBadge}</td>
             <td>
@@ -1555,7 +1657,7 @@ document.addEventListener('DOMContentLoaded', () => {
       'Unidade', 'Província', 'Área (km²)', 'Densidade (hab/km²)',
       `População (${state.demographicYear})`, 'Pop. Urbana', 'Pop. Rural',
       `Classificação SARCOF (${state.activeSeason})`, 'Pessoas Afetadas', 'Famílias Afetadas',
-      'IVC Censo 2024', '% FIES Severa', 'Risk Score', 'Risk Rank', 'Ano Base', 'Modelo'
+      'Sem Água ODS 6.1 (%)', '% FIES Severa (ODS 2.1.2)', 'Risk Score', 'Risk Rank', 'Ano Base', 'Modelo'
     ].join(';'));
 
     if (state.tableMode === 'prov') {
@@ -1563,26 +1665,26 @@ document.addEventListener('DOMContentLoaded', () => {
         const demo = getOfficialDemographics('provincias', { properties: { Nome_Prov: pname } });
         const code = getSarcofForAngolaFeature({ properties: { Nome_Prov: pname } }, 'provincias', state.activeSeason);
         const calc = calculateOfficialFormula(demo, code);
-        const ivc = computeCensusVulnerabilityIndex(demo.censoDetails);
-        const ivcVal = ivc ? `${(ivc.ivc * 100).toFixed(1)}%` : '-';
+        const live = getCensusLivelihoodIndicators(demo.censoDetails);
+        const waterVal = live ? `${live.pctSemAgua}%` : '-';
         const rMat = demo.riskMatrix || { score: 9, rank: 'Moderado' };
         rows.push([
-          `"${pname}"`, '"Angola"', demo.areaKm2 || '', demo.density || '', demo.total, demo.urban, demo.rural, `"${calc.cfg.name}"`, calc.affectedPop, calc.affectedFamilies, `"${ivcVal}"`, demo.fiesSeveraPct || '', rMat.score, `"${rMat.rank}"`, state.demographicYear, `"${state.formulaModel}"`
+          `"${pname}"`, '"Angola"', demo.areaKm2 || '', demo.density || '', demo.total, demo.urban, demo.rural, `"${calc.cfg.name}"`, calc.affectedPop, calc.affectedFamilies, `"${waterVal}"`, demo.fiesSeveraPct || '', rMat.score, `"${rMat.rank}"`, state.demographicYear, `"${state.formulaModel}"`
         ].join(';'));
       });
     } else {
       Object.keys(state.ineData.municipios).forEach(pname => {
         const muns = state.ineData.municipios[pname] || {};
         const provObj = state.ineData.provincias[pname] || {};
-        const provIvc = computeCensusVulnerabilityIndex(provObj.censo2024);
-        const ivcVal = provIvc ? `${(provIvc.ivc * 100).toFixed(1)}% (Prov)` : '-';
+        const provLive = getCensusLivelihoodIndicators(provObj.censo2024);
+        const waterVal = provLive ? `${provLive.pctSemAgua}% (Prov)` : '-';
         Object.keys(muns).forEach(mname => {
           const demo = getOfficialDemographics('municipios', { properties: { Nome_Prov: pname, Nome_Munic: mname } });
           const code = getSarcofForAngolaFeature({ properties: { Nome_Prov: pname, Nome_Munic: mname } }, 'municipios', state.activeSeason);
           const calc = calculateOfficialFormula(demo, code);
           const rMat = demo.riskMatrix || { score: 9, rank: 'Moderado' };
           rows.push([
-            `"${mname}"`, `"${pname}"`, demo.areaKm2 || '', demo.density || '', demo.total, demo.urban, demo.rural, `"${calc.cfg.name}"`, calc.affectedPop, calc.affectedFamilies, `"${ivcVal}"`, demo.fiesSeveraPct || '', rMat.score, `"${rMat.rank}"`, state.demographicYear, `"${state.formulaModel}"`
+            `"${mname}"`, `"${pname}"`, demo.areaKm2 || '', demo.density || '', demo.total, demo.urban, demo.rural, `"${calc.cfg.name}"`, calc.affectedPop, calc.affectedFamilies, `"${waterVal}"`, demo.fiesSeveraPct || '', rMat.score, `"${rMat.rank}"`, state.demographicYear, `"${state.formulaModel}"`
           ].join(';'));
         });
       });
@@ -1597,14 +1699,141 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.removeChild(link);
   }
 
+  // Construtor e Modal de Fórmula Personalizada
+  function setupCustomFormulaBuilder() {
+    const modal = document.getElementById('modal-custom-formula');
+    const btnOpen = document.getElementById('btn-open-custom-formula');
+    const btnClose = document.getElementById('btn-close-custom-formula');
+    const btnApply = document.getElementById('btn-apply-custom-formula');
+    const btnReset = document.getElementById('btn-reset-custom-formula');
+    const nameInput = document.getElementById('custom-formula-name');
+    const linkInput = document.getElementById('custom-formula-link');
+    const previewEl = document.getElementById('custom-formula-equation-preview');
+    const totalEl = document.getElementById('custom-weights-total');
+
+    const variables = [
+      'v_clima', 'fies_severa', 'sem_agua', 'sem_san',
+      'sem_elec', 'hab_precaria', 'criancas_014', 'risk_score'
+    ];
+
+    function updateBuilderPreview() {
+      const w = {};
+      let sum = 0;
+      variables.forEach(v => {
+        const slider = document.getElementById(`slider-weight-${v}`);
+        const val = slider ? parseInt(slider.value, 10) : 0;
+        w[v] = val;
+        sum += val;
+        const lbl = document.getElementById(`lbl-weight-${v}`);
+        if (lbl) lbl.textContent = `${val}%`;
+      });
+
+      if (totalEl) {
+        totalEl.textContent = `Total: ${sum}%`;
+        totalEl.style.background = sum === 100 ? 'rgba(16,185,129,0.2)' : 'rgba(239,68,68,0.2)';
+        totalEl.style.color = sum === 100 ? '#34d399' : '#f87171';
+      }
+
+      const parts = [];
+      if (w.v_clima) parts.push(`${(w.v_clima/100).toFixed(2)} × V_clima`);
+      if (w.fies_severa) parts.push(`${(w.fies_severa/100).toFixed(2)} × %FIES`);
+      if (w.sem_agua) parts.push(`${(w.sem_agua/100).toFixed(2)} × %SemÁgua`);
+      if (w.sem_san) parts.push(`${(w.sem_san/100).toFixed(2)} × %SemSan`);
+      if (w.sem_elec) parts.push(`${(w.sem_elec/100).toFixed(2)} × %SemElec`);
+      if (w.hab_precaria) parts.push(`${(w.hab_precaria/100).toFixed(2)} × %HabPrec`);
+      if (w.criancas_014) parts.push(`${(w.criancas_014/100).toFixed(2)} × %Crianças`);
+      if (w.risk_score) parts.push(`${(w.risk_score/100).toFixed(2)} × RiskMat`);
+
+      if (previewEl) {
+        const expr = parts.length ? parts.join(' + ') : '0';
+        previewEl.textContent = `P_afetada = Pop_Oficial × (${expr})`;
+      }
+    }
+
+    function syncStateToInputs() {
+      const cf = state.customFormula || {};
+      if (nameInput) nameInput.value = cf.name || 'Fórmula Personalizada';
+      if (linkInput) linkInput.value = cf.officialUrl || 'https://censo2024.ine.gov.ao/';
+      const w = cf.weights || { v_clima: 50, fies_severa: 30, sem_agua: 20 };
+      variables.forEach(v => {
+        const slider = document.getElementById(`slider-weight-${v}`);
+        if (slider) slider.value = w[v] != null ? w[v] : 0;
+      });
+      updateBuilderPreview();
+    }
+
+    variables.forEach(v => {
+      const slider = document.getElementById(`slider-weight-${v}`);
+      if (slider) slider.addEventListener('input', updateBuilderPreview);
+    });
+
+    if (btnOpen && modal) {
+      btnOpen.addEventListener('click', () => {
+        syncStateToInputs();
+        modal.classList.add('active');
+      });
+    }
+
+    if (btnClose && modal) {
+      btnClose.addEventListener('click', () => {
+        modal.classList.remove('active');
+      });
+    }
+
+    if (btnReset) {
+      btnReset.addEventListener('click', () => {
+        const defaults = { v_clima: 50, fies_severa: 30, sem_agua: 20 };
+        variables.forEach(v => {
+          const slider = document.getElementById(`slider-weight-${v}`);
+          if (slider) slider.value = defaults[v] || 0;
+        });
+        if (nameInput) nameInput.value = 'Fórmula Personalizada';
+        if (linkInput) linkInput.value = 'https://censo2024.ine.gov.ao/';
+        updateBuilderPreview();
+      });
+    }
+
+    if (btnApply && modal) {
+      btnApply.addEventListener('click', () => {
+        const w = {};
+        variables.forEach(v => {
+          const slider = document.getElementById(`slider-weight-${v}`);
+          w[v] = slider ? parseInt(slider.value, 10) : 0;
+        });
+        state.customFormula = {
+          name: (nameInput && nameInput.value.trim()) || 'Fórmula Personalizada',
+          officialUrl: (linkInput && linkInput.value.trim()) || 'https://censo2024.ine.gov.ao/',
+          officialOrg: 'Utilizador / Parâmetros Customizados',
+          weights: w
+        };
+        localStorage.setItem('elnino_custom_formula', JSON.stringify(state.customFormula));
+
+        state.formulaModel = 'CUSTOM';
+        const formulaSelect = document.getElementById('select-formula-model');
+        if (formulaSelect) formulaSelect.value = 'CUSTOM';
+
+        modal.classList.remove('active');
+        updateFormulaUI();
+      });
+    }
+
+    syncStateToInputs();
+  }
+
   // Eventos do Seletor de Modelo de Fórmula
   const formulaSelect = document.getElementById('select-formula-model');
   if (formulaSelect) {
     formulaSelect.addEventListener('change', (e) => {
       state.formulaModel = e.target.value;
+      if (e.target.value === 'CUSTOM') {
+        const modal = document.getElementById('modal-custom-formula');
+        if (modal) modal.classList.add('active');
+      }
       updateFormulaUI();
     });
   }
+
+  setupCustomFormulaBuilder();
 
   // Eventos do Seletor de Ano Demográfico
   document.getElementById('select-demographic-year').addEventListener('change', (e) => {
@@ -1850,26 +2079,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const provs = state.ineData.provincias;
     const provNames = Object.keys(provs);
 
-    // IVC Chart (Índice de Vulnerabilidade Composto) por Província
+    // Gráfico de Insegurança Alimentar Severa FIES (ODS 2.1.2) por Província (INE / FAO Fevereiro 2026)
     const ivcCanvas = document.getElementById('chart-vulnerability-ivc');
     if (ivcCanvas) {
-      // Compute and sort IVC per province descending
-      const ivcRows = provNames.map(p => {
-        const ivcData = computeCensusVulnerabilityIndex(provs[p].censo2024);
-        return { name: p, val: ivcData ? parseFloat((ivcData.ivc * 100).toFixed(1)) : 0 };
+      const fiesRows = provNames.map(p => {
+        const val = provs[p].fies_severa_pct != null ? parseFloat(provs[p].fies_severa_pct.toFixed(1)) : 15.0;
+        return { name: p, val };
       }).sort((a, b) => b.val - a.val);
 
       state.charts.ivc = new Chart(ivcCanvas, {
         type: 'bar',
         data: {
-          labels: ivcRows.map(d => d.name),
+          labels: fiesRows.map(d => d.name),
           datasets: [{
-            label: 'IVC (%) — Censo 2024 INE',
-            data: ivcRows.map(d => d.val),
-            backgroundColor: ivcRows.map(d =>
-              d.val > 60 ? 'rgba(239,68,68,0.85)' :
-              d.val > 40 ? 'rgba(245,158,11,0.85)' :
-              d.val > 20 ? 'rgba(6,182,212,0.85)' : 'rgba(16,185,129,0.85)'
+            label: state.currentLang === 'en' ? 'Severe FIES (%) — INE / FAO (SDG 2.1.2)' : 'FIES Severa (%) — INE / FAO (ODS 2.1.2)',
+            data: fiesRows.map(d => d.val),
+            backgroundColor: fiesRows.map(d =>
+              d.val > 30 ? 'rgba(239,68,68,0.85)' :
+              d.val > 15 ? 'rgba(245,158,11,0.85)' :
+              d.val > 10 ? 'rgba(6,182,212,0.85)' : 'rgba(16,185,129,0.85)'
             ),
             borderRadius: 4,
             borderWidth: 0
@@ -1883,8 +2111,8 @@ document.addEventListener('DOMContentLoaded', () => {
             x: {
               ticks: { color: '#94a3b8', font: { size: 9 } },
               grid: { color: 'rgba(255,255,255,0.05)' },
-              title: { display: true, text: 'IVC (%) — Vulnerabilidade Composta', color: '#64748b', font: { size: 9 } },
-              max: 100
+              title: { display: true, text: '% Insegurança Alimentar Severa (ODS 2.1.2)', color: '#64748b', font: { size: 9 } },
+              max: 60
             },
             y: { ticks: { color: '#94a3b8', font: { size: 9 } }, grid: { display: false } }
           },
@@ -1892,7 +2120,7 @@ document.addEventListener('DOMContentLoaded', () => {
             legend: { display: false },
             tooltip: {
               callbacks: {
-                label: ctx => ` IVC: ${ctx.raw}% — ${ctx.raw > 60 ? 'Muito Alta' : ctx.raw > 40 ? 'Alta' : ctx.raw > 20 ? 'Moderada' : 'Baixa'} — Censo 2024 INE`
+                label: ctx => ` FIES Severa: ${ctx.raw}% — ${ctx.raw > 30 ? 'Crítica/Emergência' : ctx.raw > 15 ? 'Severa' : 'Moderada'} (INE/FAO ODS 2.1.2)`
               }
             }
           }
