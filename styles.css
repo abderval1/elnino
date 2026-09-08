@@ -371,16 +371,25 @@ input:checked + .slider:before { transform: translateX(18px); }
   width: 14px;
   height: 14px;
   border-radius: 3px;
-  background: repeating-linear-gradient(
-    45deg,
-    #f8fafc,
-    #f8fafc 2px,
-    rgba(15, 23, 42, 0.6) 2px,
-    rgba(15, 23, 42, 0.6) 5px
+  background-color: rgba(196, 164, 130, 0.75);
+  background-image: repeating-linear-gradient(
+    -45deg,
+    #0f172a 0px,
+    #0f172a 2px,
+    transparent 2px,
+    transparent 6px
   );
-  border: 1px solid rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.6);
   flex-shrink: 0;
   box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+}
+
+/* Chrome, Edge & Chromium SVG pattern rule */
+.leaflet-sarcof-hatch path {
+  fill: url(#sarcof-hatch) !important;
+  fill-opacity: 0.92 !important;
+  stroke: none !important;
+  pointer-events: none !important;
 }
 
 /* Category Badge Helpers aligned with SARCOF map */

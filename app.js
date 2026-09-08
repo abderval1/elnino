@@ -494,6 +494,17 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         const selected = e.target.value;
         if (state.baseLayers[selected]) state.baseLayers[selected].addTo(state.map);
+        ensureSvgPattern();
+      });
+
+      // Keep pattern alive after map view resets in Chrome and Edge
+      state.map.on('zoomend moveend viewreset', () => {
+        ensureSvgPattern();
+        const hatchPaths = document.querySelectorAll('.leaflet-sarcof-hatch path');
+        hatchPaths.forEach(p => {
+          p.setAttribute('fill', 'url(#sarcof-hatch)');
+          p.style.fill = 'url(#sarcof-hatch)';
+        });
       });
 
     } catch (e) {
@@ -920,61 +931,67 @@ document.addEventListener('DOMContentLoaded', () => {
     return p.NAME || p.Nome_Prov || p.Nome_Munic || p.Nome_Comun || 'Região SADC';
   }
 
-  // Ensure SVG Hatching Pattern is Injected into Leaflet Map SVG Pane
+  // Ensure SVG Hatching Pattern is Injected into Leaflet Map SVG Pane (Cross-browser for Chrome, Edge, Safari)
   function ensureSvgPattern() {
     if (!state.map) return;
-    const overlayPane = state.map.getPanes() ? state.map.getPanes().overlayPane : null;
-    const svg = overlayPane ? overlayPane.querySelector('svg') : null;
-    if (!svg) return;
+    const overlayPane = state.map.getPanes ? state.map.getPanes().overlayPane : null;
+    if (!overlayPane) return;
+    
+    // Find all SVG roots in the overlay pane
+    const svgs = overlayPane.querySelectorAll('svg');
+    if (!svgs || svgs.length === 0) return;
 
-    let defs = svg.querySelector('defs');
-    if (!defs) {
-      defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
-      svg.insertBefore(defs, svg.firstChild);
-    }
-    if (!defs.querySelector('#sarcof-hatch')) {
-      const pattern = document.createElementNS('http://www.w3.org/2000/svg', 'pattern');
-      pattern.setAttribute('id', 'sarcof-hatch');
-      pattern.setAttribute('width', '10');
-      pattern.setAttribute('height', '10');
-      pattern.setAttribute('patternUnits', 'userSpaceOnUse');
-      pattern.setAttribute('patternTransform', 'rotate(45)');
+    svgs.forEach(svg => {
+      let defs = svg.querySelector('defs');
+      if (!defs) {
+        defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+        svg.insertBefore(defs, svg.firstChild);
+      }
+      if (!defs.querySelector('#sarcof-hatch')) {
+        const pattern = document.createElementNS('http://www.w3.org/2000/svg', 'pattern');
+        pattern.setAttribute('id', 'sarcof-hatch');
+        pattern.setAttribute('patternUnits', 'userSpaceOnUse');
+        pattern.setAttribute('width', '8');
+        pattern.setAttribute('height', '8');
+        pattern.setAttribute('patternTransform', 'rotate(45)');
 
-      // Dark diagonal stripe
-      const lineDark = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-      lineDark.setAttribute('x1', '0');
-      lineDark.setAttribute('y1', '0');
-      lineDark.setAttribute('x2', '0');
-      lineDark.setAttribute('y2', '10');
-      lineDark.setAttribute('stroke', '#0f172a');
-      lineDark.setAttribute('stroke-width', '2.2');
-      lineDark.setAttribute('stroke-opacity', '0.75');
+        // Dark diagonal stripe
+        const lineDark = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        lineDark.setAttribute('x1', '0');
+        lineDark.setAttribute('y1', '0');
+        lineDark.setAttribute('x2', '0');
+        lineDark.setAttribute('y2', '8');
+        lineDark.setAttribute('stroke', '#0f172a');
+        lineDark.setAttribute('stroke-width', '2.2');
+        lineDark.setAttribute('stroke-opacity', '0.75');
 
-      // Subtle light accent for contrast over dark colors
-      const lineLight = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-      lineLight.setAttribute('x1', '0');
-      lineLight.setAttribute('y1', '0');
-      lineLight.setAttribute('x2', '0');
-      lineLight.setAttribute('y2', '10');
-      lineLight.setAttribute('stroke', '#ffffff');
-      lineLight.setAttribute('stroke-width', '0.7');
-      lineLight.setAttribute('stroke-opacity', '0.45');
+        // Subtle light accent for contrast over dark colors
+        const lineLight = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        lineLight.setAttribute('x1', '0');
+        lineLight.setAttribute('y1', '0');
+        lineLight.setAttribute('x2', '0');
+        lineLight.setAttribute('y2', '8');
+        lineLight.setAttribute('stroke', '#ffffff');
+        lineLight.setAttribute('stroke-width', '0.7');
+        lineLight.setAttribute('stroke-opacity', '0.45');
 
-      pattern.appendChild(lineDark);
-      pattern.appendChild(lineLight);
-      defs.appendChild(pattern);
-    }
+        pattern.appendChild(lineDark);
+        pattern.appendChild(lineLight);
+        defs.appendChild(pattern);
+      }
+    });
   }
 
   // Render High Confidence Hatching Overlay Layer
   function renderHighConfidenceOverlay(geoJson) {
     ensureSvgPattern();
-    return L.geoJSON(geoJson, {
+    const layerGroup = L.geoJSON(geoJson, {
       filter: (feature) => {
         const p = feature.properties || {};
         if (state.activeCategory !== 'ALL' && String(p.finalcode) !== String(state.activeCategory)) return false;
         return p.is_high_confidence === true || p.confidence_overlay === 'high confidence';
       },
+      className: 'leaflet-sarcof-hatch',
       style: () => ({
         fillColor: 'url(#sarcof-hatch)',
         fillOpacity: 0.92,
@@ -983,17 +1000,25 @@ document.addEventListener('DOMContentLoaded', () => {
         interactive: false
       }),
       onEachFeature: (feature, layer) => {
-        ensureSvgPattern();
-        setTimeout(() => {
+        const applyHatch = () => {
+          ensureSvgPattern();
           if (layer._path) {
             layer._path.setAttribute('fill', 'url(#sarcof-hatch)');
             layer._path.setAttribute('fill-opacity', '0.92');
             layer._path.setAttribute('stroke', 'none');
+            layer._path.style.fill = 'url(#sarcof-hatch)';
+            layer._path.style.fillOpacity = '0.92';
             layer._path.style.pointerEvents = 'none';
           }
-        }, 15);
+        };
+        applyHatch();
+        setTimeout(applyHatch, 20);
+        setTimeout(applyHatch, 100);
       }
     }).addTo(state.map);
+
+    ensureSvgPattern();
+    return layerGroup;
   }
 
   // Render All Active Layers (Simultaneous Layers)
