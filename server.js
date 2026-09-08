@@ -49,17 +49,33 @@ function getDocumentList() {
   return docs;
 }
 
-// Active Online Users tracking (sessions active in the last 45 seconds)
+// Active Online Users tracking via Server-Sent Events (SSE) & fast disconnect
+const sseClients = new Set();
 const activeSessions = new Map();
-const SESSION_TIMEOUT_MS = 45000;
+const SESSION_TIMEOUT_MS = 25000;
+
+function broadcastOnlineCount() {
+  const count = Math.max(1, sseClients.size || activeSessions.size || 1);
+  const data = JSON.stringify({ onlineCount: count, timestamp: Date.now() });
+  for (const client of sseClients) {
+    try {
+      client.write(`data: ${data}\n\n`);
+    } catch (e) {
+      sseClients.delete(client);
+    }
+  }
+}
 
 function cleanupSessions() {
   const now = Date.now();
+  let changed = false;
   for (const [id, lastSeen] of activeSessions.entries()) {
     if (now - lastSeen > SESSION_TIMEOUT_MS) {
       activeSessions.delete(id);
+      changed = true;
     }
   }
+  if (changed) broadcastOnlineCount();
 }
 
 const server = http.createServer((req, res) => {
@@ -77,14 +93,55 @@ const server = http.createServer((req, res) => {
   const parsedUrl = new URL(req.url, `http://${req.headers.host}`);
   let pathname = parsedUrl.pathname;
 
-  // API Endpoint: Online users counter & heartbeat
+  // Real-Time SSE Stream: instant notification when user opens or closes the page
+  if (pathname === '/api/online/stream') {
+    res.writeHead(200, {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      'Connection': 'keep-alive',
+      'Access-Control-Allow-Origin': '*'
+    });
+    res.write('\n');
+
+    sseClients.add(res);
+    broadcastOnlineCount();
+
+    const keepAlive = setInterval(() => {
+      try {
+        res.write(': keep-alive\n\n');
+      } catch (e) {
+        clearInterval(keepAlive);
+      }
+    }, 15000);
+
+    req.on('close', () => {
+      clearInterval(keepAlive);
+      sseClients.delete(res);
+      broadcastOnlineCount();
+    });
+    return;
+  }
+
+  // Real-Time Instant Leave (Beacon / Page Unload)
+  if (pathname === '/api/online/leave') {
+    const sessionId = req.headers['x-session-id'] || parsedUrl.searchParams.get('sessionId');
+    if (sessionId) {
+      activeSessions.delete(sessionId);
+      broadcastOnlineCount();
+    }
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ success: true }));
+    return;
+  }
+
+  // Fallback REST Endpoint: Online users counter & heartbeat
   if (pathname === '/api/online') {
     cleanupSessions();
     const sessionId = req.headers['x-session-id'] || parsedUrl.searchParams.get('sessionId');
     if (sessionId) {
       activeSessions.set(sessionId, Date.now());
     }
-    const count = Math.max(1, activeSessions.size);
+    const count = Math.max(1, sseClients.size || activeSessions.size || 1);
     res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' });
     res.end(JSON.stringify({ onlineCount: count, timestamp: Date.now() }));
     return;

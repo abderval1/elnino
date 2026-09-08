@@ -2534,7 +2534,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Sistema de Monitorização de Utilizadores Online em Tempo Real (Heartbeat & Contador)
+  // Sistema de Monitorização de Utilizadores Online em Tempo Real (SSE + Stream Instantâneo + Beacon no fecho)
   function initOnlineUsersTracker() {
     const countEl = document.getElementById('online-users-count');
     if (!countEl) return;
@@ -2547,11 +2547,70 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateCounterDisplay(num) {
-      if (countEl) {
-        countEl.textContent = num;
+      if (countEl && typeof num === 'number') {
+        const val = Math.max(1, num);
+        // Animação visual suave ao atualizar o número
+        if (countEl.textContent !== String(val)) {
+          countEl.style.transition = 'transform 0.15s ease, opacity 0.15s ease';
+          countEl.style.transform = 'scale(1.25)';
+          setTimeout(() => {
+            countEl.textContent = val;
+            countEl.style.transform = 'scale(1)';
+          }, 150);
+        } else {
+          countEl.textContent = val;
+        }
       }
     }
 
+    // 1. Canal em Tempo Real com Server-Sent Events (SSE): latência zero ao abrir e ao fechar abas
+    let eventSource = null;
+    function connectSSE() {
+      try {
+        if (window.EventSource) {
+          eventSource = new EventSource('/api/online/stream');
+          eventSource.onmessage = (event) => {
+            try {
+              const data = JSON.parse(event.data);
+              if (data && typeof data.onlineCount === 'number') {
+                updateCounterDisplay(data.onlineCount);
+              }
+            } catch (err) {}
+          };
+          eventSource.onerror = () => {
+            // Em caso de falha de conexão, fecha e tenta novamente em 5 segundos
+            if (eventSource) {
+              eventSource.close();
+              eventSource = null;
+            }
+            setTimeout(connectSSE, 5000);
+          };
+        }
+      } catch (e) {
+        // SSE não suportado no ambiente (ex: visualização file://)
+      }
+    }
+
+    // 2. Notificação Instantânea de Desconexão (quando o utilizador fecha a aba ou o navegador)
+    function notifyLeave() {
+      try {
+        if (eventSource) {
+          eventSource.close();
+          eventSource = null;
+        }
+        const leaveUrl = `/api/online/leave?sessionId=${encodeURIComponent(sessionId)}`;
+        if (navigator.sendBeacon) {
+          navigator.sendBeacon(leaveUrl, '');
+        } else {
+          fetch(leaveUrl, { method: 'POST', keepalive: true }).catch(() => {});
+        }
+      } catch (err) {}
+    }
+
+    window.addEventListener('beforeunload', notifyLeave);
+    window.addEventListener('pagehide', notifyLeave);
+
+    // 3. Fallback Heartbeat REST para manter a sessão viva
     async function sendHeartbeat() {
       try {
         const resp = await fetch(`/api/online?sessionId=${encodeURIComponent(sessionId)}`, {
@@ -2562,23 +2621,17 @@ document.addEventListener('DOMContentLoaded', () => {
           const data = await resp.json();
           if (data && typeof data.onlineCount === 'number') {
             updateCounterDisplay(data.onlineCount);
-            return;
           }
         }
-      } catch (err) {
-        // Fallback silencioso (ex: se o servidor estiver temporariamente ocupado ou a correr estático)
-      }
-
-      // Se falhar a chamada API ou correr localmente em file://, simula valor dinâmico realista de utilizadores online
-      const currentVal = parseInt(countEl.textContent, 10) || 1;
-      updateCounterDisplay(Math.max(1, currentVal));
+      } catch (err) {}
     }
 
-    // Primeiro envio imediato
+    // Iniciar SSE imediatamente para latência zero
+    connectSSE();
     sendHeartbeat();
 
-    // Heartbeat a cada 20 segundos
-    setInterval(sendHeartbeat, 20000);
+    // Heartbeat leve a cada 15 segundos
+    setInterval(sendHeartbeat, 15000);
   }
 
   // Inicializar Sequência da Aplicação
