@@ -18,7 +18,7 @@
   <link rel="stylesheet" href="/vendor/leaflet.css">
   
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="styles.css?v=20260916_v21">
+  <link rel="stylesheet" href="styles.css?v=20260916_v22">
 </head>
 <body>
   <div class="app-container">
@@ -122,6 +122,7 @@
                 <i class="fa-solid fa-map"></i> <span data-i18n="ctrl_basemap">Mapa de Fundo (BaseMap)</span>
               </div>
               <select id="select-basemap" class="select-control">
+                <option value="none">Sem Mapa Base (Apenas Shapes / Fundo Limpo)</option>
                 <option value="osm" selected>OpenStreetMap Standard</option>
                 <option value="esri-sat">Esri Satellite (Satélite HD)</option>
                 <option value="esri-topo">Esri Topográfico (Relevo / Topografia)</option>
@@ -191,6 +192,145 @@
               </div>
             </div>
 
+            <!-- Map Theme & Custom Colors Section -->
+            <div class="control-group map-theme-panel" id="map-theme-panel">
+              <div class="control-title" style="color: #38bdf8; display: flex; justify-content: space-between; align-items: center;">
+                <span><i class="fa-solid fa-palette"></i> <span data-i18n="ctrl_map_style">Estilo & Cores do Mapa</span></span>
+                <button type="button" class="btn-mini-link" id="btn-reset-map-style" title="Restaurar padrão">
+                  <i class="fa-solid fa-rotate-left"></i> Padrão
+                </button>
+              </div>
+
+              <!-- Palette Selector -->
+              <div style="margin-bottom: 10px;">
+                <label class="control-sublabel" data-i18n="lbl_map_palette">Paleta Temática:</label>
+                <select id="select-map-palette" class="select-control">
+                  <option value="fews_alert" selected>🚨 FEWS NET / Alerta Seca (Oficial)</option>
+                  <option value="dpa_atlas">🗺️ Atlas DPA (21 Cores Distintas por Província)</option>
+                  <option value="sarcof_classic">🌧️ SARCOF-33 Clássico (Clima SADC)</option>
+                  <option value="risk_undrr">⚠️ Risco Humanitário (IPC / UNDRR)</option>
+                  <option value="custom">🛠️ Personalizada (Cores Manuais)</option>
+                </select>
+              </div>
+
+              <!-- Provincial Style Controls -->
+              <div class="style-subgroup">
+                <div class="style-subgroup-title">
+                  <i class="fa-solid fa-map-location-dot" style="color:#e11d48;"></i>
+                  <span data-i18n="lbl_prov_borders">Províncias (Limites Principais)</span>
+                </div>
+                <div class="style-controls-grid">
+                  <div class="style-field">
+                    <label>Cor da Borda:</label>
+                    <div class="color-input-wrap">
+                      <input type="color" id="picker-prov-border" value="#0f172a">
+                      <span class="color-hex" id="lbl-prov-border">#0f172a</span>
+                    </div>
+                  </div>
+                  <div class="style-field">
+                    <label>Espessura Borda:</label>
+                    <select id="select-prov-weight" class="select-mini">
+                      <option value="2">2.0px (Fina)</option>
+                      <option value="3.5" selected>3.5px (Forte - Oficial)</option>
+                      <option value="5">5.0px (Muito Forte)</option>
+                    </select>
+                  </div>
+                  <div class="style-field" id="wrap-prov-fill" style="display:none;">
+                    <label>Cor Preenchimento:</label>
+                    <div class="color-input-wrap">
+                      <input type="color" id="picker-prov-fill" value="#ea580c">
+                      <span class="color-hex" id="lbl-prov-fill">#ea580c</span>
+                    </div>
+                  </div>
+                  <div class="style-field">
+                    <label>Opacidade Preenchimento:</label>
+                    <div class="slider-val-wrap">
+                      <input type="range" id="slider-prov-opacity" min="0" max="100" value="45" class="range-slider">
+                      <span id="lbl-prov-opacity" class="slider-num">45%</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Municipalities Style Controls -->
+              <div class="style-subgroup" style="margin-top: 8px;">
+                <div class="style-subgroup-title">
+                  <i class="fa-solid fa-city" style="color:#f59e0b;"></i>
+                  <span data-i18n="lbl_mun_borders">Municípios (Limites Internos)</span>
+                </div>
+                <div class="style-controls-grid">
+                  <div class="style-field">
+                    <label>Cor da Borda:</label>
+                    <div class="color-input-wrap">
+                      <input type="color" id="picker-mun-border" value="#475569">
+                      <span class="color-hex" id="lbl-mun-border">#475569</span>
+                    </div>
+                  </div>
+                  <div class="style-field">
+                    <label>Espessura Borda:</label>
+                    <select id="select-mun-weight" class="select-mini">
+                      <option value="0.8">0.8px (Extra Fina)</option>
+                      <option value="1.2" selected>1.2px (Fina Nítida)</option>
+                      <option value="2">2.0px (Média)</option>
+                    </select>
+                  </div>
+                  <div class="style-field">
+                    <label>Estilo Linha:</label>
+                    <select id="select-mun-dash" class="select-mini">
+                      <option value="solid" selected>Sólida</option>
+                      <option value="dashed">Tracejada</option>
+                    </select>
+                  </div>
+                  <div class="style-field" id="wrap-mun-fill" style="display:none;">
+                    <label>Cor Preenchimento:</label>
+                    <div class="color-input-wrap">
+                      <input type="color" id="picker-mun-fill" value="#334155">
+                      <span class="color-hex" id="lbl-mun-fill">#334155</span>
+                    </div>
+                  </div>
+                  <div class="style-field">
+                    <label>Opacidade Preenchimento:</label>
+                    <div class="slider-val-wrap">
+                      <input type="range" id="slider-mun-opacity" min="0" max="100" value="20" class="range-slider">
+                      <span id="lbl-mun-opacity" class="slider-num">20%</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- SADC Underlay Control -->
+              <div class="style-subgroup" style="margin-top: 8px;">
+                <div class="style-subgroup-title">
+                  <i class="fa-solid fa-earth-africa" style="color:#00D2D2;"></i>
+                  <span data-i18n="lbl_sadc_underlay">Camada SADC Regional (Fundo)</span>
+                </div>
+                <div class="style-controls-grid">
+                  <div class="style-field" style="grid-column: 1 / -1;">
+                    <label>Opacidade no Fundo (Angola fica por cima):</label>
+                    <div class="slider-val-wrap">
+                      <input type="range" id="slider-sadc-opacity" min="5" max="80" value="25" class="range-slider">
+                      <span id="lbl-sadc-opacity" class="slider-num">25%</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Canvas Background when No Basemap -->
+              <div class="style-subgroup" style="margin-top: 8px;">
+                <div class="style-subgroup-title">
+                  <i class="fa-solid fa-circle-half-stroke"></i>
+                  <span data-i18n="lbl_canvas_bg">Fundo no Modo Apenas Shapes</span>
+                </div>
+                <div class="canvas-bg-buttons">
+                  <button type="button" class="btn-canvas-bg active" data-bg="#090d16">🌑 Escuro</button>
+                  <button type="button" class="btn-canvas-bg" data-bg="#1e293b">🔲 Ardósia</button>
+                  <button type="button" class="btn-canvas-bg" data-bg="#f8fafc">⚪ Papel Claro</button>
+                </div>
+              </div>
+
+            </div>
+
+
             <!-- Map Labels On / Off Toggle -->
             <div class="control-group">
               <div class="control-title">
@@ -202,6 +342,14 @@
                   <input type="checkbox" id="toggle-labels">
                   <span class="slider"></span>
                 </label>
+              </div>
+              <div style="margin-top: 8px;">
+                <label class="control-sublabel" data-i18n="lbl_label_mode">Densidade dos Rótulos (Sem Confusão):</label>
+                <select id="select-label-density" class="select-control">
+                  <option value="smart" selected>🎯 Inteligente (Províncias sempre + Municípios no Zoom)</option>
+                  <option value="prov_only">🗺️ Apenas Províncias (Visual Limpo)</option>
+                  <option value="all">📍 Províncias e Municípios Sempre</option>
+                </select>
               </div>
             </div>
 
@@ -367,6 +515,19 @@
 
       <!-- Central Map View -->
       <main class="map-view-container">
+
+        <!-- Floating Map Quick Action Toolbar -->
+        <div class="map-floating-toolbar" id="map-floating-toolbar">
+          <button type="button" class="map-float-btn" id="btn-center-angola" title="Centrar Mapa em Angola">
+            <i class="fa-solid fa-crosshairs"></i> <span data-i18n="btn_center_angola">Centrar Angola</span>
+          </button>
+          <button type="button" class="map-float-btn" id="btn-toggle-shapes" title="Alternar Mapa Base / Modo Apenas Shapes">
+            <i class="fa-solid fa-draw-polygon"></i> <span id="lbl-btn-toggle-shapes" data-i18n="btn_toggle_shapes">Apenas Shapes</span>
+          </button>
+          <button type="button" class="map-float-btn" id="btn-open-style-quick" title="Ajustar Cores e Estilo do Mapa">
+            <i class="fa-solid fa-palette"></i> <span data-i18n="ctrl_map_style">Cores & Estilo</span>
+          </button>
+        </div>
 
         <div id="map"></div>
 
@@ -1383,6 +1544,6 @@
   <!-- SheetJS for Native Excel (.xlsx) Generation -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <!-- Main App Script -->
-  <script src="app.js?v=20260916_v21"></script>
+  <script src="app.js?v=20260916_v22"></script>
 </body>
 </html>

@@ -1337,3 +1337,324 @@ path.leaflet-sarcof-hatch,
 }
 
 
+
+
+/* ==========================================================================
+   Map Customization, Basemap Toggle, Shapes-Only Mode & Styling Panel
+   ========================================================================== */
+
+/* Floating Map Quick Action Toolbar */
+.map-floating-toolbar {
+  position: absolute;
+  top: 16px;
+  left: 54px; /* beside leaflet zoom */
+  display: flex;
+  gap: 8px;
+  z-index: 850;
+  pointer-events: auto;
+}
+
+.map-float-btn {
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  border-radius: var(--radius-sm);
+  color: #f1f5f9;
+  padding: 6px 12px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.76rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.map-float-btn:hover {
+  background: rgba(30, 41, 59, 0.95);
+  border-color: #38bdf8;
+  color: #38bdf8;
+  transform: translateY(-1px);
+}
+
+.map-float-btn.active {
+  background: rgba(14, 165, 233, 0.25);
+  border-color: #38bdf8;
+  color: #38bdf8;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.35);
+}
+
+/* Shapes-Only (No Basemap) Canvas Backgrounds */
+#map.map-shapes-only {
+  background: #090d16 !important;
+}
+
+#map.canvas-dark {
+  background: #090d16 !important;
+}
+
+#map.canvas-slate {
+  background: #1e293b !important;
+}
+
+#map.canvas-light {
+  background: #f8fafc !important;
+}
+
+/* Map Labels: Provincial vs Municipal Distinction */
+.leaflet-tooltip.map-text-label-prov {
+  background: rgba(15, 23, 42, 0.92) !important;
+  border: 1.5px solid #38bdf8 !important;
+  border-radius: 6px !important;
+  color: #ffffff !important;
+  font-family: 'Outfit', 'Inter', sans-serif !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.4px !important;
+  padding: 3px 8px !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6) !important;
+  text-transform: uppercase !important;
+  pointer-events: none !important;
+}
+
+.leaflet-tooltip.map-text-label-mun {
+  background: rgba(30, 41, 59, 0.78) !important;
+  border: 1px solid rgba(148, 163, 184, 0.4) !important;
+  border-radius: 4px !important;
+  color: #f1f5f9 !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 9.5px !important;
+  font-weight: 500 !important;
+  font-style: italic !important;
+  padding: 1px 5px !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45) !important;
+  pointer-events: none !important;
+}
+
+/* Map Theme & Styling Panel in Sidebar */
+.map-theme-panel {
+  border-color: rgba(56, 189, 248, 0.3);
+  background: rgba(15, 23, 42, 0.45);
+}
+
+.control-sublabel {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #94a3b8;
+  margin-bottom: 4px;
+}
+
+.btn-mini-link {
+  background: none;
+  border: none;
+  color: #38bdf8;
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: all 0.15s ease;
+}
+
+.btn-mini-link:hover {
+  background: rgba(56, 189, 248, 0.15);
+  color: #7dd3fc;
+}
+
+.style-subgroup {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 6px;
+  padding: 8px 10px;
+}
+
+.style-subgroup-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #e2e8f0;
+  margin-bottom: 6px;
+}
+
+.style-controls-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 8px;
+}
+
+.style-field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.style-field label {
+  font-size: 0.68rem;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.color-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.color-input-wrap input[type="color"] {
+  -webkit-appearance: none;
+  appearance: none;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  width: 26px;
+  height: 24px;
+  border-radius: 4px;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+}
+
+.color-input-wrap input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.color-input-wrap input[type="color"]::-webkit-color-swatch {
+  border: none;
+  border-radius: 3px;
+}
+
+.color-hex {
+  font-size: 0.68rem;
+  font-family: monospace;
+  color: #cbd5e1;
+}
+
+.select-mini {
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  color: #f1f5f9;
+  font-size: 0.7rem;
+  padding: 3px 6px;
+  cursor: pointer;
+}
+
+.select-mini:focus {
+  outline: none;
+  border-color: #38bdf8;
+}
+
+.slider-val-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.range-slider {
+  flex: 1;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+
+.range-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #38bdf8;
+  cursor: pointer;
+  box-shadow: 0 0 6px rgba(56, 189, 248, 0.5);
+  transition: transform 0.1s ease;
+}
+
+.range-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+.slider-num {
+  font-size: 0.68rem;
+  font-family: monospace;
+  font-weight: 600;
+  color: #38bdf8;
+  min-width: 28px;
+  text-align: right;
+}
+
+.canvas-bg-buttons {
+  display: flex;
+  gap: 6px;
+}
+
+.btn-canvas-bg {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #cbd5e1;
+  padding: 4px 6px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: center;
+}
+
+.btn-canvas-bg:hover {
+  border-color: #38bdf8;
+  color: #fff;
+  background: rgba(56, 189, 248, 0.12);
+}
+
+.btn-canvas-bg.active {
+  background: rgba(14, 165, 233, 0.25);
+  border-color: #38bdf8;
+  color: #38bdf8;
+}
+
+@media (max-width: 768px) {
+  .map-floating-toolbar {
+    top: 10px;
+    left: 48px;
+    gap: 4px;
+  }
+  .map-float-btn {
+    padding: 5px 8px;
+    font-size: 0.7rem;
+  }
+  .map-float-btn span {
+    display: none; /* keep icons only on compact mobile */
+  }
+}
+
+
+/* Anti-Clutter Dynamic Label Visibility Rules */
+#map.leaflet-zoom-low.label-mode-smart .map-text-label-mun,
+#map.label-mode-prov-only .map-text-label-mun {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+#map.label-mode-smart .map-text-label-mun {
+  transition: opacity 0.25s ease;
+}
+
+#map.leaflet-zoom-high.label-mode-smart .map-text-label-mun {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 0.92 !important;
+}

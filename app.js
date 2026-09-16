@@ -53,13 +53,31 @@ document.addEventListener('DOMContentLoaded', () => {
     ineData: null,
     formulasData: null,
 
+    lastActiveBasemap: 'osm',
+    labelDensity: 'smart', // 'smart', 'prov_only', 'all'
+    mapTheme: {
+      palette: 'fews_alert', // 'fews_alert', 'dpa_atlas', 'sarcof_classic', 'risk_undrr', 'custom'
+      provBorderColor: '#0f172a',
+      provBorderWeight: 3.5,
+      provFillOpacity: 0.45,
+      customProvFill: '#ea580c',
+      munBorderColor: '#475569',
+      munBorderWeight: 1.2,
+      munBorderStyle: 'solid',
+      munFillOpacity: 0.20,
+      customMunFill: '#334155',
+      sadcOpacity: 0.25,
+      canvasBg: '#090d16'
+    },
+
     // Active Leaflet Layer Groups
     geoJsonLayers: {
       sarcof: null,
       sarcofHatch: null,
       provincias: null,
       municipios: null,
-      comunas: null
+      comunas: null,
+      provBorders: null
     },
 
     selectedFeature: null,
@@ -84,6 +102,16 @@ document.addEventListener('DOMContentLoaded', () => {
       tab_analytics: 'Análise',
       tab_reports: 'Relatórios',
       ctrl_basemap: 'Mapa de Fundo (BaseMap)',
+      ctrl_map_style: 'Estilo & Cores do Mapa',
+      lbl_map_palette: 'Paleta Temática de Cores:',
+      lbl_prov_borders: 'Províncias (Limites Principais)',
+      lbl_mun_borders: 'Municípios (Limites Internos)',
+      lbl_sadc_underlay: 'Camada SADC Regional (Fundo)',
+      lbl_canvas_bg: 'Fundo no Modo Apenas Shapes:',
+      lbl_label_mode: 'Densidade dos Rótulos (Sem Confusão):',
+      btn_center_angola: 'Centrar Angola',
+      btn_toggle_shapes: 'Apenas Shapes',
+      btn_reset_style: 'Restaurar Padrão',
       ctrl_demographic_year: 'Ano da Base Demográfica INE',
       ctrl_season: 'Temporada Climática SARCOF',
       ctrl_angola_layers: 'Camadas de Angola DPA (Simultâneas)',
@@ -239,6 +267,16 @@ document.addEventListener('DOMContentLoaded', () => {
       tab_analytics: 'Analytics',
       tab_reports: 'Reports',
       ctrl_basemap: 'Base Map',
+      ctrl_map_style: 'Map Style & Colors',
+      lbl_map_palette: 'Thematic Color Palette:',
+      lbl_prov_borders: 'Provinces (Main Boundaries)',
+      lbl_mun_borders: 'Municipalities (Internal Limits)',
+      lbl_sadc_underlay: 'SADC Regional Layer (Background)',
+      lbl_canvas_bg: 'Background in Shapes-Only Mode:',
+      lbl_label_mode: 'Label Density (Anti-Clutter):',
+      btn_center_angola: 'Center Angola',
+      btn_toggle_shapes: 'Shapes Only',
+      btn_reset_style: 'Reset Default',
       ctrl_demographic_year: 'INE Demographic Base Year',
       ctrl_season: 'SARCOF Climate Season',
       ctrl_angola_layers: 'Angola DPA Layers (Simultaneous)',
@@ -620,10 +658,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const selBasemap = document.getElementById('select-basemap');
-    if (selBasemap) {
-      selBasemap.options[0].text = lang === 'en' ? 'OpenStreetMap Standard' : 'OpenStreetMap Padrão';
-      selBasemap.options[1].text = lang === 'en' ? 'Esri Satellite (HD Satellite)' : 'Esri Satélite (Satélite HD)';
-      selBasemap.options[2].text = lang === 'en' ? 'Esri Topographic (Terrain / Relief)' : 'Esri Topográfico (Relevo / Topografia)';
+    if (selBasemap && selBasemap.options.length >= 4) {
+      selBasemap.options[0].text = lang === 'en' ? 'No Base Map (Shapes Only / Clean)' : 'Sem Mapa Base (Apenas Shapes / Fundo Limpo)';
+      selBasemap.options[1].text = lang === 'en' ? 'OpenStreetMap Standard' : 'OpenStreetMap Padrão';
+      selBasemap.options[2].text = lang === 'en' ? 'Esri Satellite (HD Satellite)' : 'Esri Satélite (Satélite HD)';
+      selBasemap.options[3].text = lang === 'en' ? 'Esri Topographic (Terrain / Relief)' : 'Esri Topográfico (Relevo / Topografia)';
     }
 
     // Refresh Active Views
@@ -695,14 +734,127 @@ document.addEventListener('DOMContentLoaded', () => {
     return municipalityAliases[key] || n;
   }
 
+  // Pre-configured DPA Atlas Colors (distinct per province for maximum cartographic clarity)
+  const dpaAtlasProvinceColors = {
+    'Bengo': '#10b981',
+    'Benguela': '#0284c7',
+    'Bié': '#ec4899',
+    'Cabinda': '#06b6d4',
+    'Cuando': '#d97706',
+    'Cubango': '#15803d',
+    'Cuanza Norte': '#8b5cf6',
+    'Cuanza Sul': '#3b82f6',
+    'Cunene': '#e11d48',
+    'Huambo': '#7c3aed',
+    'Huíla': '#ea580c',
+    'Icolo e Bengo': '#14b8a6',
+    'Luanda': '#2563eb',
+    'Lunda Norte': '#6366f1',
+    'Lunda Sul': '#a855f7',
+    'Malanje': '#eab308',
+    'Moxico': '#f59e0b',
+    'Moxico Leste': '#f97316',
+    'Namibe': '#0369a1',
+    'Uíge': '#059669',
+    'Zaire': '#0891b2'
+  };
+
+  // Dynamic feature color determination based on active theme & hierarchy
+  function getFeatureColor(feature, typeKey) {
+    const theme = state.mapTheme || {};
+    const palette = theme.palette || 'fews_alert';
+    const props = feature ? (feature.properties || {}) : {};
+    const provName = normalizeProvName(props.Nome_Prov || props.NAME || props.PROVINCIA || '');
+
+    if (palette === 'custom') {
+      return typeKey === 'provincias' ? (theme.customProvFill || '#ea580c') : (theme.customMunFill || '#334155');
+    }
+
+    if (palette === 'dpa_atlas') {
+      return dpaAtlasProvinceColors[provName] || '#64748b';
+    }
+
+    if (palette === 'risk_undrr') {
+      const pData = state.ineData && state.ineData.provincias ? state.ineData.provincias[provName] : null;
+      const score = pData && pData.matriz_risco ? pData.matriz_risco.score : 10;
+      if (score >= 18) return '#e11d48'; // Crítico
+      if (score >= 12) return '#ea580c'; // Alto
+      if (score >= 6) return '#eab308';  // Moderado
+      return '#10b981'; // Baixo
+    }
+
+    if (palette === 'fews_alert') {
+      // Drought alert zone (Namibe, Huíla, Cunene, Cubango, Cuando, Bié, Moxico, Moxico Leste)
+      const isBelowNormal = getSarcofForAngolaFeature(feature, typeKey, state.activeSeason) === 1;
+      return isBelowNormal ? '#f97316' : '#06b6d4';
+    }
+
+    // Default 'sarcof_classic'
+    const code = getSarcofForAngolaFeature(feature, typeKey, state.activeSeason);
+    const cfg = categoryConfig[code] || categoryConfig[3];
+    return cfg.color;
+  }
+
+  // Canvas background helper for pure shapes mode
+  function applyCanvasBackground(bgHex) {
+    const mapEl = document.getElementById('map');
+    if (!mapEl) return;
+    mapEl.classList.remove('canvas-dark', 'canvas-slate', 'canvas-light');
+    if (bgHex === '#f8fafc') {
+      mapEl.classList.add('canvas-light');
+    } else if (bgHex === '#1e293b') {
+      mapEl.classList.add('canvas-slate');
+    } else {
+      mapEl.classList.add('canvas-dark');
+    }
+  }
+
   // Inicializar o Mapa Leaflet
   function initMap() {
     try {
+      // Centered directly on Angola (lat: -12.35, lon: 17.55, zoom: 5.8)
       state.map = L.map('map', {
-        center: [-13.5, 20.0],
-        zoom: 4.8,
+        center: [-12.35, 17.55],
+        zoom: 5.8,
         zoomControl: true
       });
+
+      // Strict Map Panes Hierarchy: SADC on bottom (390), Angola layers on top
+      if (!state.map.getPane('sadcPane')) {
+        state.map.createPane('sadcPane');
+        state.map.getPane('sadcPane').style.zIndex = 390;
+      }
+      if (!state.map.getPane('sadcHatchPane')) {
+        state.map.createPane('sadcHatchPane');
+        state.map.getPane('sadcHatchPane').style.zIndex = 400;
+      }
+      if (!state.map.getPane('angolaProvinciasPane')) {
+        state.map.createPane('angolaProvinciasPane');
+        state.map.getPane('angolaProvinciasPane').style.zIndex = 420;
+      }
+      if (!state.map.getPane('angolaMunicipiosPane')) {
+        state.map.createPane('angolaMunicipiosPane');
+        state.map.getPane('angolaMunicipiosPane').style.zIndex = 440;
+      }
+      if (!state.map.getPane('angolaComunasPane')) {
+        state.map.createPane('angolaComunasPane');
+        state.map.getPane('angolaComunasPane').style.zIndex = 450;
+      }
+      if (!state.map.getPane('angolaProvBordersPane')) {
+        state.map.createPane('angolaProvBordersPane');
+        state.map.getPane('angolaProvBordersPane').style.zIndex = 460;
+        state.map.getPane('angolaProvBordersPane').style.pointerEvents = 'none';
+      }
+      if (!state.map.getPane('hatchPane')) {
+        state.map.createPane('hatchPane');
+        state.map.getPane('hatchPane').style.zIndex = 470;
+        state.map.getPane('hatchPane').style.pointerEvents = 'none';
+      }
+      if (!state.map.getPane('labelsPane')) {
+        state.map.createPane('labelsPane');
+        state.map.getPane('labelsPane').style.zIndex = 490;
+        state.map.getPane('labelsPane').style.pointerEvents = 'none';
+      }
 
       state.baseLayers = {
         osm: L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -722,14 +874,85 @@ document.addEventListener('DOMContentLoaded', () => {
       window.addEventListener('resize', () => { if (state.map) state.map.invalidateSize(); });
       setTimeout(() => { if (state.map) state.map.invalidateSize(); }, 300);
 
-      document.getElementById('select-basemap').addEventListener('change', (e) => {
+      // Basemap & Pure Shape Handler
+      function applyBasemapSelection(selected) {
         Object.values(state.baseLayers).forEach(layer => {
           if (state.map.hasLayer(layer)) state.map.removeLayer(layer);
         });
-        const selected = e.target.value;
-        if (state.baseLayers[selected]) state.baseLayers[selected].addTo(state.map);
+        const mapEl = document.getElementById('map');
+        const toggleBtn = document.getElementById('btn-toggle-shapes');
+        const toggleLbl = document.getElementById('lbl-btn-toggle-shapes');
+
+        if (selected === 'none') {
+          mapEl.classList.add('map-shapes-only');
+          applyCanvasBackground(state.mapTheme.canvasBg || '#090d16');
+          if (toggleBtn) toggleBtn.classList.add('active');
+          if (toggleLbl) toggleLbl.textContent = state.currentLang === 'en' ? 'Show BaseMap' : 'Ver Mapa Base';
+        } else {
+          mapEl.classList.remove('map-shapes-only', 'canvas-dark', 'canvas-slate', 'canvas-light');
+          if (state.baseLayers[selected]) state.baseLayers[selected].addTo(state.map);
+          state.lastActiveBasemap = selected;
+          if (toggleBtn) toggleBtn.classList.remove('active');
+          if (toggleLbl) toggleLbl.textContent = state.currentLang === 'en' ? 'Shapes Only' : 'Apenas Shapes';
+        }
         ensureSvgPattern();
+      }
+
+      document.getElementById('select-basemap').addEventListener('change', (e) => {
+        applyBasemapSelection(e.target.value);
       });
+
+      // Floating toolbar: Centrar Angola Button
+      const btnCenterAngola = document.getElementById('btn-center-angola');
+      if (btnCenterAngola) {
+        btnCenterAngola.addEventListener('click', () => {
+          state.map.flyTo([-12.35, 17.55], 5.8, { duration: 0.8 });
+        });
+      }
+
+      // Floating toolbar: Alternar Apenas Shapes
+      const btnToggleShapes = document.getElementById('btn-toggle-shapes');
+      if (btnToggleShapes) {
+        btnToggleShapes.addEventListener('click', () => {
+          const selBasemap = document.getElementById('select-basemap');
+          const isNone = selBasemap.value === 'none';
+          const target = isNone ? (state.lastActiveBasemap || 'osm') : 'none';
+          selBasemap.value = target;
+          applyBasemapSelection(target);
+        });
+      }
+
+      // Floating toolbar: Cores & Estilo Quick Button
+      const btnQuickStyle = document.getElementById('btn-open-style-quick');
+      if (btnQuickStyle) {
+        btnQuickStyle.addEventListener('click', () => {
+          const tabBtn = document.querySelector('.tab-btn[data-tab="tab-layers"]');
+          if (tabBtn) tabBtn.click();
+          const panel = document.getElementById('map-theme-panel');
+          if (panel) {
+            panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            panel.style.boxShadow = '0 0 18px rgba(56, 189, 248, 0.7)';
+            setTimeout(() => { panel.style.boxShadow = ''; }, 1600);
+          }
+        });
+      }
+
+      // Dynamic Zoom Management for Clean Anti-Clutter Labels
+      function updateMapZoomClasses() {
+        if (!state.map) return;
+        const z = state.map.getZoom();
+        const mapEl = document.getElementById('map');
+        if (!mapEl) return;
+        if (z < 7.0) {
+          mapEl.classList.add('leaflet-zoom-low');
+          mapEl.classList.remove('leaflet-zoom-high');
+        } else {
+          mapEl.classList.remove('leaflet-zoom-low');
+          mapEl.classList.add('leaflet-zoom-high');
+        }
+      }
+      state.map.on('zoomend', updateMapZoomClasses);
+      updateMapZoomClasses();
 
       // Keep pattern alive after map view resets in Chrome and Edge
       state.map.on('zoomend moveend viewreset layeradd', () => {
@@ -1235,6 +1458,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderHighConfidenceOverlay(geoJson) {
     ensureSvgPattern();
     const layerGroup = L.geoJSON(geoJson, {
+      pane: 'hatchPane',
       filter: (feature) => {
         const p = feature.properties || {};
         if (state.activeCategory !== 'ALL' && String(p.finalcode) !== String(state.activeCategory)) return false;
@@ -1272,7 +1496,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return layerGroup;
   }
 
-  // Render All Active Layers (Simultaneous Layers)
+  // Render All Active Layers (Simultaneous Layers with Strict Hierarchy & Theming)
   function renderAllLayers() {
     if (!state.map) return;
 
@@ -1282,42 +1506,63 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
+    const theme = state.mapTheme || {};
+
+    // 1. SADC Regional Layer (strictly underneath Angola in sadcPane, zIndex 390)
     if (state.layersEnabled.sarcof && state.geoJsonData[state.activeSeason]) {
       state.geoJsonLayers.sarcof = renderGeoJsonCollection(state.geoJsonData[state.activeSeason], 'sarcof', {
-        fillOpacity: 0.65, weight: 1.2, color: '#1e293b'
+        fillOpacity: theme.sadcOpacity !== undefined ? theme.sadcOpacity : 0.25,
+        weight: 1.0,
+        color: '#334155'
       });
     }
 
+    // 2. Angola Provinces (in angolaProvinciasPane, zIndex 420)
     if (state.layersEnabled.provincias && state.geoJsonData.PROVINCIAS) {
       state.geoJsonLayers.provincias = renderGeoJsonCollection(state.geoJsonData.PROVINCIAS, 'provincias', (feature) => {
-        const code = getSarcofForAngolaFeature(feature, 'provincias', state.activeSeason);
-        const cfg = categoryConfig[code] || categoryConfig[3];
+        const fillCol = getFeatureColor(feature, 'provincias');
         return {
-          fillColor: cfg.color,
-          fillOpacity: 0.35,
-          weight: 2,
-          color: cfg.color === '#00D2D2' ? '#38bdf8' : (cfg.color === '#C4A482' ? '#d4a373' : '#fb7185')
+          fillColor: fillCol,
+          fillOpacity: theme.provFillOpacity !== undefined ? theme.provFillOpacity : 0.45,
+          weight: theme.provBorderWeight || 3.5,
+          color: theme.provBorderColor || '#0f172a',
+          opacity: 0.95
         };
       });
     }
 
-    // High confidence hatching overlay (////) on top of SARCOF and Províncias
+    // 3. High confidence hatching overlay (////) on top of SARCOF and Províncias (hatchPane, zIndex 470)
     if (state.layersEnabled.sarcof && state.showHighConfidence && state.geoJsonData[state.activeSeason]) {
       state.geoJsonLayers.sarcofHatch = renderHighConfidenceOverlay(state.geoJsonData[state.activeSeason]);
     }
 
+    // 4. Angola Municipalities (in angolaMunicipiosPane, zIndex 440)
     if (state.layersEnabled.municipios && state.geoJsonData.MUNICIPIOS) {
       state.geoJsonLayers.municipios = renderGeoJsonCollection(state.geoJsonData.MUNICIPIOS, 'municipios', (feature) => {
-        const code = getSarcofForAngolaFeature(feature, 'municipios', state.activeSeason);
-        const cfg = categoryConfig[code] || categoryConfig[3];
+        const fillCol = getFeatureColor(feature, 'municipios');
         return {
-          fillColor: cfg.color,
-          fillOpacity: 0.22,
-          weight: 1.2,
-          color: cfg.color === '#00D2D2' ? '#0ea5e9' : '#fcd34d',
-          dashArray: '3'
+          fillColor: fillCol,
+          fillOpacity: theme.munFillOpacity !== undefined ? theme.munFillOpacity : 0.20,
+          weight: theme.munBorderWeight || 1.2,
+          color: theme.munBorderColor || '#475569',
+          opacity: 0.9,
+          dashArray: theme.munBorderStyle === 'dashed' ? '4, 4' : null
         };
       });
+    }
+
+    // 5. Heavy Outer Provincial Borders Overlay (angolaProvBordersPane, zIndex 460 - always sharp on top of municipalities!)
+    if (state.layersEnabled.provincias && state.geoJsonData.PROVINCIAS) {
+      state.geoJsonLayers.provBorders = L.geoJSON(state.geoJsonData.PROVINCIAS, {
+        pane: 'angolaProvBordersPane',
+        style: () => ({
+          fill: false,
+          color: theme.provBorderColor || '#0f172a',
+          weight: theme.provBorderWeight || 3.5,
+          opacity: 0.98,
+          interactive: false
+        })
+      }).addTo(state.map);
     }
 
     if (state.layersEnabled.comunas && state.geoJsonData.COMUNAS) {
@@ -1326,12 +1571,24 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
+    // Update label density class on map container for anti-clutter visibility
+    const mapEl = document.getElementById('map');
+    if (mapEl) {
+      mapEl.classList.remove('label-mode-smart', 'label-mode-prov-only', 'label-mode-all');
+      mapEl.classList.add(`label-mode-${state.labelDensity || 'smart'}`);
+    }
+
     updateGlobalStats();
   }
 
   // Render a Single GeoJSON Collection with High Performance Tooltips & Interactivity
   function renderGeoJsonCollection(geoJson, typeKey, defaultStyle) {
+    const paneName = typeKey === 'sarcof' ? 'sadcPane'
+      : (typeKey === 'provincias' ? 'angolaProvinciasPane'
+      : (typeKey === 'municipios' ? 'angolaMunicipiosPane' : 'angolaComunasPane'));
+
     return L.geoJSON(geoJson, {
+      pane: paneName,
       filter: (feature) => {
         if (typeKey === 'sarcof') {
           if (state.activeCategory !== 'ALL' && String(feature.properties.finalcode) !== String(state.activeCategory)) return false;
@@ -1344,10 +1601,10 @@ document.addEventListener('DOMContentLoaded', () => {
           const cfg = categoryConfig[code] || { color: '#94a3b8' };
           return {
             fillColor: cfg.color,
-            fillOpacity: 0.65,
-            weight: 1.2,
-            color: '#1e293b',
-            opacity: 0.9
+            fillOpacity: state.mapTheme.sadcOpacity !== undefined ? state.mapTheme.sadcOpacity : 0.25,
+            weight: 1.0,
+            color: '#334155',
+            opacity: 0.85
           };
         }
         return typeof defaultStyle === 'function' ? defaultStyle(feature) : defaultStyle;
@@ -1355,19 +1612,41 @@ document.addEventListener('DOMContentLoaded', () => {
       onEachFeature: (feature, layer) => {
         const name = getFeatureName(feature, typeKey);
 
-        // Map label tooltip
+        // Anti-clutter distinct labels (Provinces vs Municipalities)
         if (state.showLabels && name) {
-          layer.bindTooltip(name, {
-            permanent: true,
-            direction: 'center',
-            className: 'map-text-label'
-          });
+          if (typeKey === 'provincias') {
+            layer.bindTooltip(name, {
+              pane: 'labelsPane',
+              permanent: true,
+              direction: 'center',
+              className: 'map-text-label map-text-label-prov'
+            });
+          } else if (typeKey === 'municipios') {
+            // Only add municipality label if not in prov_only mode
+            if (state.labelDensity !== 'prov_only') {
+              layer.bindTooltip(name, {
+                pane: 'labelsPane',
+                permanent: true,
+                direction: 'center',
+                className: 'map-text-label map-text-label-mun'
+              });
+            }
+          } else if (typeKey === 'comunas') {
+            if (state.labelDensity === 'all') {
+              layer.bindTooltip(name, {
+                pane: 'labelsPane',
+                permanent: true,
+                direction: 'center',
+                className: 'map-text-label map-text-label-mun'
+              });
+            }
+          }
         }
 
         layer.on({
           mouseover: (e) => {
             const l = e.target;
-            l.setStyle({ weight: 3, color: '#38bdf8', fillOpacity: 0.45 });
+            l.setStyle({ weight: 3.5, color: '#38bdf8', fillOpacity: 0.55 });
             if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
               l.bringToFront();
             }
@@ -1377,7 +1656,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (typeKey === 'sarcof') {
               const code = feature.properties.finalcode;
               const cfg = categoryConfig[code] || { color: '#94a3b8' };
-              l.setStyle({ fillColor: cfg.color, fillOpacity: 0.65, weight: 1.2, color: '#1e293b' });
+              l.setStyle({ fillColor: cfg.color, fillOpacity: state.mapTheme.sadcOpacity || 0.25, weight: 1.0, color: '#334155' });
             } else {
               const st = typeof defaultStyle === 'function' ? defaultStyle(feature) : defaultStyle;
               l.setStyle(st);
@@ -3538,6 +3817,194 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btnExportCsv) btnExportCsv.addEventListener('click', exportToCsv);
   }
 
+
+  // Initialize Map Theme & Custom Styling Controls
+  function initMapThemeControls() {
+    const selPalette = document.getElementById('select-map-palette');
+    const wrapProvFill = document.getElementById('wrap-prov-fill');
+    const wrapMunFill = document.getElementById('wrap-mun-fill');
+
+    function updateCustomPickersVisibility() {
+      const isCustom = state.mapTheme.palette === 'custom';
+      if (wrapProvFill) wrapProvFill.style.display = isCustom ? 'flex' : 'none';
+      if (wrapMunFill) wrapMunFill.style.display = isCustom ? 'flex' : 'none';
+    }
+
+    if (selPalette) {
+      selPalette.addEventListener('change', (e) => {
+        state.mapTheme.palette = e.target.value;
+        updateCustomPickersVisibility();
+        renderAllLayers();
+      });
+    }
+
+    // Provincial controls
+    const pickerProvBorder = document.getElementById('picker-prov-border');
+    const lblProvBorder = document.getElementById('lbl-prov-border');
+    if (pickerProvBorder) {
+      pickerProvBorder.addEventListener('input', (e) => {
+        state.mapTheme.provBorderColor = e.target.value;
+        if (lblProvBorder) lblProvBorder.textContent = e.target.value;
+        renderAllLayers();
+      });
+    }
+
+    const selProvWeight = document.getElementById('select-prov-weight');
+    if (selProvWeight) {
+      selProvWeight.addEventListener('change', (e) => {
+        state.mapTheme.provBorderWeight = parseFloat(e.target.value) || 3.5;
+        renderAllLayers();
+      });
+    }
+
+    const sliderProvOpacity = document.getElementById('slider-prov-opacity');
+    const lblProvOpacity = document.getElementById('lbl-prov-opacity');
+    if (sliderProvOpacity) {
+      sliderProvOpacity.addEventListener('input', (e) => {
+        const val = parseInt(e.target.value, 10);
+        state.mapTheme.provFillOpacity = val / 100;
+        if (lblProvOpacity) lblProvOpacity.textContent = `${val}%`;
+        renderAllLayers();
+      });
+    }
+
+    const pickerProvFill = document.getElementById('picker-prov-fill');
+    const lblProvFill = document.getElementById('lbl-prov-fill');
+    if (pickerProvFill) {
+      pickerProvFill.addEventListener('input', (e) => {
+        state.mapTheme.customProvFill = e.target.value;
+        if (lblProvFill) lblProvFill.textContent = e.target.value;
+        renderAllLayers();
+      });
+    }
+
+    // Municipal controls
+    const pickerMunBorder = document.getElementById('picker-mun-border');
+    const lblMunBorder = document.getElementById('lbl-mun-border');
+    if (pickerMunBorder) {
+      pickerMunBorder.addEventListener('input', (e) => {
+        state.mapTheme.munBorderColor = e.target.value;
+        if (lblMunBorder) lblMunBorder.textContent = e.target.value;
+        renderAllLayers();
+      });
+    }
+
+    const selMunWeight = document.getElementById('select-mun-weight');
+    if (selMunWeight) {
+      selMunWeight.addEventListener('change', (e) => {
+        state.mapTheme.munBorderWeight = parseFloat(e.target.value) || 1.2;
+        renderAllLayers();
+      });
+    }
+
+    const selMunDash = document.getElementById('select-mun-dash');
+    if (selMunDash) {
+      selMunDash.addEventListener('change', (e) => {
+        state.mapTheme.munBorderStyle = e.target.value;
+        renderAllLayers();
+      });
+    }
+
+    const sliderMunOpacity = document.getElementById('slider-mun-opacity');
+    const lblMunOpacity = document.getElementById('lbl-mun-opacity');
+    if (sliderMunOpacity) {
+      sliderMunOpacity.addEventListener('input', (e) => {
+        const val = parseInt(e.target.value, 10);
+        state.mapTheme.munFillOpacity = val / 100;
+        if (lblMunOpacity) lblMunOpacity.textContent = `${val}%`;
+        renderAllLayers();
+      });
+    }
+
+    const pickerMunFill = document.getElementById('picker-mun-fill');
+    const lblMunFill = document.getElementById('lbl-mun-fill');
+    if (pickerMunFill) {
+      pickerMunFill.addEventListener('input', (e) => {
+        state.mapTheme.customMunFill = e.target.value;
+        if (lblMunFill) lblMunFill.textContent = e.target.value;
+        renderAllLayers();
+      });
+    }
+
+    // SADC underlay opacity
+    const sliderSadcOpacity = document.getElementById('slider-sadc-opacity');
+    const lblSadcOpacity = document.getElementById('lbl-sadc-opacity');
+    if (sliderSadcOpacity) {
+      sliderSadcOpacity.addEventListener('input', (e) => {
+        const val = parseInt(e.target.value, 10);
+        state.mapTheme.sadcOpacity = val / 100;
+        if (lblSadcOpacity) lblSadcOpacity.textContent = `${val}%`;
+        renderAllLayers();
+      });
+    }
+
+    // Canvas background buttons
+    document.querySelectorAll('.btn-canvas-bg').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        document.querySelectorAll('.btn-canvas-bg').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const bg = btn.dataset.bg;
+        state.mapTheme.canvasBg = bg;
+        const selBasemap = document.getElementById('select-basemap');
+        if (selBasemap && selBasemap.value === 'none') {
+          applyCanvasBackground(bg);
+        }
+      });
+    });
+
+    // Label Density Selector
+    const selLabelDensity = document.getElementById('select-label-density');
+    if (selLabelDensity) {
+      selLabelDensity.addEventListener('change', (e) => {
+        state.labelDensity = e.target.value;
+        renderAllLayers();
+      });
+    }
+
+    // Reset default styling button
+    const btnReset = document.getElementById('btn-reset-map-style');
+    if (btnReset) {
+      btnReset.addEventListener('click', () => {
+        state.mapTheme = {
+          palette: 'fews_alert',
+          provBorderColor: '#0f172a',
+          provBorderWeight: 3.5,
+          provFillOpacity: 0.45,
+          customProvFill: '#ea580c',
+          munBorderColor: '#475569',
+          munBorderWeight: 1.2,
+          munBorderStyle: 'solid',
+          munFillOpacity: 0.20,
+          customMunFill: '#334155',
+          sadcOpacity: 0.25,
+          canvasBg: '#090d16'
+        };
+        state.labelDensity = 'smart';
+        if (selPalette) selPalette.value = 'fews_alert';
+        if (pickerProvBorder) pickerProvBorder.value = '#0f172a';
+        if (lblProvBorder) lblProvBorder.textContent = '#0f172a';
+        if (selProvWeight) selProvWeight.value = '3.5';
+        if (sliderProvOpacity) sliderProvOpacity.value = '45';
+        if (lblProvOpacity) lblProvOpacity.textContent = '45%';
+        if (pickerMunBorder) pickerMunBorder.value = '#475569';
+        if (lblMunBorder) lblMunBorder.textContent = '#475569';
+        if (selMunWeight) selMunWeight.value = '1.2';
+        if (selMunDash) selMunDash.value = 'solid';
+        if (sliderMunOpacity) sliderMunOpacity.value = '20';
+        if (lblMunOpacity) lblMunOpacity.textContent = '20%';
+        if (sliderSadcOpacity) sliderSadcOpacity.value = '25';
+        if (lblSadcOpacity) lblSadcOpacity.textContent = '25%';
+        if (selLabelDensity) selLabelDensity.value = 'smart';
+        document.querySelectorAll('.btn-canvas-bg').forEach(b => {
+          b.classList.toggle('active', b.dataset.bg === '#090d16');
+        });
+        updateCustomPickersVisibility();
+        renderAllLayers();
+      });
+    }
+  }
+
+  initMapThemeControls();
   // Inicializar Sequência da Aplicação
   initMap();
   initOnlineUsersTracker();
