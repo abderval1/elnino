@@ -2814,7 +2814,7 @@ document.addEventListener('DOMContentLoaded', () => {
       selectedProvs: new Set(),
       selectedMuns: new Set(), // Formato: "NomeProv::NomeMun"
       mode: 'prov_and_mun',    // 'prov_only' ou 'prov_and_mun'
-      year: '2026',            // '2024', '2025', '2026', '2027', 'ALL'
+      selectedYears: new Set(['2026']), // Anos selecionados: '2024', '2025', '2026', '2027'
       risk: 'ALL',             // 'ALL', 'HIGH_CRITICAL', 'MODERATE_HIGH', 'LOW'
       fies: 'ALL',             // 'ALL', 'HIGH', 'MEDIUM'
       searchProv: '',
@@ -2844,7 +2844,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const modeBothRadio = document.getElementById('export-mode-both');
     const lblModeProv = document.getElementById('lbl-mode-prov');
     const lblModeBoth = document.getElementById('lbl-mode-both');
-    const selectYear = document.getElementById('export-select-year');
     const selectRisk = document.getElementById('export-select-risk');
     const selectFies = document.getElementById('export-select-fies');
 
@@ -3035,7 +3034,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // 5. Atualizar Resumo em Tempo Real
     function updateSummaryStats() {
       if (!state.ineData) return;
-      const yr = expState.year;
+      const years = Array.from(expState.selectedYears).sort();
+      const primaryYear = years[years.length - 1] || '2026';
       const numFmt = state.currentLang === 'en' ? 'en-US' : 'pt-PT';
       const popUnit = state.currentLang === 'en' ? 'pop' : 'hab';
 
@@ -3051,10 +3051,10 @@ document.addEventListener('DOMContentLoaded', () => {
           if (!passesFilters('prov', provObj)) return;
 
           let pTotal = 0;
-          if (yr === 'ALL' || yr === '2024') {
+          if (primaryYear === '2024') {
             pTotal = provObj.censo2024?.pop_total || 0;
           } else {
-            pTotal = provObj.projeccoes?.[yr]?.total || provObj.censo2024?.pop_total || 0;
+            pTotal = provObj.projeccoes?.[primaryYear]?.total || provObj.censo2024?.pop_total || 0;
           }
           totalPopCovered += pTotal;
           recordsCount++;
@@ -3069,14 +3069,14 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!passesFilters('mun', munObj)) return;
 
             let mTotal = 0;
-            if (yr === 'ALL' || yr === '2024') {
+            if (primaryYear === '2024') {
               const provObj = state.ineData.provincias[pname];
               const popProv2024 = provObj?.censo2024?.pop_total || 1;
               const popProv2025 = provObj?.projeccoes?.['2025']?.total || 1;
               const ratio = popProv2024 / (popProv2025 || 1);
               mTotal = Math.round((munObj['2025']?.total || 0) * ratio);
             } else {
-              mTotal = munObj[yr]?.total || munObj['2025']?.total || 0;
+              mTotal = munObj[primaryYear]?.total || munObj['2025']?.total || 0;
             }
             totalPopCovered += mTotal;
             recordsCount++;
@@ -3089,41 +3089,42 @@ document.addEventListener('DOMContentLoaded', () => {
             const provObj = state.ineData.provincias[pname];
             if (!provObj) return;
             if (!passesFilters('prov', provObj)) return;
-            totalPopCovered += (yr === 'ALL' || yr === '2024') ? (provObj.censo2024?.pop_total || 0) : (provObj.projeccoes?.[yr]?.total || 0);
+            totalPopCovered += primaryYear === '2024' ? (provObj.censo2024?.pop_total || 0) : (provObj.projeccoes?.[primaryYear]?.total || 0);
             recordsCount++;
           });
         }
       }
 
+      const yearsLabel = years.length > 1 ? ` (${years.join(', ')})` : ` (${primaryYear})`;
       if (statProvCountEl) statProvCountEl.textContent = `${totalProvsSelected} / 21`;
       if (statMunCountEl) statMunCountEl.textContent = `${totalMunsSelected} / 326`;
-      if (statTotalPopEl) statTotalPopEl.textContent = `${totalPopCovered.toLocaleString(numFmt)} ${popUnit}`;
+      if (statTotalPopEl) statTotalPopEl.textContent = `${totalPopCovered.toLocaleString(numFmt)} ${popUnit}${yearsLabel}`;
       if (statRecordsCountEl) statRecordsCountEl.textContent = `${recordsCount} ${state.currentLang === 'en' ? 'records' : 'registos'}`;
     }
 
-    // 6. Construir Matriz de Linhas para Exportação
+    // 6. Construir Matriz de Linhas para Exportação com Suporte a Múltiplos Anos
     function buildExportDataset() {
-      const yr = expState.year;
+      const years = Array.from(expState.selectedYears).sort();
+      if (years.length === 0) years.push('2026');
       const season = state.activeSeason || 'OND';
 
-      // Montar Cabeçalhos baseados nas colunas ativas
+      // Montar Cabeçalhos baseados nos anos e colunas ativas
       const headers = ['Unidade Administrativa', 'Província', 'Nível Administrativo'];
 
-      if (yr === 'ALL') {
-        if (expState.cols.popTotal) headers.push('Censo 2024 (INE)', 'Estimativa 2025 (INE)', 'Estimativa 2026 (INE)', 'Projeção 2027 (INE)');
-      } else {
-        if (expState.cols.popTotal) headers.push(`População Total (${yr})`);
-      }
+      years.forEach(yr => {
+        const yrSuffix = years.length > 1 ? ` (${yr})` : ` (${yr})`;
+        if (expState.cols.popTotal) headers.push(`População Total${yrSuffix}`);
+        if (expState.cols.urbanRural) headers.push(`Urbana${yrSuffix}`, `Rural${yrSuffix}`);
+        if (expState.cols.gender) headers.push(`Homens${yrSuffix}`, `Mulheres${yrSuffix}`);
+      });
 
-      if (expState.cols.urbanRural) headers.push('População Urbana', 'População Rural');
-      if (expState.cols.gender) headers.push('População Homens', 'População Mulheres');
       if (expState.cols.areaDensity) headers.push('Área DPA (km²)', 'Densidade (hab/km²)');
       if (expState.cols.sarcof) headers.push(`Classificação SARCOF (${season})`);
       if (expState.cols.affected) headers.push('Pessoas Afetadas Estimadas', 'Famílias Afetadas (5,2/fam)');
       if (expState.cols.water) headers.push('Carência Água ODS 6.1 (%)');
       if (expState.cols.fies) headers.push('% FIES Severa (ODS 2.1.2)');
       if (expState.cols.risk) headers.push('Score de Risco (1-25)', 'Rank de Risco');
-      if (expState.cols.source) headers.push('Fonte Oficial', 'Ano Base');
+      if (expState.cols.source) headers.push('Fonte Oficial', 'Anos Selecionados');
 
       const provRows = [];
       const munRows = [];
@@ -3144,34 +3145,43 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const row = [pname, 'Angola', 'Província'];
 
-        if (yr === 'ALL') {
-          if (expState.cols.popTotal) {
-            row.push(
-              provObj.censo2024?.pop_total || 0,
-              provObj.projeccoes?.['2025']?.total || 0,
-              provObj.projeccoes?.['2026']?.total || 0,
-              provObj.projeccoes?.['2027']?.total || 0
-            );
+        // Inserir dados de cada ano selecionado
+        years.forEach(yr => {
+          let pTot = 0, pUrb = 0, pRur = 0, pHom = 0, pMul = 0;
+          if (yr === '2024') {
+            const c = provObj.censo2024 || {};
+            pTot = c.pop_total || 0;
+            pUrb = c.pop_urbana || 0;
+            pRur = c.pop_rural || 0;
+            pHom = c.pop_homens || 0;
+            pMul = c.pop_mulheres || 0;
+          } else {
+            const proj = (provObj.projeccoes && provObj.projeccoes[yr]) ? provObj.projeccoes[yr] : {};
+            pTot = proj.total || 0;
+            pUrb = proj.urbana || 0;
+            pRur = proj.rural || 0;
+            pHom = proj.homens || 0;
+            pMul = proj.mulheres || 0;
           }
-        } else {
-          if (expState.cols.popTotal) row.push(demo.total);
-        }
 
-        if (expState.cols.urbanRural) row.push(demo.urban, demo.rural);
-        if (expState.cols.gender) row.push(demo.homens, demo.mulheres);
+          if (expState.cols.popTotal) row.push(pTot);
+          if (expState.cols.urbanRural) row.push(pUrb, pRur);
+          if (expState.cols.gender) row.push(pHom, pMul);
+        });
+
         if (expState.cols.areaDensity) row.push(demo.areaKm2 ? Number(demo.areaKm2.toFixed(1)) : '', demo.density ? Number(demo.density.toFixed(1)) : '');
         if (expState.cols.sarcof) row.push(calc.cfg.name);
         if (expState.cols.affected) row.push(calc.affectedPop, calc.affectedFamilies);
         if (expState.cols.water) row.push(waterVal);
         if (expState.cols.fies) row.push(demo.fiesSeveraPct ? Number(demo.fiesSeveraPct.toFixed(1)) : '');
         if (expState.cols.risk) row.push(rMat.score, rMat.rank);
-        if (expState.cols.source) row.push('INE Angola - Censo & Estimativas Oficiais', yr);
+        if (expState.cols.source) row.push('INE Angola - Censo & Estimativas Oficiais', years.join(', '));
 
         provRows.push(row);
         combinedRows.push(row);
       });
 
-      // B) Linhas de Municípios (se modo incluir municípios)
+      // B) Linhas de Municípios
       if (expState.mode === 'prov_and_mun') {
         expState.selectedMuns.forEach(fullKey => {
           const [pname, mname] = fullKey.split('::');
@@ -3189,53 +3199,61 @@ document.addEventListener('DOMContentLoaded', () => {
 
           const row = [mname, pname, 'Município'];
 
-          if (yr === 'ALL') {
-            if (expState.cols.popTotal) {
+          // Inserir dados de cada ano selecionado
+          years.forEach(yr => {
+            let mTot = 0, mUrb = 0, mRur = 0, mHom = 0, mMul = 0;
+            if (yr === '2024') {
               const popProv2024 = provObj?.censo2024?.pop_total || 1;
               const popProv2025 = provObj?.projeccoes?.['2025']?.total || 1;
               const ratio = popProv2024 / (popProv2025 || 1);
-              const pop2024 = Math.round((munObj['2025']?.total || 0) * ratio);
-              row.push(
-                pop2024,
-                munObj['2025']?.total || 0,
-                munObj['2026']?.total || 0,
-                munObj['2027']?.total || 0
-              );
+              const p25 = munObj['2025'] || {};
+              mTot = Math.round((p25.total || 0) * ratio);
+              mUrb = Math.round((p25.urbana || 0) * ratio);
+              mRur = Math.round((p25.rural || 0) * ratio);
+              mHom = Math.round((p25.homens || 0) * ratio);
+              mMul = Math.round((p25.mulheres || 0) * ratio);
+            } else {
+              const proj = munObj[yr] || munObj['2025'] || {};
+              mTot = proj.total || 0;
+              mUrb = proj.urbana || 0;
+              mRur = proj.rural || 0;
+              mHom = proj.homens || 0;
+              mMul = proj.mulheres || 0;
             }
-          } else {
-            if (expState.cols.popTotal) row.push(demo.total);
-          }
 
-          if (expState.cols.urbanRural) row.push(demo.urban, demo.rural);
-          if (expState.cols.gender) row.push(demo.homens, demo.mulheres);
+            if (expState.cols.popTotal) row.push(mTot);
+            if (expState.cols.urbanRural) row.push(mUrb, mRur);
+            if (expState.cols.gender) row.push(mHom, mMul);
+          });
+
           if (expState.cols.areaDensity) row.push(demo.areaKm2 ? Number(demo.areaKm2.toFixed(1)) : '', demo.density ? Number(demo.density.toFixed(1)) : '');
           if (expState.cols.sarcof) row.push(calc.cfg.name);
           if (expState.cols.affected) row.push(calc.affectedPop, calc.affectedFamilies);
           if (expState.cols.water) row.push(waterVal);
           if (expState.cols.fies) row.push(demo.fiesSeveraPct ? Number(demo.fiesSeveraPct.toFixed(1)) : '');
           if (expState.cols.risk) row.push(rMat.score, rMat.rank);
-          if (expState.cols.source) row.push('INE Angola - DPA 2025', yr);
+          if (expState.cols.source) row.push('INE Angola - DPA 2025', years.join(', '));
 
           munRows.push(row);
           combinedRows.push(row);
         });
       }
 
-      return { headers, provRows, munRows, combinedRows };
+      return { headers, provRows, munRows, combinedRows, years };
     }
 
     // 7. Executar Exportação em Excel (.xlsx)
     function exportToExcel() {
-      const { headers, provRows, munRows, combinedRows } = buildExportDataset();
+      const { headers, provRows, munRows, combinedRows, years } = buildExportDataset();
       const season = state.activeSeason || 'OND';
-      const yr = expState.year;
 
       if (combinedRows.length === 0) {
         alert(state.currentLang === 'en' ? 'No records match the selected filters.' : 'Nenhum registo corresponde aos filtros selecionados.');
         return;
       }
 
-      const filename = `Populacao_Angola_${expState.mode === 'prov_only' ? 'Provincias' : 'Provincias_Municipios'}_${yr}_${season}.xlsx`;
+      const yearsTag = years.length === 4 ? 'Serie_2024_2027' : years.join('_');
+      const filename = `Populacao_Angola_${expState.mode === 'prov_only' ? 'Provincias' : 'Provincias_Municipios'}_${yearsTag}_${season}.xlsx`;
 
       // Se a biblioteca SheetJS estiver carregada
       if (typeof XLSX !== 'undefined') {
@@ -3268,15 +3286,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 8. Executar Exportação em CSV
     function exportToCsv() {
-      const { headers, combinedRows } = buildExportDataset();
+      const { headers, combinedRows, years } = buildExportDataset();
       const season = state.activeSeason || 'OND';
-      const yr = expState.year;
 
       if (combinedRows.length === 0) {
         alert(state.currentLang === 'en' ? 'No records match the selected filters.' : 'Nenhum registo corresponde aos filtros selecionados.');
         return;
       }
 
+      const yearsTag = years.length === 4 ? 'Serie_2024_2027' : years.join('_');
       const csvLines = [];
       csvLines.push(headers.map(h => `"${h.replace(/"/g, '""')}"`).join(';'));
       combinedRows.forEach(row => {
@@ -3286,7 +3304,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const csvContent = 'data:text/csv;charset=utf-8,\uFEFF' + encodeURIComponent(csvLines.join('\n'));
       const link = document.createElement('a');
       link.setAttribute('href', csvContent);
-      link.setAttribute('download', `Populacao_Angola_${expState.mode === 'prov_only' ? 'Provincias' : 'Provincias_Municipios'}_${yr}_${season}.csv`);
+      link.setAttribute('download', `Populacao_Angola_${expState.mode === 'prov_only' ? 'Provincias' : 'Provincias_Municipios'}_${yearsTag}_${season}.csv`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -3361,7 +3379,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('btn-export-select-all-prov')?.addEventListener('click', () => {
       if (!state.ineData) return;
       Object.keys(state.ineData.provincias).forEach(p => expState.selectedProvs.add(p));
-      // Adiciona também todos os municípios
       expState.selectedMuns.clear();
       expState.selectedProvs.forEach(p => {
         const muns = state.ineData.municipios[p] || {};
@@ -3396,13 +3413,69 @@ document.addEventListener('DOMContentLoaded', () => {
       updateSummaryStats();
     });
 
-    // Seletor de Ano
-    if (selectYear) {
-      selectYear.addEventListener('change', (e) => {
-        expState.year = e.target.value;
-        updateSummaryStats();
+    // Controlo de Seleção de Anos Demográficos (2024, 2025, 2026, 2027)
+    const availableYears = ['2024', '2025', '2026', '2027'];
+    availableYears.forEach(yr => {
+      const chk = document.getElementById(`chk-year-${yr}`);
+      const card = document.getElementById(`card-year-${yr}`);
+      if (chk) {
+        chk.addEventListener('change', (e) => {
+          if (e.target.checked) {
+            expState.selectedYears.add(yr);
+            card?.classList.add('active');
+          } else {
+            // Não permitir desmarcar todos os anos
+            if (expState.selectedYears.size > 1) {
+              expState.selectedYears.delete(yr);
+              card?.classList.remove('active');
+            } else {
+              e.target.checked = true;
+            }
+          }
+          updateSummaryStats();
+        });
+      }
+    });
+
+    // Botão "Todos os Anos"
+    document.getElementById('btn-year-all')?.addEventListener('click', () => {
+      availableYears.forEach(yr => {
+        expState.selectedYears.add(yr);
+        const chk = document.getElementById(`chk-year-${yr}`);
+        const card = document.getElementById(`card-year-${yr}`);
+        if (chk) chk.checked = true;
+        card?.classList.add('active');
       });
-    }
+      updateSummaryStats();
+    });
+
+    // Botão "2026 (Ano Corrente)"
+    document.getElementById('btn-year-2026')?.addEventListener('click', () => {
+      expState.selectedYears.clear();
+      expState.selectedYears.add('2026');
+      availableYears.forEach(yr => {
+        const is26 = yr === '2026';
+        const chk = document.getElementById(`chk-year-${yr}`);
+        const card = document.getElementById(`card-year-${yr}`);
+        if (chk) chk.checked = is26;
+        if (is26) card?.classList.add('active'); else card?.classList.remove('active');
+      });
+      updateSummaryStats();
+    });
+
+    // Botão "Censo 2024"
+    document.getElementById('btn-year-2024')?.addEventListener('click', () => {
+      expState.selectedYears.clear();
+      expState.selectedYears.add('2024');
+      availableYears.forEach(yr => {
+        const is24 = yr === '2024';
+        const chk = document.getElementById(`chk-year-${yr}`);
+        const card = document.getElementById(`card-year-${yr}`);
+        if (chk) chk.checked = is24;
+        if (is24) card?.classList.add('active'); else card?.classList.remove('active');
+      });
+      updateSummaryStats();
+    });
 
     // Seletor de Risco
     if (selectRisk) {

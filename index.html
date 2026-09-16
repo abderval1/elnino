@@ -1212,16 +1212,73 @@
 
             <div style="display: flex; flex-direction: column; gap: 12px;">
               
-              <!-- Filtro 1: Ano Demográfico -->
+              <!-- Filtro 1: Seleção de Anos Demográficos Disponíveis -->
               <div class="export-field-group">
-                <label class="export-field-label" data-i18n="export_lbl_year">Ano da População / Projeção Oficial:</label>
-                <select id="export-select-year" class="select-control" style="background: rgba(15,23,42,0.9); border-color: rgba(56,189,248,0.3);">
-                  <option value="2024">2024 — Censo Geral da População e Habitação (INE Oficial)</option>
-                  <option value="2025">2025 — Estimativa Oficial DPA 2025 (INE)</option>
-                  <option value="2026" selected>2026 — Estimativa Oficial DPA 2026 (Ano Corrente / El Niño)</option>
-                  <option value="2027">2027 — Projeção Oficial DPA 2027 (INE)</option>
-                  <option value="ALL">Série Temporal Completa (2024, 2025, 2026 e 2027)</option>
-                </select>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                  <label class="export-field-label" style="margin: 0;">
+                    <i class="fa-solid fa-calendar-days" style="color: #38bdf8; margin-right: 4px;"></i>
+                    <span data-i18n="export_lbl_year_multi">Anos da População Disponíveis a Baixar:</span>
+                  </label>
+                  <div style="display: flex; gap: 4px;">
+                    <button type="button" class="btn-micro" id="btn-year-all" data-i18n="btn_year_all">Todos</button>
+                    <button type="button" class="btn-micro" id="btn-year-2026">2026 (Corrente)</button>
+                    <button type="button" class="btn-micro" id="btn-year-2024">Censo 2024</button>
+                  </div>
+                </div>
+
+                <div class="export-years-grid">
+                  <!-- Ano 2024 -->
+                  <label class="export-year-card" id="card-year-2024">
+                    <input type="checkbox" name="export-years" value="2024" id="chk-year-2024">
+                    <div class="year-card-body">
+                      <div class="year-card-header">
+                        <strong>2024</strong>
+                        <span class="badge-mini badge-censo">Censo INE</span>
+                      </div>
+                      <div class="year-card-desc" data-i18n="year_2024_desc">Censo Geral da População</div>
+                      <div class="year-card-pop">36.604.682 hab</div>
+                    </div>
+                  </label>
+
+                  <!-- Ano 2025 -->
+                  <label class="export-year-card" id="card-year-2025">
+                    <input type="checkbox" name="export-years" value="2025" id="chk-year-2025">
+                    <div class="year-card-body">
+                      <div class="year-card-header">
+                        <strong>2025</strong>
+                        <span class="badge-mini">DPA 2025</span>
+                      </div>
+                      <div class="year-card-desc" data-i18n="year_2025_desc">Estimativa Oficial INE</div>
+                      <div class="year-card-pop">37.513.168 hab</div>
+                    </div>
+                  </label>
+
+                  <!-- Ano 2026 (Padrão selecionado) -->
+                  <label class="export-year-card active" id="card-year-2026">
+                    <input type="checkbox" name="export-years" value="2026" id="chk-year-2026" checked>
+                    <div class="year-card-body">
+                      <div class="year-card-header">
+                        <strong>2026</strong>
+                        <span class="badge-mini badge-current" data-i18n="badge_current_year">Corrente</span>
+                      </div>
+                      <div class="year-card-desc" data-i18n="year_2026_desc">Estimativa Oficial El Niño</div>
+                      <div class="year-card-pop">38.778.554 hab</div>
+                    </div>
+                  </label>
+
+                  <!-- Ano 2027 -->
+                  <label class="export-year-card" id="card-year-2027">
+                    <input type="checkbox" name="export-years" value="2027" id="chk-year-2027">
+                    <div class="year-card-body">
+                      <div class="year-card-header">
+                        <strong>2027</strong>
+                        <span class="badge-mini">DPA 2025</span>
+                      </div>
+                      <div class="year-card-desc" data-i18n="year_2027_desc">Projeção Oficial INE</div>
+                      <div class="year-card-pop">40.082.765 hab</div>
+                    </div>
+                  </label>
+                </div>
               </div>
 
               <!-- Filtro 2: Classificação de Risco El Niño -->
