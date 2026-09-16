@@ -174,7 +174,56 @@ document.addEventListener('DOMContentLoaded', () => {
       var_risk: 'Matriz de Risco Histórico 1984-2025 (1-25)',
       custom_formula_preview_title: 'Equação Matemática Resultante:',
       btn_reset_defaults: 'Repor Padrões',
-      btn_apply_formula: 'Aplicar Fórmula e Calcular'
+      btn_apply_formula: 'Aplicar Fórmula e Calcular',
+      btn_export_excel: 'Exportar Excel',
+      btn_export_excel_advanced: 'Exportar Excel (Filtros)',
+      export_modal_title: 'Exportar População de Angola em Excel (.xlsx / .csv)',
+      export_modal_subtitle: 'Selecione Províncias, Municípios e Filtros Personalizados (Base Oficial INE: Censo 2024 & Estimativas 2025–2027)',
+      export_geo_title: '1. Seleção Geográfica (Províncias e Municípios)',
+      export_mode_prov_title: 'Apenas Totais Provinciais',
+      export_mode_prov_desc: 'Baixa a população agregada das províncias selecionadas.',
+      export_mode_both_title: 'Províncias e Municípios Respetivos',
+      export_mode_both_desc: 'Baixa a população da província e de cada município respetivamente.',
+      export_lbl_provinces: 'Províncias:',
+      export_lbl_mun: 'Municípios',
+      btn_select_all: 'Todas',
+      btn_clear: 'Limpar',
+      export_search_prov: 'Pesquisar província...',
+      export_search_mun: 'Pesquisar município...',
+      export_filters_title: '2. Filtros Adicionais & Dados a Incluir',
+      export_lbl_year: 'Ano da População / Projeção Oficial:',
+      export_lbl_risk: 'Filtro por Risco El Niño (Matriz 1–25):',
+      export_lbl_fies: 'Insegurança Alimentar FIES Severa (INE / FAO):',
+      export_lbl_columns: 'Colunas / Variáveis a Exportar:',
+      btn_all: 'Todas',
+      btn_standard: 'Padrão',
+      col_pop_total: 'População Total',
+      col_urban_rural: 'Urbana & Rural',
+      col_gender: 'Homens & Mulheres',
+      col_area_density: 'Área (km²) & Densidade',
+      col_affected: 'Pessoas & Famílias Afetadas',
+      col_sarcof: 'Zona Climática SARCOF',
+      col_risk: 'Score & Rank de Risco',
+      col_fies: '% FIES Severa (ODS 2.1)',
+      col_water: 'Carência Água (ODS 6.1)',
+      col_source: 'Fonte & Metadados INE',
+      export_sheets_title: 'Abas Geradas no Livro Excel (.xlsx):',
+      export_sheet_1: '"Resumo Províncias": Totais e indicadores provinciais oficiais.',
+      export_sheet_2: '"Detalhamento Municípios": Todos os municípios selecionados por província.',
+      export_sheet_3: '"Consolidado Geral": Tabela unificada para tabelas dinâmicas.',
+      export_stat_provinces: 'Províncias Selecionadas:',
+      export_stat_mun: 'Municípios Selecionados:',
+      export_stat_total_pop: 'População Total Coberta:',
+      export_stat_records: 'Registos a Exportar:',
+      btn_download_csv: 'Baixar CSV',
+      btn_download_excel: 'Baixar em Excel (.xlsx)',
+      opt_all_risks: 'Todos os Níveis de Risco (Baixo, Moderado, Alto, Crítico)',
+      opt_risk_high: 'Apenas Risco Alto e Crítico (Score ≥ 15)',
+      opt_risk_mod_high: 'Risco Moderado a Crítico (Score ≥ 8)',
+      opt_risk_low: 'Apenas Risco Baixo (Score < 8)',
+      opt_all_fies: 'Todas as faixas FIES',
+      opt_fies_high: 'Crítica / Severa Alta (> 30% da população)',
+      opt_fies_med: 'Moderada a Severa (> 15% da população)'
     },
     en: {
       app_title: 'El Niño Angola Portal',
@@ -277,10 +326,58 @@ document.addEventListener('DOMContentLoaded', () => {
       var_elec: 'Without Electricity or Solar (INE Census 2024 / SDG 7.1)',
       var_hab: 'Precarious Housing: Hut/Shack (INE Census 2024 / SDG 11.1)',
       var_children: 'Children 0-14 Years (INE Census 2024)',
-      var_risk: 'Historical Risk Matrix 1984-2025 (1-25)',
       custom_formula_preview_title: 'Resulting Mathematical Equation:',
       btn_reset_defaults: 'Reset Defaults',
-      btn_apply_formula: 'Apply Formula & Calculate'
+      btn_apply_formula: 'Apply Formula & Calculate',
+      btn_export_excel: 'Export Excel',
+      btn_export_excel_advanced: 'Export Excel (Filters)',
+      export_modal_title: 'Export Angola Population to Excel (.xlsx / .csv)',
+      export_modal_subtitle: 'Select Provinces, Municipalities and Custom Filters (Official INE Base: Census 2024 & Projections 2025–2027)',
+      export_geo_title: '1. Geographic Selection (Provinces & Municipalities)',
+      export_mode_prov_title: 'Province Totals Only',
+      export_mode_prov_desc: 'Exports aggregated population for selected provinces.',
+      export_mode_both_title: 'Provinces & Respective Municipalities',
+      export_mode_both_desc: 'Exports breakdown by province and each respective municipality.',
+      export_lbl_provinces: 'Provinces:',
+      export_lbl_mun: 'Municipalities',
+      btn_select_all: 'All',
+      btn_clear: 'Clear',
+      export_search_prov: 'Search province...',
+      export_search_mun: 'Search municipality...',
+      export_filters_title: '2. Additional Filters & Columns to Include',
+      export_lbl_year: 'Population Year / Official Projection:',
+      export_lbl_risk: 'Filter by El Niño Risk (Matrix 1–25):',
+      export_lbl_fies: 'Severe Food Insecurity FIES (INE / FAO):',
+      export_lbl_columns: 'Columns / Variables to Export:',
+      btn_all: 'All',
+      btn_standard: 'Default',
+      col_pop_total: 'Total Population',
+      col_urban_rural: 'Urban & Rural',
+      col_gender: 'Men & Women',
+      col_area_density: 'Area (km²) & Density',
+      col_affected: 'Affected People & Families',
+      col_sarcof: 'SARCOF Climate Zone',
+      col_risk: 'Risk Score & Rank',
+      col_fies: '% Severe FIES (SDG 2.1)',
+      col_water: 'Water Deficit (SDG 6.1)',
+      col_source: 'Official INE Source & Metadata',
+      export_sheets_title: 'Worksheets Generated in Excel Workbook (.xlsx):',
+      export_sheet_1: '"Resumo Províncias": Official provincial totals and indicators.',
+      export_sheet_2: '"Detalhamento Municípios": All selected municipalities per province.',
+      export_sheet_3: '"Consolidado Geral": Unified table for Excel pivot tables.',
+      export_stat_provinces: 'Selected Provinces:',
+      export_stat_mun: 'Selected Municipalities:',
+      export_stat_total_pop: 'Total Population Covered:',
+      export_stat_records: 'Records to Export:',
+      btn_download_csv: 'Download CSV',
+      btn_download_excel: 'Download Excel (.xlsx)',
+      opt_all_risks: 'All Risk Levels (Low, Moderate, High, Critical)',
+      opt_risk_high: 'High & Critical Risk Only (Score ≥ 15)',
+      opt_risk_mod_high: 'Moderate to Critical Risk (Score ≥ 8)',
+      opt_risk_low: 'Low Risk Only (Score < 8)',
+      opt_all_fies: 'All FIES Ranges',
+      opt_fies_high: 'Critical / High Severity (> 30% of population)',
+      opt_fies_med: 'Moderate to Severe (> 15% of population)'
     }
   };
 
@@ -2700,10 +2797,679 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(sendHeartbeat, 10000);
   }
 
+  // =========================================================================
+  // SISTEMA AVANÇADO DE EXPORTAÇÃO DA POPULAÇÃO EM EXCEL (.xlsx / .csv)
+  // Permite selecionar províncias, municípios e aplicar filtros múltiplos
+  // =========================================================================
+  function initExcelExportSystem() {
+    const modal = document.getElementById('modal-export-excel');
+    const btnOpenHeader = document.getElementById('btn-open-export-modal');
+    const btnOpenCenso = document.getElementById('btn-open-export-modal-from-censo');
+    const btnClose = document.getElementById('btn-close-export-modal');
+
+    if (!modal) return;
+
+    // Estado do exportador
+    const expState = {
+      selectedProvs: new Set(),
+      selectedMuns: new Set(), // Formato: "NomeProv::NomeMun"
+      mode: 'prov_and_mun',    // 'prov_only' ou 'prov_and_mun'
+      year: '2026',            // '2024', '2025', '2026', '2027', 'ALL'
+      risk: 'ALL',             // 'ALL', 'HIGH_CRITICAL', 'MODERATE_HIGH', 'LOW'
+      fies: 'ALL',             // 'ALL', 'HIGH', 'MEDIUM'
+      searchProv: '',
+      searchMun: '',
+      cols: {
+        popTotal: true,
+        urbanRural: true,
+        gender: true,
+        areaDensity: true,
+        affected: true,
+        sarcof: true,
+        risk: true,
+        fies: true,
+        water: true,
+        source: true
+      }
+    };
+
+    // Elementos DOM
+    const provListEl = document.getElementById('export-prov-list');
+    const munListEl = document.getElementById('export-mun-list');
+    const munContainerEl = document.getElementById('export-mun-container');
+    const munCountEl = document.getElementById('export-mun-count');
+    const searchProvInput = document.getElementById('export-search-prov');
+    const searchMunInput = document.getElementById('export-search-mun');
+    const modeProvRadio = document.getElementById('export-mode-prov');
+    const modeBothRadio = document.getElementById('export-mode-both');
+    const lblModeProv = document.getElementById('lbl-mode-prov');
+    const lblModeBoth = document.getElementById('lbl-mode-both');
+    const selectYear = document.getElementById('export-select-year');
+    const selectRisk = document.getElementById('export-select-risk');
+    const selectFies = document.getElementById('export-select-fies');
+
+    // Stats elements
+    const statProvCountEl = document.getElementById('export-stat-prov-count');
+    const statMunCountEl = document.getElementById('export-stat-mun-count');
+    const statTotalPopEl = document.getElementById('export-stat-total-pop');
+    const statRecordsCountEl = document.getElementById('export-stat-records-count');
+
+    // Botões de ação
+    const btnExportExcel = document.getElementById('btn-do-export-excel');
+    const btnExportCsv = document.getElementById('btn-do-export-csv');
+
+    // 1. Inicializar seleções padrão
+    function resetDefaultSelections() {
+      if (!state.ineData) return;
+      const provNames = Object.keys(state.ineData.provincias);
+      
+      // Se não houver nada selecionado, seleciona todas por padrão
+      if (expState.selectedProvs.size === 0) {
+        if (state.selectedFeature) {
+          const rawProv = state.selectedFeature.properties.Nome_Prov || state.selectedFeature.properties.PROVINCIA || '';
+          const norm = normalizeProvName(rawProv);
+          if (norm && state.ineData.provincias[norm]) {
+            expState.selectedProvs.add(norm);
+          }
+        }
+        if (expState.selectedProvs.size === 0) {
+          provNames.forEach(p => expState.selectedProvs.add(p));
+        }
+      }
+
+      // Adicionar todos os municípios das províncias selecionadas
+      expState.selectedMuns.clear();
+      expState.selectedProvs.forEach(p => {
+        const muns = state.ineData.municipios[p] || {};
+        Object.keys(muns).forEach(m => expState.selectedMuns.add(`${p}::${m}`));
+      });
+
+      renderProvincesList();
+      renderMunicipalitiesList();
+      updateSummaryStats();
+    }
+
+    // 2. Renderizar Lista de Províncias
+    function renderProvincesList() {
+      if (!provListEl || !state.ineData) return;
+      provListEl.innerHTML = '';
+      const provNames = Object.keys(state.ineData.provincias).sort();
+      const q = expState.searchProv.toLowerCase().trim();
+
+      provNames.forEach(pname => {
+        if (q && !pname.toLowerCase().includes(q)) return;
+
+        const muns = state.ineData.municipios[pname] || {};
+        const munCount = Object.keys(muns).length;
+        const isChecked = expState.selectedProvs.has(pname);
+
+        const item = document.createElement('label');
+        item.className = `export-check-item ${isChecked ? 'selected' : ''}`;
+        item.innerHTML = `
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <input type="checkbox" data-prov="${pname}" ${isChecked ? 'checked' : ''} style="cursor: pointer;">
+            <span>${pname}</span>
+          </div>
+          <span style="font-size: 0.68rem; color: #94a3b8; background: rgba(255,255,255,0.05); padding: 1px 6px; border-radius: 10px;">
+            ${munCount} mun
+          </span>
+        `;
+
+        const chk = item.querySelector('input[type="checkbox"]');
+        chk.addEventListener('change', (e) => {
+          if (e.target.checked) {
+            expState.selectedProvs.add(pname);
+            item.classList.add('selected');
+            // Marca os municípios dessa província
+            const munMap = state.ineData.municipios[pname] || {};
+            Object.keys(munMap).forEach(m => expState.selectedMuns.add(`${pname}::${m}`));
+          } else {
+            expState.selectedProvs.delete(pname);
+            item.classList.remove('selected');
+            // Desmarca os municípios dessa província
+            const munMap = state.ineData.municipios[pname] || {};
+            Object.keys(munMap).forEach(m => expState.selectedMuns.delete(`${pname}::${m}`));
+          }
+          renderMunicipalitiesList();
+          updateSummaryStats();
+        });
+
+        provListEl.appendChild(item);
+      });
+    }
+
+    // 3. Renderizar Lista de Municípios
+    function renderMunicipalitiesList() {
+      if (!munListEl || !state.ineData) return;
+      munListEl.innerHTML = '';
+      const q = expState.searchMun.toLowerCase().trim();
+
+      let totalAvailableMuns = 0;
+      const activeProvs = Array.from(expState.selectedProvs).sort();
+
+      if (activeProvs.length === 0) {
+        munListEl.innerHTML = `
+          <div style="color: #64748b; font-size: 0.75rem; text-align: center; padding: 20px 10px;">
+            <i class="fa-solid fa-arrow-left" style="margin-right: 4px;"></i>
+            Selecione uma província para ver os seus municípios.
+          </div>
+        `;
+        if (munCountEl) munCountEl.textContent = '0';
+        return;
+      }
+
+      activeProvs.forEach(pname => {
+        const muns = state.ineData.municipios[pname] || {};
+        const munNames = Object.keys(muns).sort();
+        totalAvailableMuns += munNames.length;
+
+        const matchingMuns = munNames.filter(m => {
+          if (!q) return true;
+          return m.toLowerCase().includes(q) || pname.toLowerCase().includes(q);
+        });
+
+        if (matchingMuns.length > 0) {
+          if (activeProvs.length > 1) {
+            const groupHdr = document.createElement('div');
+            groupHdr.style.cssText = 'font-size: 0.68rem; font-weight: 700; color: #38bdf8; text-transform: uppercase; padding: 4px 6px 2px 6px; margin-top: 4px; border-bottom: 1px dashed rgba(255,255,255,0.08);';
+            groupHdr.textContent = pname;
+            munListEl.appendChild(groupHdr);
+          }
+
+          matchingMuns.forEach(mname => {
+            const fullKey = `${pname}::${mname}`;
+            const isChecked = expState.selectedMuns.has(fullKey);
+
+            const item = document.createElement('label');
+            item.className = `export-check-item ${isChecked ? 'selected' : ''}`;
+            item.innerHTML = `
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <input type="checkbox" data-mun-key="${fullKey}" ${isChecked ? 'checked' : ''} style="cursor: pointer;">
+                <span>${mname}</span>
+              </div>
+              <span style="font-size: 0.65rem; color: #64748b;">${pname}</span>
+            `;
+
+            const chk = item.querySelector('input[type="checkbox"]');
+            chk.addEventListener('change', (e) => {
+              if (e.target.checked) {
+                expState.selectedMuns.add(fullKey);
+                item.classList.add('selected');
+              } else {
+                expState.selectedMuns.delete(fullKey);
+                item.classList.remove('selected');
+              }
+              updateSummaryStats();
+            });
+
+            munListEl.appendChild(item);
+          });
+        }
+      });
+
+      if (munCountEl) munCountEl.textContent = `${expState.selectedMuns.size} / ${totalAvailableMuns}`;
+    }
+
+    // 4. Testar Filtros Adicionais (Risco e FIES)
+    function passesFilters(type, obj) {
+      if (!obj) return false;
+
+      // Filtro de Risco
+      if (expState.risk !== 'ALL') {
+        const rScore = obj.risk_matrix?.score ?? 9;
+        if (expState.risk === 'HIGH_CRITICAL' && rScore < 15) return false;
+        if (expState.risk === 'MODERATE_HIGH' && rScore < 8) return false;
+        if (expState.risk === 'LOW' && rScore >= 8) return false;
+      }
+
+      // Filtro de FIES Severa
+      if (expState.fies !== 'ALL') {
+        const fies = obj.fies_severa_pct ?? 15.0;
+        if (expState.fies === 'HIGH' && fies <= 30) return false;
+        if (expState.fies === 'MEDIUM' && fies <= 15) return false;
+      }
+
+      return true;
+    }
+
+    // 5. Atualizar Resumo em Tempo Real
+    function updateSummaryStats() {
+      if (!state.ineData) return;
+      const yr = expState.year;
+      const numFmt = state.currentLang === 'en' ? 'en-US' : 'pt-PT';
+      const popUnit = state.currentLang === 'en' ? 'pop' : 'hab';
+
+      let totalProvsSelected = expState.selectedProvs.size;
+      let totalMunsSelected = expState.selectedMuns.size;
+      let totalPopCovered = 0;
+      let recordsCount = 0;
+
+      if (expState.mode === 'prov_only') {
+        expState.selectedProvs.forEach(pname => {
+          const provObj = state.ineData.provincias[pname];
+          if (!provObj) return;
+          if (!passesFilters('prov', provObj)) return;
+
+          let pTotal = 0;
+          if (yr === 'ALL' || yr === '2024') {
+            pTotal = provObj.censo2024?.pop_total || 0;
+          } else {
+            pTotal = provObj.projeccoes?.[yr]?.total || provObj.censo2024?.pop_total || 0;
+          }
+          totalPopCovered += pTotal;
+          recordsCount++;
+        });
+      } else {
+        // Modo com municípios
+        if (totalMunsSelected > 0) {
+          expState.selectedMuns.forEach(fullKey => {
+            const [pname, mname] = fullKey.split('::');
+            const munObj = state.ineData.municipios[pname]?.[mname];
+            if (!munObj) return;
+            if (!passesFilters('mun', munObj)) return;
+
+            let mTotal = 0;
+            if (yr === 'ALL' || yr === '2024') {
+              const provObj = state.ineData.provincias[pname];
+              const popProv2024 = provObj?.censo2024?.pop_total || 1;
+              const popProv2025 = provObj?.projeccoes?.['2025']?.total || 1;
+              const ratio = popProv2024 / (popProv2025 || 1);
+              mTotal = Math.round((munObj['2025']?.total || 0) * ratio);
+            } else {
+              mTotal = munObj[yr]?.total || munObj['2025']?.total || 0;
+            }
+            totalPopCovered += mTotal;
+            recordsCount++;
+          });
+          // Soma registros das províncias
+          recordsCount += totalProvsSelected;
+        } else {
+          // Fallback para provincial
+          expState.selectedProvs.forEach(pname => {
+            const provObj = state.ineData.provincias[pname];
+            if (!provObj) return;
+            if (!passesFilters('prov', provObj)) return;
+            totalPopCovered += (yr === 'ALL' || yr === '2024') ? (provObj.censo2024?.pop_total || 0) : (provObj.projeccoes?.[yr]?.total || 0);
+            recordsCount++;
+          });
+        }
+      }
+
+      if (statProvCountEl) statProvCountEl.textContent = `${totalProvsSelected} / 21`;
+      if (statMunCountEl) statMunCountEl.textContent = `${totalMunsSelected} / 326`;
+      if (statTotalPopEl) statTotalPopEl.textContent = `${totalPopCovered.toLocaleString(numFmt)} ${popUnit}`;
+      if (statRecordsCountEl) statRecordsCountEl.textContent = `${recordsCount} ${state.currentLang === 'en' ? 'records' : 'registos'}`;
+    }
+
+    // 6. Construir Matriz de Linhas para Exportação
+    function buildExportDataset() {
+      const yr = expState.year;
+      const season = state.activeSeason || 'OND';
+
+      // Montar Cabeçalhos baseados nas colunas ativas
+      const headers = ['Unidade Administrativa', 'Província', 'Nível Administrativo'];
+
+      if (yr === 'ALL') {
+        if (expState.cols.popTotal) headers.push('Censo 2024 (INE)', 'Estimativa 2025 (INE)', 'Estimativa 2026 (INE)', 'Projeção 2027 (INE)');
+      } else {
+        if (expState.cols.popTotal) headers.push(`População Total (${yr})`);
+      }
+
+      if (expState.cols.urbanRural) headers.push('População Urbana', 'População Rural');
+      if (expState.cols.gender) headers.push('População Homens', 'População Mulheres');
+      if (expState.cols.areaDensity) headers.push('Área DPA (km²)', 'Densidade (hab/km²)');
+      if (expState.cols.sarcof) headers.push(`Classificação SARCOF (${season})`);
+      if (expState.cols.affected) headers.push('Pessoas Afetadas Estimadas', 'Famílias Afetadas (5,2/fam)');
+      if (expState.cols.water) headers.push('Carência Água ODS 6.1 (%)');
+      if (expState.cols.fies) headers.push('% FIES Severa (ODS 2.1.2)');
+      if (expState.cols.risk) headers.push('Score de Risco (1-25)', 'Rank de Risco');
+      if (expState.cols.source) headers.push('Fonte Oficial', 'Ano Base');
+
+      const provRows = [];
+      const munRows = [];
+      const combinedRows = [];
+
+      // A) Linhas de Províncias
+      expState.selectedProvs.forEach(pname => {
+        const provObj = state.ineData.provincias[pname];
+        if (!provObj) return;
+        if (!passesFilters('prov', provObj)) return;
+
+        const demo = getOfficialDemographics('provincias', { properties: { Nome_Prov: pname } });
+        const code = getSarcofForAngolaFeature({ properties: { Nome_Prov: pname } }, 'provincias', season);
+        const calc = calculateOfficialFormula(demo, code);
+        const live = getCensusLivelihoodIndicators(demo.censoDetails);
+        const waterVal = live ? `${live.pctSemAgua}%` : '-';
+        const rMat = demo.riskMatrix || { score: 9, rank: 'Moderado' };
+
+        const row = [pname, 'Angola', 'Província'];
+
+        if (yr === 'ALL') {
+          if (expState.cols.popTotal) {
+            row.push(
+              provObj.censo2024?.pop_total || 0,
+              provObj.projeccoes?.['2025']?.total || 0,
+              provObj.projeccoes?.['2026']?.total || 0,
+              provObj.projeccoes?.['2027']?.total || 0
+            );
+          }
+        } else {
+          if (expState.cols.popTotal) row.push(demo.total);
+        }
+
+        if (expState.cols.urbanRural) row.push(demo.urban, demo.rural);
+        if (expState.cols.gender) row.push(demo.homens, demo.mulheres);
+        if (expState.cols.areaDensity) row.push(demo.areaKm2 ? Number(demo.areaKm2.toFixed(1)) : '', demo.density ? Number(demo.density.toFixed(1)) : '');
+        if (expState.cols.sarcof) row.push(calc.cfg.name);
+        if (expState.cols.affected) row.push(calc.affectedPop, calc.affectedFamilies);
+        if (expState.cols.water) row.push(waterVal);
+        if (expState.cols.fies) row.push(demo.fiesSeveraPct ? Number(demo.fiesSeveraPct.toFixed(1)) : '');
+        if (expState.cols.risk) row.push(rMat.score, rMat.rank);
+        if (expState.cols.source) row.push('INE Angola - Censo & Estimativas Oficiais', yr);
+
+        provRows.push(row);
+        combinedRows.push(row);
+      });
+
+      // B) Linhas de Municípios (se modo incluir municípios)
+      if (expState.mode === 'prov_and_mun') {
+        expState.selectedMuns.forEach(fullKey => {
+          const [pname, mname] = fullKey.split('::');
+          const munObj = state.ineData.municipios[pname]?.[mname];
+          if (!munObj) return;
+          if (!passesFilters('mun', munObj)) return;
+
+          const demo = getOfficialDemographics('municipios', { properties: { Nome_Prov: pname, Nome_Munic: mname } });
+          const code = getSarcofForAngolaFeature({ properties: { Nome_Prov: pname, Nome_Munic: mname } }, 'municipios', season);
+          const calc = calculateOfficialFormula(demo, code);
+          const provObj = state.ineData.provincias[pname] || {};
+          const provLive = getCensusLivelihoodIndicators(provObj.censo2024);
+          const waterVal = provLive ? `${provLive.pctSemAgua}% (Prov.)` : '-';
+          const rMat = demo.riskMatrix || { score: 9, rank: 'Moderado' };
+
+          const row = [mname, pname, 'Município'];
+
+          if (yr === 'ALL') {
+            if (expState.cols.popTotal) {
+              const popProv2024 = provObj?.censo2024?.pop_total || 1;
+              const popProv2025 = provObj?.projeccoes?.['2025']?.total || 1;
+              const ratio = popProv2024 / (popProv2025 || 1);
+              const pop2024 = Math.round((munObj['2025']?.total || 0) * ratio);
+              row.push(
+                pop2024,
+                munObj['2025']?.total || 0,
+                munObj['2026']?.total || 0,
+                munObj['2027']?.total || 0
+              );
+            }
+          } else {
+            if (expState.cols.popTotal) row.push(demo.total);
+          }
+
+          if (expState.cols.urbanRural) row.push(demo.urban, demo.rural);
+          if (expState.cols.gender) row.push(demo.homens, demo.mulheres);
+          if (expState.cols.areaDensity) row.push(demo.areaKm2 ? Number(demo.areaKm2.toFixed(1)) : '', demo.density ? Number(demo.density.toFixed(1)) : '');
+          if (expState.cols.sarcof) row.push(calc.cfg.name);
+          if (expState.cols.affected) row.push(calc.affectedPop, calc.affectedFamilies);
+          if (expState.cols.water) row.push(waterVal);
+          if (expState.cols.fies) row.push(demo.fiesSeveraPct ? Number(demo.fiesSeveraPct.toFixed(1)) : '');
+          if (expState.cols.risk) row.push(rMat.score, rMat.rank);
+          if (expState.cols.source) row.push('INE Angola - DPA 2025', yr);
+
+          munRows.push(row);
+          combinedRows.push(row);
+        });
+      }
+
+      return { headers, provRows, munRows, combinedRows };
+    }
+
+    // 7. Executar Exportação em Excel (.xlsx)
+    function exportToExcel() {
+      const { headers, provRows, munRows, combinedRows } = buildExportDataset();
+      const season = state.activeSeason || 'OND';
+      const yr = expState.year;
+
+      if (combinedRows.length === 0) {
+        alert(state.currentLang === 'en' ? 'No records match the selected filters.' : 'Nenhum registo corresponde aos filtros selecionados.');
+        return;
+      }
+
+      const filename = `Populacao_Angola_${expState.mode === 'prov_only' ? 'Provincias' : 'Provincias_Municipios'}_${yr}_${season}.xlsx`;
+
+      // Se a biblioteca SheetJS estiver carregada
+      if (typeof XLSX !== 'undefined') {
+        const wb = XLSX.utils.book_new();
+
+        if (expState.mode === 'prov_only') {
+          // Apenas províncias
+          const wsProv = XLSX.utils.aoa_to_sheet([headers, ...provRows]);
+          XLSX.utils.book_append_sheet(wb, wsProv, 'População Províncias');
+        } else {
+          // Províncias e Municípios com abas dedicadas
+          if (provRows.length > 0) {
+            const wsProv = XLSX.utils.aoa_to_sheet([headers, ...provRows]);
+            XLSX.utils.book_append_sheet(wb, wsProv, 'Resumo Províncias');
+          }
+          if (munRows.length > 0) {
+            const wsMun = XLSX.utils.aoa_to_sheet([headers, ...munRows]);
+            XLSX.utils.book_append_sheet(wb, wsMun, 'Detalhamento Municípios');
+          }
+          const wsAll = XLSX.utils.aoa_to_sheet([headers, ...combinedRows]);
+          XLSX.utils.book_append_sheet(wb, wsAll, 'Consolidado Geral');
+        }
+
+        XLSX.writeFile(wb, filename);
+      } else {
+        // Fallback nativo: CSV compatível com Excel (UTF-8 BOM)
+        exportToCsv();
+      }
+    }
+
+    // 8. Executar Exportação em CSV
+    function exportToCsv() {
+      const { headers, combinedRows } = buildExportDataset();
+      const season = state.activeSeason || 'OND';
+      const yr = expState.year;
+
+      if (combinedRows.length === 0) {
+        alert(state.currentLang === 'en' ? 'No records match the selected filters.' : 'Nenhum registo corresponde aos filtros selecionados.');
+        return;
+      }
+
+      const csvLines = [];
+      csvLines.push(headers.map(h => `"${h.replace(/"/g, '""')}"`).join(';'));
+      combinedRows.forEach(row => {
+        csvLines.push(row.map(val => `"${String(val ?? '').replace(/"/g, '""')}"`).join(';'));
+      });
+
+      const csvContent = 'data:text/csv;charset=utf-8,\uFEFF' + encodeURIComponent(csvLines.join('\n'));
+      const link = document.createElement('a');
+      link.setAttribute('href', csvContent);
+      link.setAttribute('download', `Populacao_Angola_${expState.mode === 'prov_only' ? 'Provincias' : 'Provincias_Municipios'}_${yr}_${season}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    // Eventos dos Controles
+    if (btnOpenHeader) {
+      btnOpenHeader.addEventListener('click', () => {
+        modal.classList.add('active');
+        resetDefaultSelections();
+      });
+    }
+
+    if (btnOpenCenso) {
+      btnOpenCenso.addEventListener('click', () => {
+        modal.classList.add('active');
+        resetDefaultSelections();
+      });
+    }
+
+    if (btnClose) {
+      btnClose.addEventListener('click', () => modal.classList.remove('active'));
+    }
+
+    // Fechar ao clicar no backdrop escuro
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) modal.classList.remove('active');
+    });
+
+    // Modo de detalhamento (províncias apenas vs províncias e municípios)
+    if (modeProvRadio && modeBothRadio) {
+      modeProvRadio.addEventListener('change', () => {
+        expState.mode = 'prov_only';
+        lblModeProv?.classList.add('active');
+        lblModeBoth?.classList.remove('active');
+        if (munContainerEl) {
+          munContainerEl.style.opacity = '0.4';
+          munContainerEl.style.pointerEvents = 'none';
+        }
+        updateSummaryStats();
+      });
+
+      modeBothRadio.addEventListener('change', () => {
+        expState.mode = 'prov_and_mun';
+        lblModeBoth?.classList.add('active');
+        lblModeProv?.classList.remove('active');
+        if (munContainerEl) {
+          munContainerEl.style.opacity = '1';
+          munContainerEl.style.pointerEvents = 'auto';
+        }
+        updateSummaryStats();
+      });
+    }
+
+    // Busca de províncias
+    if (searchProvInput) {
+      searchProvInput.addEventListener('input', (e) => {
+        expState.searchProv = e.target.value;
+        renderProvincesList();
+      });
+    }
+
+    // Busca de municípios
+    if (searchMunInput) {
+      searchMunInput.addEventListener('input', (e) => {
+        expState.searchMun = e.target.value;
+        renderMunicipalitiesList();
+      });
+    }
+
+    // Botões Todas / Limpar Províncias
+    document.getElementById('btn-export-select-all-prov')?.addEventListener('click', () => {
+      if (!state.ineData) return;
+      Object.keys(state.ineData.provincias).forEach(p => expState.selectedProvs.add(p));
+      // Adiciona também todos os municípios
+      expState.selectedMuns.clear();
+      expState.selectedProvs.forEach(p => {
+        const muns = state.ineData.municipios[p] || {};
+        Object.keys(muns).forEach(m => expState.selectedMuns.add(`${p}::${m}`));
+      });
+      renderProvincesList();
+      renderMunicipalitiesList();
+      updateSummaryStats();
+    });
+
+    document.getElementById('btn-export-clear-prov')?.addEventListener('click', () => {
+      expState.selectedProvs.clear();
+      expState.selectedMuns.clear();
+      renderProvincesList();
+      renderMunicipalitiesList();
+      updateSummaryStats();
+    });
+
+    // Botões Todos / Limpar Municípios
+    document.getElementById('btn-export-select-all-mun')?.addEventListener('click', () => {
+      expState.selectedProvs.forEach(p => {
+        const muns = state.ineData.municipios[p] || {};
+        Object.keys(muns).forEach(m => expState.selectedMuns.add(`${p}::${m}`));
+      });
+      renderMunicipalitiesList();
+      updateSummaryStats();
+    });
+
+    document.getElementById('btn-export-clear-mun')?.addEventListener('click', () => {
+      expState.selectedMuns.clear();
+      renderMunicipalitiesList();
+      updateSummaryStats();
+    });
+
+    // Seletor de Ano
+    if (selectYear) {
+      selectYear.addEventListener('change', (e) => {
+        expState.year = e.target.value;
+        updateSummaryStats();
+      });
+    }
+
+    // Seletor de Risco
+    if (selectRisk) {
+      selectRisk.addEventListener('change', (e) => {
+        expState.risk = e.target.value;
+        updateSummaryStats();
+      });
+    }
+
+    // Seletor de FIES
+    if (selectFies) {
+      selectFies.addEventListener('change', (e) => {
+        expState.fies = e.target.value;
+        updateSummaryStats();
+      });
+    }
+
+    // Colunas checkboxes
+    const colMap = [
+      { id: 'col-pop-total', key: 'popTotal' },
+      { id: 'col-pop-urban-rural', key: 'urbanRural' },
+      { id: 'col-pop-gender', key: 'gender' },
+      { id: 'col-area-density', key: 'areaDensity' },
+      { id: 'col-affected', key: 'affected' },
+      { id: 'col-sarcof', key: 'sarcof' },
+      { id: 'col-risk', key: 'risk' },
+      { id: 'col-fies', key: 'fies' },
+      { id: 'col-water', key: 'water' },
+      { id: 'col-source', key: 'source' }
+    ];
+
+    colMap.forEach(c => {
+      const el = document.getElementById(c.id);
+      if (el) {
+        el.addEventListener('change', (e) => {
+          expState.cols[c.key] = e.target.checked;
+        });
+      }
+    });
+
+    document.getElementById('btn-export-cols-all')?.addEventListener('click', () => {
+      colMap.forEach(c => {
+        expState.cols[c.key] = true;
+        const el = document.getElementById(c.id);
+        if (el) el.checked = true;
+      });
+    });
+
+    document.getElementById('btn-export-cols-std')?.addEventListener('click', () => {
+      colMap.forEach(c => {
+        const isStd = ['popTotal', 'urbanRural', 'gender', 'areaDensity', 'affected'].includes(c.key);
+        expState.cols[c.key] = isStd;
+        const el = document.getElementById(c.id);
+        if (el) el.checked = isStd;
+      });
+    });
+
+    // Botões de Exportação
+    if (btnExportExcel) btnExportExcel.addEventListener('click', exportToExcel);
+    if (btnExportCsv) btnExportCsv.addEventListener('click', exportToCsv);
+  }
+
   // Inicializar Sequência da Aplicação
   initMap();
   initOnlineUsersTracker();
   loadOfficialDatasets().then(() => {
+    initExcelExportSystem();
     loadGeoJsonData().then(() => {
       // Apply stored language after data is ready so all views render in the right language
       setLanguage(state.currentLang);

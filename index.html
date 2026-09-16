@@ -18,7 +18,7 @@
   <link rel="stylesheet" href="/vendor/leaflet.css">
   
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="styles.css?v=20260908_v19">
+  <link rel="stylesheet" href="styles.css?v=20260916_v21">
 </head>
 <body>
   <div class="app-container">
@@ -72,6 +72,10 @@
         <button class="btn-header" id="btn-quick-censo">
           <i class="fa-solid fa-table-list"></i>
           <span data-i18n="btn_table_censo">Tabela Censo / Projeções</span>
+        </button>
+        <button class="btn-header" id="btn-open-export-modal" style="background: rgba(16, 185, 129, 0.2); border-color: rgba(16, 185, 129, 0.5); color: #34d399;" title="Exportar População em Excel (Províncias e Municípios com Filtros)">
+          <i class="fa-solid fa-file-excel"></i>
+          <span data-i18n="btn_export_excel">Exportar Excel</span>
         </button>
         <button class="btn-header" id="btn-quick-docs">
           <i class="fa-solid fa-file-pdf"></i>
@@ -1059,6 +1063,9 @@
           <button class="btn-header" id="btn-export-csv" style="padding: 6px 12px; font-size: 0.78rem;">
             <i class="fa-solid fa-file-csv"></i> <span data-i18n="btn_export_csv">Exportar Dados CSV</span>
           </button>
+          <button class="btn-header" id="btn-open-export-modal-from-censo" style="padding: 6px 12px; font-size: 0.78rem; background: rgba(16, 185, 129, 0.2); border-color: #10b981; color: #34d399;">
+            <i class="fa-solid fa-file-excel"></i> <span data-i18n="btn_export_excel_advanced">Exportar Excel (Filtros)</span>
+          </button>
         </div>
         
         <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">
@@ -1104,11 +1111,221 @@
     </div>
   </div>
 
+  <!-- Modal de Exportação Avançada da População em Excel (.xlsx / .csv) -->
+  <div class="pdf-modal" id="modal-export-excel">
+    <div class="pdf-modal-content" style="max-width: 1200px; height: 92vh;">
+      <div class="pdf-modal-header" style="border-bottom: 2px solid #10b981;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div style="width: 36px; height: 36px; border-radius: 8px; background: rgba(16, 185, 129, 0.2); display: flex; align-items: center; justify-content: center; color: #34d399; font-size: 1.15rem; border: 1px solid rgba(16, 185, 129, 0.4);">
+            <i class="fa-solid fa-file-excel"></i>
+          </div>
+          <div>
+            <span class="pdf-modal-title" style="color: #f1f5f9; font-size: 1rem; font-weight: 700;" data-i18n="export_modal_title">
+              Exportar População de Angola em Excel (.xlsx / .csv)
+            </span>
+            <p style="font-size: 0.72rem; color: #94a3b8; margin: 0;" data-i18n="export_modal_subtitle">
+              Selecione Províncias, Municípios e Filtros Personalizados (Base Oficial INE: Censo 2024 & Estimativas 2025–2027)
+            </p>
+          </div>
+        </div>
+        <button class="btn-close" id="btn-close-export-modal" style="font-size: 26px;">&times;</button>
+      </div>
+
+      <!-- Corpo do Modal com Scroll -->
+      <div class="export-modal-body" style="padding: 16px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 16px;">
+        
+        <!-- Grid de 2 Colunas: Seleção Geográfica vs Filtros e Parâmetros -->
+        <div class="export-grid-layout">
+          
+          <!-- COLUNA 1: Seleção de Províncias e Municípios -->
+          <div class="export-panel">
+            <div class="export-panel-header">
+              <span class="export-panel-title">
+                <i class="fa-solid fa-map-location-dot" style="color: #38bdf8;"></i>
+                <span data-i18n="export_geo_title">1. Seleção Geográfica (Províncias e Municípios)</span>
+              </span>
+              <span class="badge" id="export-geo-badge" style="background: rgba(56, 189, 248, 0.15); border-color: rgba(56, 189, 248, 0.4); color: #38bdf8; font-size: 0.7rem;">
+                21 Províncias / 326 Municípios
+              </span>
+            </div>
+
+            <!-- Modo de Detalhamento -->
+            <div class="export-mode-box">
+              <label class="export-mode-option" id="lbl-mode-prov">
+                <input type="radio" name="export-detail-mode" value="prov_only" id="export-mode-prov">
+                <div class="export-mode-text">
+                  <strong data-i18n="export_mode_prov_title">Apenas Totais Provinciais</strong>
+                  <small data-i18n="export_mode_prov_desc">Baixa a população agregada das províncias selecionadas.</small>
+                </div>
+              </label>
+              <label class="export-mode-option active" id="lbl-mode-both">
+                <input type="radio" name="export-detail-mode" value="prov_and_mun" id="export-mode-both" checked>
+                <div class="export-mode-text">
+                  <strong data-i18n="export_mode_both_title">Províncias e Municípios Respetivos</strong>
+                  <small data-i18n="export_mode_both_desc">Baixa a população da província e de cada município respetivamente.</small>
+                </div>
+              </label>
+            </div>
+
+            <!-- Sub-Grid: Províncias e Municípios lado a lado -->
+            <div class="export-geo-split">
+              <!-- Lista de Províncias -->
+              <div class="export-list-container">
+                <div class="export-list-toolbar">
+                  <strong style="font-size: 0.78rem; color: #e2e8f0;" data-i18n="export_lbl_provinces">Províncias:</strong>
+                  <div style="display: flex; gap: 4px;">
+                    <button type="button" class="btn-micro" id="btn-export-select-all-prov" data-i18n="btn_select_all">Todas</button>
+                    <button type="button" class="btn-micro" id="btn-export-clear-prov" data-i18n="btn_clear">Limpar</button>
+                  </div>
+                </div>
+                <input type="text" class="export-search-input" id="export-search-prov" placeholder="Pesquisar província..." data-i18n-placeholder="export_search_prov">
+                <div class="export-checkbox-list" id="export-prov-list">
+                  <!-- Gerado dinamicamente -->
+                </div>
+              </div>
+
+              <!-- Lista de Municípios -->
+              <div class="export-list-container" id="export-mun-container">
+                <div class="export-list-toolbar">
+                  <strong style="font-size: 0.78rem; color: #e2e8f0;"><span data-i18n="export_lbl_mun">Municípios</span> (<span id="export-mun-count">0</span>):</strong>
+                  <div style="display: flex; gap: 4px;">
+                    <button type="button" class="btn-micro" id="btn-export-select-all-mun" data-i18n="btn_select_all">Todos</button>
+                    <button type="button" class="btn-micro" id="btn-export-clear-mun" data-i18n="btn_clear">Limpar</button>
+                  </div>
+                </div>
+                <input type="text" class="export-search-input" id="export-search-mun" placeholder="Pesquisar município..." data-i18n-placeholder="export_search_mun">
+                <div class="export-checkbox-list" id="export-mun-list">
+                  <!-- Gerado dinamicamente com base nas províncias marcadas -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- COLUNA 2: Filtros Adicionais & Parâmetros -->
+          <div class="export-panel">
+            <div class="export-panel-header">
+              <span class="export-panel-title">
+                <i class="fa-solid fa-sliders" style="color: #10b981;"></i>
+                <span data-i18n="export_filters_title">2. Filtros Adicionais & Dados a Incluir</span>
+              </span>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+              
+              <!-- Filtro 1: Ano Demográfico -->
+              <div class="export-field-group">
+                <label class="export-field-label" data-i18n="export_lbl_year">Ano da População / Projeção Oficial:</label>
+                <select id="export-select-year" class="select-control" style="background: rgba(15,23,42,0.9); border-color: rgba(56,189,248,0.3);">
+                  <option value="2024">2024 — Censo Geral da População e Habitação (INE Oficial)</option>
+                  <option value="2025">2025 — Estimativa Oficial DPA 2025 (INE)</option>
+                  <option value="2026" selected>2026 — Estimativa Oficial DPA 2026 (Ano Corrente / El Niño)</option>
+                  <option value="2027">2027 — Projeção Oficial DPA 2027 (INE)</option>
+                  <option value="ALL">Série Temporal Completa (2024, 2025, 2026 e 2027)</option>
+                </select>
+              </div>
+
+              <!-- Filtro 2: Classificação de Risco El Niño -->
+              <div class="export-field-group">
+                <label class="export-field-label" data-i18n="export_lbl_risk">Filtro por Risco El Niño (Matriz 1–25):</label>
+                <select id="export-select-risk" class="select-control">
+                  <option value="ALL" data-i18n="opt_all_risks">Todos os Níveis de Risco (Baixo, Moderado, Alto, Crítico)</option>
+                  <option value="HIGH_CRITICAL" data-i18n="opt_risk_high">Apenas Risco Alto e Crítico (Score ≥ 15)</option>
+                  <option value="MODERATE_HIGH" data-i18n="opt_risk_mod_high">Risco Moderado a Crítico (Score ≥ 8)</option>
+                  <option value="LOW" data-i18n="opt_risk_low">Apenas Risco Baixo (Score < 8)</option>
+                </select>
+              </div>
+
+              <!-- Filtro 3: Insegurança Alimentar FIES -->
+              <div class="export-field-group">
+                <label class="export-field-label" data-i18n="export_lbl_fies">Insegurança Alimentar FIES Severa (INE / FAO):</label>
+                <select id="export-select-fies" class="select-control">
+                  <option value="ALL" data-i18n="opt_all_fies">Todas as faixas FIES</option>
+                  <option value="HIGH" data-i18n="opt_fies_high">Crítica / Severa Alta (> 30% da população)</option>
+                  <option value="MEDIUM" data-i18n="opt_fies_med">Moderada a Severa (> 15% da população)</option>
+                </select>
+              </div>
+
+              <!-- Filtro 4: Variáveis e Colunas Selecionadas -->
+              <div class="export-field-group">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                  <label class="export-field-label" style="margin: 0;" data-i18n="export_lbl_columns">Colunas / Variáveis a Exportar:</label>
+                  <div style="display: flex; gap: 4px;">
+                    <button type="button" class="btn-micro" id="btn-export-cols-all" data-i18n="btn_all">Todas</button>
+                    <button type="button" class="btn-micro" id="btn-export-cols-std" data-i18n="btn_standard">Padrão</button>
+                  </div>
+                </div>
+                <div class="export-cols-grid">
+                  <label class="export-col-item"><input type="checkbox" id="col-pop-total" checked> <span data-i18n="col_pop_total">População Total</span></label>
+                  <label class="export-col-item"><input type="checkbox" id="col-pop-urban-rural" checked> <span data-i18n="col_urban_rural">Urbana & Rural</span></label>
+                  <label class="export-col-item"><input type="checkbox" id="col-pop-gender" checked> <span data-i18n="col_gender">Homens & Mulheres</span></label>
+                  <label class="export-col-item"><input type="checkbox" id="col-area-density" checked> <span data-i18n="col_area_density">Área (km²) & Densidade</span></label>
+                  <label class="export-col-item"><input type="checkbox" id="col-affected" checked> <span data-i18n="col_affected">Pessoas & Famílias Afetadas</span></label>
+                  <label class="export-col-item"><input type="checkbox" id="col-sarcof" checked> <span data-i18n="col_sarcof">Zona Climática SARCOF</span></label>
+                  <label class="export-col-item"><input type="checkbox" id="col-risk" checked> <span data-i18n="col_risk">Score & Rank de Risco</span></label>
+                  <label class="export-col-item"><input type="checkbox" id="col-fies" checked> <span data-i18n="col_fies">% FIES Severa (ODS 2.1)</span></label>
+                  <label class="export-col-item"><input type="checkbox" id="col-water" checked> <span data-i18n="col_water">Carência Água (ODS 6.1)</span></label>
+                  <label class="export-col-item"><input type="checkbox" id="col-source" checked> <span data-i18n="col_source">Fonte & Metadados INE</span></label>
+                </div>
+              </div>
+
+              <!-- Estrutura das Abas no Excel -->
+              <div class="export-sheets-info">
+                <div style="font-size: 0.72rem; color: #34d399; font-weight: 700; margin-bottom: 3px;">
+                  <i class="fa-solid fa-layer-group"></i> <span data-i18n="export_sheets_title">Abas Geradas no Livro Excel (.xlsx):</span>
+                </div>
+                <ul style="margin: 0; padding-left: 18px; font-size: 0.7rem; color: #cbd5e1; line-height: 1.4;">
+                  <li data-i18n="export_sheet_1"><strong>"Resumo Províncias"</strong>: Totais e indicadores provinciais oficiais.</li>
+                  <li data-i18n="export_sheet_2"><strong>"Detalhamento Municípios"</strong>: Todos os municípios selecionados por província.</li>
+                  <li data-i18n="export_sheet_3"><strong>"Consolidado Geral"</strong>: Tabela unificada para tabelas dinâmicas.</li>
+                </ul>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- Barra Inferior de Sumário e Download -->
+        <div class="export-summary-bar">
+          <div class="export-summary-stats">
+            <div class="export-stat-item">
+              <span class="export-stat-lbl" data-i18n="export_stat_provinces">Províncias Selecionadas:</span>
+              <strong class="export-stat-val" id="export-stat-prov-count">0 / 21</strong>
+            </div>
+            <div class="export-stat-item">
+              <span class="export-stat-lbl" data-i18n="export_stat_mun">Municípios Selecionados:</span>
+              <strong class="export-stat-val" id="export-stat-mun-count">0 / 326</strong>
+            </div>
+            <div class="export-stat-item highlight">
+              <span class="export-stat-lbl" data-i18n="export_stat_total_pop">População Total Coberta:</span>
+              <strong class="export-stat-val" id="export-stat-total-pop" style="color: #f59e0b;">0 hab</strong>
+            </div>
+            <div class="export-stat-item">
+              <span class="export-stat-lbl" data-i18n="export_stat_records">Registos a Exportar:</span>
+              <strong class="export-stat-val" id="export-stat-records-count">0 linhas</strong>
+            </div>
+          </div>
+
+          <div class="export-actions">
+            <button type="button" class="btn-header" id="btn-do-export-csv" style="background: rgba(56, 189, 248, 0.15); border-color: #38bdf8; color: #38bdf8; padding: 10px 16px; font-size: 0.85rem;">
+              <i class="fa-solid fa-file-csv"></i> <span data-i18n="btn_download_csv">Baixar CSV</span>
+            </button>
+            <button type="button" class="btn-header" id="btn-do-export-excel" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border-color: #34d399; color: #ffffff; padding: 10px 22px; font-size: 0.9rem; font-weight: 700; box-shadow: 0 0 16px rgba(16,185,129,0.4);">
+              <i class="fa-solid fa-file-excel"></i> <span data-i18n="btn_download_excel">Baixar em Excel (.xlsx)</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
   <!-- Local Vendor Scripts -->
   <script src="/vendor/turf.min.js"></script>
   <script src="/vendor/leaflet.js"></script>
   <script src="/vendor/chart.js"></script>
+  <!-- SheetJS for Native Excel (.xlsx) Generation -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <!-- Main App Script -->
-  <script src="app.js?v=20260908_v19"></script>
+  <script src="app.js?v=20260916_v21"></script>
 </body>
 </html>
