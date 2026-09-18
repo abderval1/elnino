@@ -67,7 +67,15 @@ document.addEventListener('DOMContentLoaded', () => {
       munFillOpacity: 0.20,
       customMunFill: '#334155',
       sadcOpacity: 0.25,
-      canvasBg: '#090d16'
+      canvasBg: '#090d16',
+          hatchWidth: 1.2,
+          hatchOpacity: 0.65,
+          hatchSpacing: 10,
+          hatchColor: '#0f172a',
+      hatchWidth: 1.2,
+      hatchOpacity: 0.65,
+      hatchSpacing: 10,
+      hatchColor: '#0f172a'
     },
 
     // Active Leaflet Layer Groups
@@ -1421,51 +1429,49 @@ document.addEventListener('DOMContentLoaded', () => {
     return p.NAME || p.Nome_Prov || p.Nome_Munic || p.Nome_Comun || 'Região SADC';
   }
 
-  // Ensure SVG Hatching Pattern is Injected into Leaflet Map SVG Pane (Cross-browser for Chrome, Edge, Safari)
+  // Ensure SVG Hatching Pattern is Injected into ALL SVG Roots (Cross-browser, Pane-safe, Real-time Reactive)
+  function ensureSvgPatternForSvg(svg) {
+    if (!svg) return;
+    let defs = svg.querySelector('defs');
+    if (!defs) {
+      defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+      svg.insertBefore(defs, svg.firstChild);
+    }
+
+    const strokeWidth = state.mapTheme.hatchWidth !== undefined ? state.mapTheme.hatchWidth : 1.2;
+    const strokeOpacity = state.mapTheme.hatchOpacity !== undefined ? state.mapTheme.hatchOpacity : 0.65;
+    const strokeColor = state.mapTheme.hatchColor || '#0f172a';
+    const patternSize = state.mapTheme.hatchSpacing !== undefined ? state.mapTheme.hatchSpacing : 10;
+
+    let pattern = defs.querySelector('#sarcof-hatch');
+    if (!pattern) {
+      pattern = document.createElementNS('http://www.w3.org/2000/svg', 'pattern');
+      pattern.setAttribute('id', 'sarcof-hatch');
+      pattern.setAttribute('patternUnits', 'userSpaceOnUse');
+      defs.appendChild(pattern);
+    }
+
+    pattern.setAttribute('width', String(patternSize));
+    pattern.setAttribute('height', String(patternSize));
+
+    // Dynamic diagonal stripes: crisp, perfectly angled, seamlessly repeatable
+    pattern.innerHTML = `
+      <line x1="0" y1="${patternSize}" x2="${patternSize}" y2="0" stroke="${strokeColor}" stroke-width="${strokeWidth}" stroke-opacity="${strokeOpacity}" stroke-linecap="round" />
+      <line x1="-1" y1="1" x2="1" y2="-1" stroke="${strokeColor}" stroke-width="${strokeWidth}" stroke-opacity="${strokeOpacity}" stroke-linecap="round" />
+      <line x1="${patternSize - 1}" y1="${patternSize + 1}" x2="${patternSize + 1}" y2="${patternSize - 1}" stroke="${strokeColor}" stroke-width="${strokeWidth}" stroke-opacity="${strokeOpacity}" stroke-linecap="round" />
+    `;
+  }
+
   function ensureSvgPattern() {
     if (!state.map) return;
-    const overlayPane = state.map.getPanes ? state.map.getPanes().overlayPane : null;
-    if (!overlayPane) return;
-    
-    // Find all SVG roots in the overlay pane
-    const svgs = overlayPane.querySelectorAll('svg');
-    if (!svgs || svgs.length === 0) return;
-
-    svgs.forEach(svg => {
-      let defs = svg.querySelector('defs');
-      if (!defs) {
-        defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
-        svg.insertBefore(defs, svg.firstChild);
-      }
-      if (!defs.querySelector('#sarcof-hatch')) {
-        const pattern = document.createElementNS('http://www.w3.org/2000/svg', 'pattern');
-        pattern.setAttribute('id', 'sarcof-hatch');
-        pattern.setAttribute('patternUnits', 'userSpaceOnUse');
-        pattern.setAttribute('width', '10');
-        pattern.setAttribute('height', '10');
-
-        // Robust diagonal stripes (seamless 45-degree tile without matrix transform issues in Skia/Chromium)
-        const pathDark = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        pathDark.setAttribute('d', 'M-2,2 l4,-4 M0,10 l10,-10 M8,12 l4,-4');
-        pathDark.setAttribute('stroke', '#0f172a');
-        pathDark.setAttribute('stroke-width', '2.5');
-        pathDark.setAttribute('stroke-opacity', '0.85');
-
-        // Light accent stripe for high contrast over dark backgrounds
-        const pathLight = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        pathLight.setAttribute('d', 'M-2,7 l4,-4 M5,15 l10,-10 M3,3 l4,-4');
-        pathLight.setAttribute('stroke', '#ffffff');
-        pathLight.setAttribute('stroke-width', '0.8');
-        pathLight.setAttribute('stroke-opacity', '0.5');
-
-        pattern.appendChild(pathDark);
-        pattern.appendChild(pathLight);
-        defs.appendChild(pattern);
-      }
-    });
+    const container = state.map.getContainer ? state.map.getContainer() : document.getElementById('map');
+    if (!container) return;
+    const svgs = container.querySelectorAll('svg');
+    svgs.forEach(svg => ensureSvgPatternForSvg(svg));
   }
 
   // Render High Confidence Hatching Overlay Layer
+  // Works on top of both Angola and SADC, completely independent of whether SADC layer is active!
   function renderHighConfidenceOverlay(geoJson) {
     ensureSvgPattern();
     const layerGroup = L.geoJSON(geoJson, {
@@ -1478,7 +1484,7 @@ document.addEventListener('DOMContentLoaded', () => {
       style: () => ({
         className: 'leaflet-sarcof-hatch',
         fillColor: 'url(#sarcof-hatch)',
-        fillOpacity: 0.95,
+        fillOpacity: 1.0,
         weight: 0,
         stroke: false,
         interactive: false
@@ -1487,19 +1493,23 @@ document.addEventListener('DOMContentLoaded', () => {
         const applyHatch = () => {
           ensureSvgPattern();
           if (layer._path) {
+            const svg = layer._path.ownerSVGElement;
+            if (svg) ensureSvgPatternForSvg(svg);
             layer._path.classList.add('leaflet-sarcof-hatch');
             layer._path.setAttribute('fill', 'url(#sarcof-hatch)');
-            layer._path.setAttribute('fill-opacity', '0.95');
+            layer._path.setAttribute('fill-opacity', '1');
             layer._path.setAttribute('stroke', 'none');
             layer._path.style.setProperty('fill', 'url(#sarcof-hatch)', 'important');
-            layer._path.style.setProperty('fill-opacity', '0.95', 'important');
+            layer._path.style.setProperty('fill-opacity', '1', 'important');
             layer._path.style.setProperty('pointer-events', 'none', 'important');
           }
         };
+        layer.on('add', applyHatch);
         applyHatch();
         if (typeof requestAnimationFrame !== 'undefined') requestAnimationFrame(applyHatch);
-        setTimeout(applyHatch, 50);
-        setTimeout(applyHatch, 200);
+        setTimeout(applyHatch, 20);
+        setTimeout(applyHatch, 100);
+        setTimeout(applyHatch, 350);
       }
     }).addTo(state.map);
 
@@ -1658,8 +1668,9 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // 3. High confidence hatching overlay (////) on top of SARCOF and Províncias (hatchPane, zIndex 470)
-    if (state.layersEnabled.sarcof && state.showHighConfidence && state.geoJsonData[state.activeSeason]) {
+    // 3. High confidence hatching overlay (////) on top of Angola and SARCOF (hatchPane, zIndex 470)
+    // Runs whenever showHighConfidence is ON, even if SADC regional layer is turned off!
+    if (state.showHighConfidence && state.geoJsonData[state.activeSeason]) {
       state.geoJsonLayers.sarcofHatch = renderHighConfidenceOverlay(state.geoJsonData[state.activeSeason]);
     }
 
@@ -4034,6 +4045,44 @@ document.addEventListener('DOMContentLoaded', () => {
         state.mapTheme.customMunFill = e.target.value;
         if (lblMunFill) lblMunFill.textContent = e.target.value;
         renderAllLayers();
+      });
+    }
+
+    // High Confidence Hatching Controls
+    const selHatchWidth = document.getElementById('select-hatch-width');
+    if (selHatchWidth) {
+      selHatchWidth.addEventListener('change', (e) => {
+        state.mapTheme.hatchWidth = parseFloat(e.target.value);
+        ensureSvgPattern();
+      });
+    }
+
+    const sliderHatchOpacity = document.getElementById('slider-hatch-opacity');
+    const lblHatchOpacity = document.getElementById('lbl-hatch-opacity');
+    if (sliderHatchOpacity) {
+      sliderHatchOpacity.addEventListener('input', (e) => {
+        const val = parseInt(e.target.value, 10);
+        state.mapTheme.hatchOpacity = val / 100;
+        if (lblHatchOpacity) lblHatchOpacity.textContent = `${val}%`;
+        ensureSvgPattern();
+      });
+    }
+
+    const selHatchSpacing = document.getElementById('select-hatch-spacing');
+    if (selHatchSpacing) {
+      selHatchSpacing.addEventListener('change', (e) => {
+        state.mapTheme.hatchSpacing = parseInt(e.target.value, 10);
+        ensureSvgPattern();
+      });
+    }
+
+    const pickerHatchColor = document.getElementById('picker-hatch-color');
+    const lblHatchColor = document.getElementById('lbl-hatch-color');
+    if (pickerHatchColor) {
+      pickerHatchColor.addEventListener('input', (e) => {
+        state.mapTheme.hatchColor = e.target.value;
+        if (lblHatchColor) lblHatchColor.textContent = e.target.value;
+        ensureSvgPattern();
       });
     }
 

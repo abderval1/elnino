@@ -18,7 +18,7 @@
   <link rel="stylesheet" href="./vendor/leaflet.css">
   
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="styles.css?v=20260918_v24">
+  <link rel="stylesheet" href="styles.css?v=20260918_v25">
 </head>
 <body>
   <div class="app-container">
@@ -310,6 +310,49 @@
                     <div class="slider-val-wrap">
                       <input type="range" id="slider-sadc-opacity" min="5" max="80" value="25" class="range-slider">
                       <span id="lbl-sadc-opacity" class="slider-num">25%</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- High Confidence Hatching Style Controls -->
+              <div class="style-subgroup" style="margin-top: 8px; border-color: rgba(56, 189, 248, 0.35); background: rgba(56, 189, 248, 0.04);">
+                <div class="style-subgroup-title">
+                  <i class="fa-solid fa-lines-leaning" style="color:#38bdf8;"></i>
+                  <span data-i18n="lbl_hatch_style">Zona de Alta Confiança (Hachurado)</span>
+                </div>
+                <div class="style-controls-grid">
+                  <div class="style-field">
+                    <label data-i18n="lbl_hatch_width">Espessura das Linhas:</label>
+                    <select id="select-hatch-width" class="select-mini">
+                      <option value="0.8">0.8px (Extra Fina)</option>
+                      <option value="1.2" selected>1.2px (Fina Padrão - Sem Atrapalhar)</option>
+                      <option value="1.8">1.8px (Média Nítida)</option>
+                      <option value="2.5">2.5px (Grossa)</option>
+                      <option value="3.5">3.5px (Muito Grossa)</option>
+                    </select>
+                  </div>
+                  <div class="style-field">
+                    <label data-i18n="lbl_hatch_opacity">Opacidade do Hachurado:</label>
+                    <div class="slider-val-wrap">
+                      <input type="range" id="slider-hatch-opacity" min="10" max="100" value="65" class="range-slider">
+                      <span id="lbl-hatch-opacity" class="slider-num">65%</span>
+                    </div>
+                  </div>
+                  <div class="style-field">
+                    <label data-i18n="lbl_hatch_spacing">Espaçamento / Densidade:</label>
+                    <select id="select-hatch-spacing" class="select-mini">
+                      <option value="7">7px (Denso)</option>
+                      <option value="10" selected>10px (Equilibrado)</option>
+                      <option value="14">14px (Espaçado)</option>
+                      <option value="18">18px (Largo)</option>
+                    </select>
+                  </div>
+                  <div class="style-field">
+                    <label data-i18n="lbl_hatch_color">Cor das Linhas:</label>
+                    <div class="color-input-wrap">
+                      <input type="color" id="picker-hatch-color" value="#0f172a">
+                      <span class="color-hex" id="lbl-hatch-color">#0f172a</span>
                     </div>
                   </div>
                 </div>
@@ -1544,6 +1587,6 @@
   <!-- SheetJS for Native Excel (.xlsx) Generation -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <!-- Main App Script -->
-  <script src="app.js?v=20260918_v24"></script>
+  <script src="app.js?v=20260918_v25"></script>
 </body>
 </html>
