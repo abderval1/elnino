@@ -67,11 +67,11 @@ document.addEventListener('DOMContentLoaded', () => {
       munFillOpacity: 0.20,
       customMunFill: '#334155',
       sadcOpacity: 0.25,
+      sarcofBorderColor: '#1e293b',
+      sarcofBorderWeight: 1.8,
+      sarcofBorderStyle: 'solid',
+      sarcofBorderOpacity: 0.90,
       canvasBg: '#090d16',
-          hatchWidth: 1.2,
-          hatchOpacity: 0.65,
-          hatchSpacing: 10,
-          hatchColor: '#0f172a',
       hatchWidth: 1.2,
       hatchOpacity: 0.65,
       hatchSpacing: 10,
@@ -107,6 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
       btn_table_censo: 'Tabela Censo / Projeções',
       btn_reports_pdf: 'Relatórios PDF',
       tab_layers: 'Camadas',
+    tab_style: 'Estilo',
       tab_risk_censo: 'Risco & Censo',
       tab_analytics: 'Análise',
       tab_reports: 'Relatórios',
@@ -272,6 +273,7 @@ document.addEventListener('DOMContentLoaded', () => {
       btn_table_censo: 'Census Table / Projections',
       btn_reports_pdf: 'PDF Reports',
       tab_layers: 'Layers',
+    tab_style: 'Style',
       tab_risk_censo: 'Risk & Census',
       tab_analytics: 'Analytics',
       tab_reports: 'Reports',
@@ -944,7 +946,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const btnQuickStyle = document.getElementById('btn-open-style-quick');
       if (btnQuickStyle) {
         btnQuickStyle.addEventListener('click', () => {
-          const tabBtn = document.querySelector('.tab-btn[data-tab="tab-layers"]');
+          const tabBtn = document.querySelector('.tab-btn[data-tab="tab-style"]');
           if (tabBtn) tabBtn.click();
           const panel = document.getElementById('map-theme-panel');
           if (panel) {
@@ -1738,12 +1740,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (typeKey === 'sarcof') {
           const code = feature.properties.finalcode;
           const cfg = categoryConfig[code] || { color: '#94a3b8' };
+          const theme = state.mapTheme;
           return {
             fillColor: cfg.color,
-            fillOpacity: state.mapTheme.sadcOpacity !== undefined ? state.mapTheme.sadcOpacity : 0.25,
-            weight: 1.0,
-            color: '#334155',
-            opacity: 0.85
+            fillOpacity: theme.sadcOpacity !== undefined ? theme.sadcOpacity : 0.25,
+            weight: theme.sarcofBorderWeight !== undefined ? theme.sarcofBorderWeight : 1.8,
+            color: theme.sarcofBorderColor || '#1e293b',
+            opacity: theme.sarcofBorderOpacity !== undefined ? theme.sarcofBorderOpacity : 0.90,
+            dashArray: theme.sarcofBorderStyle === 'dashed' ? '6, 6' : (theme.sarcofBorderStyle === 'dotted' ? '2, 5' : null)
           };
         }
         return typeof defaultStyle === 'function' ? defaultStyle(feature) : defaultStyle;
@@ -1774,7 +1778,15 @@ document.addEventListener('DOMContentLoaded', () => {
             if (typeKey === 'sarcof') {
               const code = feature.properties.finalcode;
               const cfg = categoryConfig[code] || { color: '#94a3b8' };
-              l.setStyle({ fillColor: cfg.color, fillOpacity: state.mapTheme.sadcOpacity || 0.25, weight: 1.0, color: '#334155' });
+              const theme = state.mapTheme;
+              l.setStyle({
+                fillColor: cfg.color,
+                fillOpacity: theme.sadcOpacity || 0.25,
+                weight: theme.sarcofBorderWeight || 1.8,
+                color: theme.sarcofBorderColor || '#1e293b',
+                opacity: theme.sarcofBorderOpacity || 0.90,
+                dashArray: theme.sarcofBorderStyle === 'dashed' ? '6, 6' : (theme.sarcofBorderStyle === 'dotted' ? '2, 5' : null)
+              });
             } else {
               const st = typeof defaultStyle === 'function' ? defaultStyle(feature) : defaultStyle;
               l.setStyle(st);
@@ -4083,6 +4095,44 @@ document.addEventListener('DOMContentLoaded', () => {
         state.mapTheme.hatchColor = e.target.value;
         if (lblHatchColor) lblHatchColor.textContent = e.target.value;
         ensureSvgPattern();
+      });
+    }
+
+    // SARCOF regional border controls (Visible & Fully Customizable)
+    const pickerSarcofBorder = document.getElementById('picker-sarcof-border');
+    const lblSarcofBorder = document.getElementById('lbl-sarcof-border');
+    if (pickerSarcofBorder) {
+      pickerSarcofBorder.addEventListener('input', (e) => {
+        state.mapTheme.sarcofBorderColor = e.target.value;
+        if (lblSarcofBorder) lblSarcofBorder.textContent = e.target.value;
+        renderAllLayers();
+      });
+    }
+
+    const selSarcofWeight = document.getElementById('select-sarcof-border-weight');
+    if (selSarcofWeight) {
+      selSarcofWeight.addEventListener('change', (e) => {
+        state.mapTheme.sarcofBorderWeight = parseFloat(e.target.value);
+        renderAllLayers();
+      });
+    }
+
+    const selSarcofStyle = document.getElementById('select-sarcof-border-style');
+    if (selSarcofStyle) {
+      selSarcofStyle.addEventListener('change', (e) => {
+        state.mapTheme.sarcofBorderStyle = e.target.value;
+        renderAllLayers();
+      });
+    }
+
+    const sliderSarcofOpacity = document.getElementById('slider-sarcof-border-opacity');
+    const lblSarcofOpacity = document.getElementById('lbl-sarcof-border-opacity');
+    if (sliderSarcofOpacity) {
+      sliderSarcofOpacity.addEventListener('input', (e) => {
+        const val = parseInt(e.target.value, 10);
+        state.mapTheme.sarcofBorderOpacity = val / 100;
+        if (lblSarcofOpacity) lblSarcofOpacity.textContent = `${val}%`;
+        renderAllLayers();
       });
     }
 

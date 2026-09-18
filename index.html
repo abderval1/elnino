@@ -18,7 +18,7 @@
   <link rel="stylesheet" href="./vendor/leaflet.css">
   
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="styles.css?v=20260918_v25">
+  <link rel="stylesheet" href="styles.css?v=20260918_v26">
 </head>
 <body>
   <div class="app-container">
@@ -95,6 +95,9 @@
         <div class="sidebar-tabs">
           <button class="tab-btn active" data-tab="tab-layers">
             <i class="fa-solid fa-layer-group"></i> <span data-i18n="tab_layers">Camadas</span>
+          </button>
+          <button class="tab-btn" data-tab="tab-style">
+            <i class="fa-solid fa-palette"></i> <span data-i18n="tab_style">Estilo</span>
           </button>
           <button class="tab-btn" data-tab="tab-censo">
             <i class="fa-solid fa-calculator"></i> <span data-i18n="tab_risk_censo">Risco & Censo</span>
@@ -192,32 +195,81 @@
               </div>
             </div>
 
-            <!-- Map Theme & Custom Colors Section -->
-            <div class="control-group map-theme-panel" id="map-theme-panel">
+            <!-- Map Labels On / Off Toggle -->
+            <div class="control-group">
+              <div class="control-title">
+                <i class="fa-solid fa-tags"></i> <span data-i18n="ctrl_map_labels">Rótulos no Mapa (Labels On/Off)</span>
+              </div>
+              <div class="toggle-row">
+                <span class="toggle-label" data-i18n="lbl_show_names">Exibir Nomes Geográficos no Mapa</span>
+                <label class="switch">
+                  <input type="checkbox" id="toggle-labels">
+                  <span class="slider"></span>
+                </label>
+              </div>
+
+            </div>
+
+            <!-- Precipitation Category Filter (Aligned with SARCOF image) -->
+            <div class="control-group">
+              <div class="control-title">
+                <i class="fa-solid fa-filter"></i> <span data-i18n="ctrl_category">Categoria de Precipitação</span>
+              </div>
+              <select id="select-category" class="select-control">
+                <option value="ALL">Todas as Categorias / All</option>
+                <option value="1">🟫 Abaixo da Normal / Seca (BN) — #C4A482</option>
+                <option value="2">🟨 Normal a Abaixo da Normal (N-BN) — #FFE600</option>
+                <option value="3">🟦 Normal a Acima da Normal (N-AN) — #00D2D2</option>
+                <option value="4">🟦 Acima da Normal (AN) — #0000CD</option>
+              </select>
+            </div>
+
+            <!-- Search & High Confidence Toggles -->
+            <div class="control-group">
+              <div class="control-title">
+                <i class="fa-solid fa-magnifying-glass"></i> <span data-i18n="ctrl_search">Pesquisar Região / Município</span>
+              </div>
+              <input type="text" id="input-search" class="input-control" placeholder="Ex: Namacunde, Gambos, Cunene, Huíla..." data-i18n-placeholder="search_placeholder">
+              
+              <div class="toggle-row" style="margin-top: 6px;">
+                <span class="toggle-label" data-i18n="lbl_high_confidence">Sobreposição de Alta Confiança (Hachurado)</span>
+                <label class="switch">
+                  <input type="checkbox" id="toggle-confidence" checked>
+                  <span class="slider"></span>
+                </label>
+              </div>
+            </div>
+
+          </div>
+
+                    <!-- TAB 2: PERSONALIZAÇÃO & ESTILO DO MAPA (DEDICADA) -->
+          <div class="tab-pane" id="tab-style">
+            
+            <div class="control-group map-theme-panel" id="map-theme-panel" style="border-color: rgba(56, 189, 248, 0.4); background: rgba(56, 189, 248, 0.04);">
               <div class="control-title" style="color: #38bdf8; display: flex; justify-content: space-between; align-items: center;">
                 <span><i class="fa-solid fa-palette"></i> <span data-i18n="ctrl_map_style">Estilo & Cores do Mapa</span></span>
                 <button type="button" class="btn-mini-link" id="btn-reset-map-style" title="Restaurar padrão">
-                  <i class="fa-solid fa-rotate-left"></i> Padrão
+                  <i class="fa-solid fa-rotate-left"></i> <span data-i18n="btn_restore_default">Padrão</span>
                 </button>
               </div>
 
-              <!-- Palette Selector -->
+              <!-- Color Palette Selector -->
               <div style="margin-bottom: 10px;">
-                <label class="control-sublabel" data-i18n="lbl_map_palette">Paleta Temática:</label>
+                <label class="control-sublabel" data-i18n="lbl_map_palette">Paleta de Cores:</label>
                 <select id="select-map-palette" class="select-control">
-                  <option value="fews_alert" selected>🚨 FEWS NET / Alerta Seca (Oficial)</option>
+                  <option value="fews_alert" selected>🚨 FEWS NET / Alerta de Seca (Padrão Oficial)</option>
                   <option value="dpa_atlas">🗺️ Atlas DPA (21 Cores Distintas por Província)</option>
-                  <option value="sarcof_classic">🌧️ SARCOF-33 Clássico (Clima SADC)</option>
+                  <option value="sarcof_classic">🌧️ SARCOF-33 Clássico (Zonas Climáticas)</option>
                   <option value="risk_undrr">⚠️ Risco Humanitário (IPC / UNDRR)</option>
-                  <option value="custom">🛠️ Personalizada (Cores Manuais)</option>
+                  <option value="custom">🛠️ Personalizada Livre</option>
                 </select>
               </div>
 
-              <!-- Provincial Style Controls -->
+              <!-- Provincial Borders & Fill Style Controls -->
               <div class="style-subgroup">
                 <div class="style-subgroup-title">
                   <i class="fa-solid fa-map-location-dot" style="color:#e11d48;"></i>
-                  <span data-i18n="lbl_prov_borders">Províncias (Limites Principais)</span>
+                  <span data-i18n="lbl_prov_borders">Províncias de Angola (Limites Externos)</span>
                 </div>
                 <div class="style-controls-grid">
                   <div class="style-field">
@@ -230,9 +282,9 @@
                   <div class="style-field">
                     <label>Espessura Borda:</label>
                     <select id="select-prov-weight" class="select-mini">
-                      <option value="2">2.0px (Fina)</option>
-                      <option value="3.5" selected>3.5px (Forte - Oficial)</option>
-                      <option value="5">5.0px (Muito Forte)</option>
+                      <option value="2">2.0px (Normal)</option>
+                      <option value="3.5" selected>3.5px (Grossa Marcante)</option>
+                      <option value="5">5.0px (Forte)</option>
                     </select>
                   </div>
                   <div class="style-field" id="wrap-prov-fill" style="display:none;">
@@ -256,7 +308,7 @@
               <div class="style-subgroup" style="margin-top: 8px;">
                 <div class="style-subgroup-title">
                   <i class="fa-solid fa-city" style="color:#f59e0b;"></i>
-                  <span data-i18n="lbl_mun_borders">Municípios (Limites Internos)</span>
+                  <span data-i18n="lbl_mun_borders">Municípios de Angola (Limites Internos)</span>
                 </div>
                 <div class="style-controls-grid">
                   <div class="style-field">
@@ -298,15 +350,46 @@
                 </div>
               </div>
 
-              <!-- SADC Underlay Control -->
+              <!-- SADC Regional Layer & SARCOF Borders Control (Novo & Personalizável!) -->
               <div class="style-subgroup" style="margin-top: 8px;">
                 <div class="style-subgroup-title">
                   <i class="fa-solid fa-earth-africa" style="color:#00D2D2;"></i>
-                  <span data-i18n="lbl_sadc_underlay">Camada SADC Regional (Fundo)</span>
+                  <span data-i18n="lbl_sarcof_style">Zonas SARCOF Regional (Bordas & Fundo SADC)</span>
                 </div>
                 <div class="style-controls-grid">
+                  <div class="style-field">
+                    <label data-i18n="lbl_sarcof_border_color">Cor da Borda SARCOF:</label>
+                    <div class="color-input-wrap">
+                      <input type="color" id="picker-sarcof-border" value="#1e293b">
+                      <span class="color-hex" id="lbl-sarcof-border">#1e293b</span>
+                    </div>
+                  </div>
+                  <div class="style-field">
+                    <label data-i18n="lbl_sarcof_border_weight">Espessura da Borda:</label>
+                    <select id="select-sarcof-border-weight" class="select-mini">
+                      <option value="1">1.0px (Discreta)</option>
+                      <option value="1.8" selected>1.8px (Visível Padrão)</option>
+                      <option value="2.5">2.5px (Marcante)</option>
+                      <option value="3.5">3.5px (Grossa)</option>
+                    </select>
+                  </div>
+                  <div class="style-field">
+                    <label data-i18n="lbl_sarcof_border_style">Estilo da Borda:</label>
+                    <select id="select-sarcof-border-style" class="select-mini">
+                      <option value="solid" selected>Sólida</option>
+                      <option value="dashed">Tracejada</option>
+                      <option value="dotted">Pontilhada</option>
+                    </select>
+                  </div>
+                  <div class="style-field">
+                    <label data-i18n="lbl_sarcof_border_opacity">Opacidade da Borda:</label>
+                    <div class="slider-val-wrap">
+                      <input type="range" id="slider-sarcof-border-opacity" min="10" max="100" value="90" class="range-slider">
+                      <span id="lbl-sarcof-border-opacity" class="slider-num">90%</span>
+                    </div>
+                  </div>
                   <div class="style-field" style="grid-column: 1 / -1;">
-                    <label>Opacidade no Fundo (Angola fica por cima):</label>
+                    <label data-i18n="lbl_sarcof_fill_opacity">Opacidade do Preenchimento SADC (Fundo):</label>
                     <div class="slider-val-wrap">
                       <input type="range" id="slider-sadc-opacity" min="5" max="80" value="25" class="range-slider">
                       <span id="lbl-sadc-opacity" class="slider-num">25%</span>
@@ -358,6 +441,22 @@
                 </div>
               </div>
 
+              <!-- Map Labels Density Control -->
+              <div class="style-subgroup" style="margin-top: 8px;">
+                <div class="style-subgroup-title">
+                  <i class="fa-solid fa-tags" style="color:#a855f7;"></i>
+                  <span data-i18n="lbl_labels_config">Rótulos e Nomes Geográficos</span>
+                </div>
+                <div style="margin-top: 6px;">
+                  <label class="control-sublabel" data-i18n="lbl_label_mode">Densidade dos Rótulos (Sem Confusão):</label>
+                  <select id="select-label-density" class="select-control">
+                    <option value="smart" selected>🎯 Inteligente (Províncias no geral; Municípios só com Zoom)</option>
+                    <option value="prov_only">🗺️ Apenas Províncias (Sem Municípios / Máxima Clareza)</option>
+                    <option value="all">📍 Forçar Todos os Nomes (Pode sobrepor no mapa geral)</option>
+                  </select>
+                </div>
+              </div>
+
               <!-- Canvas Background when No Basemap -->
               <div class="style-subgroup" style="margin-top: 8px;">
                 <div class="style-subgroup-title">
@@ -373,62 +472,10 @@
 
             </div>
 
-
-            <!-- Map Labels On / Off Toggle -->
-            <div class="control-group">
-              <div class="control-title">
-                <i class="fa-solid fa-tags"></i> <span data-i18n="ctrl_map_labels">Rótulos no Mapa (Labels On/Off)</span>
-              </div>
-              <div class="toggle-row">
-                <span class="toggle-label" data-i18n="lbl_show_names">Exibir Nomes Geográficos no Mapa</span>
-                <label class="switch">
-                  <input type="checkbox" id="toggle-labels">
-                  <span class="slider"></span>
-                </label>
-              </div>
-              <div style="margin-top: 8px;">
-                <label class="control-sublabel" data-i18n="lbl_label_mode">Densidade dos Rótulos (Sem Confusão):</label>
-                <select id="select-label-density" class="select-control">
-                  <option value="smart" selected>🎯 Inteligente (Províncias no mapa geral; Municípios só com Zoom)</option>
-                  <option value="prov_only">🗺️ Apenas Províncias (Sem Municípios / Máxima Clareza)</option>
-                  <option value="all">📍 Forçar Todos os Nomes (Pode sobrepor no mapa geral)</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- Precipitation Category Filter (Aligned with SARCOF image) -->
-            <div class="control-group">
-              <div class="control-title">
-                <i class="fa-solid fa-filter"></i> <span data-i18n="ctrl_category">Categoria de Precipitação</span>
-              </div>
-              <select id="select-category" class="select-control">
-                <option value="ALL">Todas as Categorias / All</option>
-                <option value="1">🟫 Abaixo da Normal / Seca (BN) — #C4A482</option>
-                <option value="2">🟨 Normal a Abaixo da Normal (N-BN) — #FFE600</option>
-                <option value="3">🟦 Normal a Acima da Normal (N-AN) — #00D2D2</option>
-                <option value="4">🟦 Acima da Normal (AN) — #0000CD</option>
-              </select>
-            </div>
-
-            <!-- Search & High Confidence Toggles -->
-            <div class="control-group">
-              <div class="control-title">
-                <i class="fa-solid fa-magnifying-glass"></i> <span data-i18n="ctrl_search">Pesquisar Região / Município</span>
-              </div>
-              <input type="text" id="input-search" class="input-control" placeholder="Ex: Namacunde, Gambos, Cunene, Huíla..." data-i18n-placeholder="search_placeholder">
-              
-              <div class="toggle-row" style="margin-top: 6px;">
-                <span class="toggle-label" data-i18n="lbl_high_confidence">Sobreposição de Alta Confiança (Hachurado)</span>
-                <label class="switch">
-                  <input type="checkbox" id="toggle-confidence" checked>
-                  <span class="slider"></span>
-                </label>
-              </div>
-            </div>
-
           </div>
 
-          <!-- TAB 2: EQUAÇÃO DO RISCO & CENSO OFICIAL -->
+
+          <!-- TAB 3: EQUAÇÃO DO RISCO & CENSO OFICIAL -->
           <div class="tab-pane" id="tab-censo">
             
             <!-- Official Formula Selector -->
@@ -1587,6 +1634,6 @@
   <!-- SheetJS for Native Excel (.xlsx) Generation -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <!-- Main App Script -->
-  <script src="app.js?v=20260918_v25"></script>
+  <script src="app.js?v=20260918_v26"></script>
 </body>
 </html>

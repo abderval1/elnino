@@ -236,9 +236,7 @@ body {
   background: rgba(15, 23, 42, 0.8);
 }
 
-.tab-btn {
-  flex: 1;
-  padding: 12px 6px;
+.tab-btn { flex: 1; padding: 10px 4px; min-width: 54px; font-size: 0.74rem;
   background: none;
   border: none;
   color: var(--text-muted);
