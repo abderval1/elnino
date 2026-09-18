@@ -973,8 +973,8 @@ document.addEventListener('DOMContentLoaded', () => {
   async function loadOfficialDatasets() {
     try {
       const [ineRes, formRes] = await Promise.all([
-        fetch('/data/ine_complete_official_dataset.json'),
-        fetch('/data/official_formulas.json')
+        fetch('./data/ine_complete_official_dataset.json'),
+        fetch('./data/official_formulas.json')
       ]);
       
       state.ineData = await ineRes.json();
@@ -2431,9 +2431,9 @@ document.addEventListener('DOMContentLoaded', () => {
   async function loadGeoJsonData() {
     try {
       const [ondRes, jfmRes, provRes] = await Promise.all([
-        fetch('/drive/OND_opt.geojson'),
-        fetch('/drive/JFM_opt.geojson'),
-        fetch('/drive/Angola_opt.geojson')
+        fetch('./drive/OND_opt.geojson'),
+        fetch('./drive/JFM_opt.geojson'),
+        fetch('./drive/Angola_opt.geojson')
       ]);
       
       state.geoJsonData.OND = await ondRes.json();
@@ -2445,11 +2445,11 @@ document.addEventListener('DOMContentLoaded', () => {
       populateCensoTable();
       updateGlobalStats();
 
-      fetch('/drive/Angola_Municipios_opt.geojson')
+      fetch('./drive/Angola_Municipios_opt.geojson')
         .then(res => res.json())
         .then(data => { state.geoJsonData.MUNICIPIOS = data; populateCensoTable(); });
 
-      fetch('/drive/Angola_Comunas_opt.geojson')
+      fetch('./drive/Angola_Comunas_opt.geojson')
         .then(res => res.json())
         .then(data => { state.geoJsonData.COMUNAS = data; });
 
@@ -2811,13 +2811,13 @@ document.addEventListener('DOMContentLoaded', () => {
       renderDocumentList();
     } catch (err) {
       state.documents = [
-        { name: 'INE Angola - Relatório sobre a Escala de Insegurança Alimentar (FIES) - Fevereiro 2026.pdf', path: '/drive/INE_Relatorio_FIES_Fevereiro_2026.pdf', category: 'INE / FIES' },
-        { name: '3. EN_FINAL SARCOF-33 STATEMENT-final-28Aug1600hrs.pdf', path: '/drive/3. EN_FINAL SARCOF-33 STATEMENT-final-28Aug1600hrs.pdf', category: 'SARCOF Report' },
-        { name: '2. SADC Regional Seasonal Outlook for the 2026_27 season_SARCOF_26_Aug_2026.pdf', path: '/drive/2. SADC Regional Seasonal Outlook for the 2026_27 season_SARCOF_26_Aug_2026.pdf', category: 'SARCOF Report' },
-        { name: 'UN DRCT PRESENTATION- El Nino Forecast and its implications for Angola.pdf', path: '/drive/UN DRCT PRESENTATION- El Nino Forecast and its implications for the 2026-2027 season and acute food insecurity in Angola and southern Africa_Angola_UN_El Nino.pdf', category: 'UN / Angola' },
-        { name: '1. Performance of the 2025_26 season review and verification.pdf', path: '/drive/1. Performance of the 2025_26 season review and verification.pdf', category: 'Season Verification' },
-        { name: '4. SARCOF33-CMRS-LaReunion-TC_outlook.pdf', path: '/drive/4. SARCOF33-CMRS-LaReunion-TC_outlook.pdf', category: 'Tropical Cyclones' },
-        { name: '20260801-FEWS-NET-ao-fsou.pdf', path: '/20260801-FEWS-NET-ao-fsou.pdf', category: 'FEWS NET' }
+        { name: 'INE Angola - Relatório sobre a Escala de Insegurança Alimentar (FIES) - Fevereiro 2026.pdf', path: './drive/INE_Relatorio_FIES_Fevereiro_2026.pdf', category: 'INE / FIES' },
+        { name: '3. EN_FINAL SARCOF-33 STATEMENT-final-28Aug1600hrs.pdf', path: './drive/3. EN_FINAL SARCOF-33 STATEMENT-final-28Aug1600hrs.pdf', category: 'SARCOF Report' },
+        { name: '2. SADC Regional Seasonal Outlook for the 2026_27 season_SARCOF_26_Aug_2026.pdf', path: './drive/2. SADC Regional Seasonal Outlook for the 2026_27 season_SARCOF_26_Aug_2026.pdf', category: 'SARCOF Report' },
+        { name: 'UN DRCT PRESENTATION- El Nino Forecast and its implications for Angola.pdf', path: './drive/UN DRCT PRESENTATION- El Nino Forecast and its implications for the 2026-2027 season and acute food insecurity in Angola and southern Africa_Angola_UN_El Nino.pdf', category: 'UN / Angola' },
+        { name: '1. Performance of the 2025_26 season review and verification.pdf', path: './drive/1. Performance of the 2025_26 season review and verification.pdf', category: 'Season Verification' },
+        { name: '4. SARCOF33-CMRS-LaReunion-TC_outlook.pdf', path: './drive/4. SARCOF33-CMRS-LaReunion-TC_outlook.pdf', category: 'Tropical Cyclones' },
+        { name: '20260801-FEWS-NET-ao-fsou.pdf', path: './20260801-FEWS-NET-ao-fsou.pdf', category: 'FEWS NET' }
       ];
       renderDocumentList();
     }
