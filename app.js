@@ -80,6 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
       provBorders: null
     },
 
+    labelsLayerGroup: null,
     selectedFeature: null,
     _selectedTypeKey: 'provincias',
     documents: [],
@@ -666,6 +667,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Refresh Active Views
+    renderMapLabels();
     updateGlobalStats();
     populateCensoTable();
     renderDocumentList();
@@ -856,6 +858,14 @@ document.addEventListener('DOMContentLoaded', () => {
         state.map.getPane('labelsPane').style.pointerEvents = 'none';
       }
 
+            // Dedicated Layer Group for Labels
+      if (!state.labelsLayerGroup) {
+        state.labelsLayerGroup = L.layerGroup([], { pane: 'labelsPane' }).addTo(state.map);
+      }
+      state.map.on('zoomend moveend', () => {
+        renderMapLabels();
+      });
+
       state.baseLayers = {
         osm: L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
           maxZoom: 19, attribution: '&copy; OpenStreetMap contributors'
@@ -982,7 +992,8 @@ document.addEventListener('DOMContentLoaded', () => {
       console.log('✅ Dados oficiais do INE e Fórmulas da ONU carregados com sucesso!');
       
       updateFormulaUI();
-      updateGlobalStats();
+      renderMapLabels();
+    updateGlobalStats();
     } catch (err) {
       console.warn('Aviso: Carregando fallback dos dados oficiais.', err);
     }
@@ -1496,6 +1507,122 @@ document.addEventListener('DOMContentLoaded', () => {
     return layerGroup;
   }
 
+  // Precise Centroid Calculation with Turf.js for Clean Uncluttered Label Positioning
+  function getFeatureCentroid(feature) {
+    if (!feature || !feature.geometry) return null;
+    try {
+      if (typeof turf !== 'undefined') {
+        const pt = turf.pointOnFeature(feature) || turf.centroid(feature);
+        if (pt && pt.geometry && pt.geometry.coordinates) {
+          return [pt.geometry.coordinates[1], pt.geometry.coordinates[0]]; // [lat, lng]
+        }
+      }
+    } catch (e) {}
+
+    // Geometry coordinate average fallback
+    try {
+      const coords = feature.geometry.coordinates;
+      let totalLat = 0, totalLng = 0, count = 0;
+      function scan(c) {
+        if (typeof c[0] === 'number' && typeof c[1] === 'number') {
+          totalLng += c[0];
+          totalLat += c[1];
+          count++;
+        } else if (Array.isArray(c)) {
+          c.forEach(scan);
+        }
+      }
+      scan(coords);
+      if (count > 0) return [totalLat / count, totalLng / count];
+    } catch (e) {}
+
+    return null;
+  }
+
+  // Dynamic Anti-Clutter Map Label Engine
+  // At national zoom (zoom < 7.6): ONLY the 21 clean Province names are rendered.
+  // Municipalities only appear when zoomed into a region (zoom >= 7.6).
+  // Communes only appear at deep zoom (zoom >= 9.2).
+  function renderMapLabels() {
+    if (!state.map || !state.labelsLayerGroup) return;
+    state.labelsLayerGroup.clearLayers();
+
+    if (!state.showLabels) return;
+
+    const currentZoom = state.map.getZoom();
+    const mode = state.labelDensity || 'smart';
+
+    // 1. Províncias (Always 21 names, crisp & bold, no clutter)
+    if (state.layersEnabled.provincias && state.geoJsonData.PROVINCIAS && state.geoJsonData.PROVINCIAS.features) {
+      state.geoJsonData.PROVINCIAS.features.forEach(feat => {
+        const name = getFeatureName(feat, 'provincias');
+        const latLng = getFeatureCentroid(feat);
+        if (name && latLng) {
+          const marker = L.marker(latLng, {
+            pane: 'labelsPane',
+            interactive: false,
+            icon: L.divIcon({
+              className: 'map-label-prov-wrapper',
+              html: `<div class="map-label-prov-div">${name}</div>`,
+              iconSize: [0, 0],
+              iconAnchor: [0, 0]
+            })
+          });
+          state.labelsLayerGroup.addLayer(marker);
+        }
+      });
+    }
+
+    // 2. Municípios: NEVER show at full Angola zoom (< 7.6) unless mode === 'all'
+    const showMuns = mode === 'all' || (mode === 'smart' && currentZoom >= 7.6);
+    if (showMuns && state.layersEnabled.municipios && state.geoJsonData.MUNICIPIOS && state.geoJsonData.MUNICIPIOS.features) {
+      const bounds = state.map.getBounds();
+      state.geoJsonData.MUNICIPIOS.features.forEach(feat => {
+        const name = feat.properties ? (feat.properties.Nome_Munic || feat.properties.MUNICIPIO || feat.properties.NAME) : '';
+        const latLng = getFeatureCentroid(feat);
+        if (name && latLng) {
+          // Only add if inside or near current viewport to maximize performance and prevent offscreen clutter
+          if (bounds.pad(0.15).contains(latLng)) {
+            const marker = L.marker(latLng, {
+              pane: 'labelsPane',
+              interactive: false,
+              icon: L.divIcon({
+                className: 'map-label-mun-wrapper',
+                html: `<div class="map-label-mun-div">${name}</div>`,
+                iconSize: [0, 0],
+                iconAnchor: [0, 0]
+              })
+            });
+            state.labelsLayerGroup.addLayer(marker);
+          }
+        }
+      });
+    }
+
+    // 3. Comunas: ONLY at deep local zoom (>= 9.2) unless mode === 'all'
+    const showComs = mode === 'all' || (mode === 'smart' && currentZoom >= 9.2);
+    if (showComs && state.layersEnabled.comunas && state.geoJsonData.COMUNAS && state.geoJsonData.COMUNAS.features) {
+      const bounds = state.map.getBounds();
+      state.geoJsonData.COMUNAS.features.forEach(feat => {
+        const name = feat.properties ? (feat.properties.Nome_Comun || feat.properties.COMUNA || feat.properties.NAME) : '';
+        const latLng = getFeatureCentroid(feat);
+        if (name && latLng && bounds.pad(0.1).contains(latLng)) {
+          const marker = L.marker(latLng, {
+            pane: 'labelsPane',
+            interactive: false,
+            icon: L.divIcon({
+              className: 'map-label-com-wrapper',
+              html: `<div class="map-label-com-div">${name}</div>`,
+              iconSize: [0, 0],
+              iconAnchor: [0, 0]
+            })
+          });
+          state.labelsLayerGroup.addLayer(marker);
+        }
+      });
+    }
+  }
+
   // Render All Active Layers (Simultaneous Layers with Strict Hierarchy & Theming)
   function renderAllLayers() {
     if (!state.map) return;
@@ -1578,6 +1705,7 @@ document.addEventListener('DOMContentLoaded', () => {
       mapEl.classList.add(`label-mode-${state.labelDensity || 'smart'}`);
     }
 
+    renderMapLabels();
     updateGlobalStats();
   }
 
@@ -1612,37 +1740,6 @@ document.addEventListener('DOMContentLoaded', () => {
       onEachFeature: (feature, layer) => {
         const name = getFeatureName(feature, typeKey);
 
-        // Anti-clutter distinct labels (Provinces vs Municipalities)
-        if (state.showLabels && name) {
-          if (typeKey === 'provincias') {
-            layer.bindTooltip(name, {
-              pane: 'labelsPane',
-              permanent: true,
-              direction: 'center',
-              className: 'map-text-label map-text-label-prov'
-            });
-          } else if (typeKey === 'municipios') {
-            // Only add municipality label if not in prov_only mode
-            if (state.labelDensity !== 'prov_only') {
-              layer.bindTooltip(name, {
-                pane: 'labelsPane',
-                permanent: true,
-                direction: 'center',
-                className: 'map-text-label map-text-label-mun'
-              });
-            }
-          } else if (typeKey === 'comunas') {
-            if (state.labelDensity === 'all') {
-              layer.bindTooltip(name, {
-                pane: 'labelsPane',
-                permanent: true,
-                direction: 'center',
-                className: 'map-text-label map-text-label-mun'
-              });
-            }
-          }
-        }
-
         layer.on({
           mouseover: (e) => {
             const l = e.target;
@@ -1650,9 +1747,19 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
               l.bringToFront();
             }
+            // Hover tooltip: displays name smoothly under cursor without cluttering map
+            if (name) {
+              l.bindTooltip(name, {
+                pane: 'labelsPane',
+                direction: 'top',
+                sticky: true,
+                className: 'map-hover-tooltip'
+              }).openTooltip();
+            }
           },
           mouseout: (e) => {
             const l = e.target;
+            l.closeTooltip();
             if (typeKey === 'sarcof') {
               const code = feature.properties.finalcode;
               const cfg = categoryConfig[code] || { color: '#94a3b8' };
@@ -2041,6 +2148,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const activeTitle = document.getElementById('lbl-active-formula-title');
     if (activeTitle) activeTitle.textContent = model === 'CUSTOM' ? (state.customFormula.name || f.nome) : f.nome;
 
+    renderMapLabels();
     updateGlobalStats();
     populateCensoTable();
     if (state.selectedFeature) {
@@ -2388,6 +2496,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const yearLbl = document.getElementById('lbl-selected-year');
     if (yearLbl) yearLbl.textContent = state.demographicYear;
     
+    renderMapLabels();
     updateGlobalStats();
     populateCensoTable();
     if (state.selectedFeature) {
@@ -2443,15 +2552,16 @@ document.addEventListener('DOMContentLoaded', () => {
       renderAllLayers();
       initCharts();
       populateCensoTable();
-      updateGlobalStats();
+      renderMapLabels();
+    updateGlobalStats();
 
       fetch('./drive/Angola_Municipios_opt.geojson')
         .then(res => res.json())
-        .then(data => { state.geoJsonData.MUNICIPIOS = data; populateCensoTable(); });
+        .then(data => { state.geoJsonData.MUNICIPIOS = data; populateCensoTable(); renderMapLabels(); });
 
       fetch('./drive/Angola_Comunas_opt.geojson')
         .then(res => res.json())
-        .then(data => { state.geoJsonData.COMUNAS = data; });
+        .then(data => { state.geoJsonData.COMUNAS = data; renderMapLabels(); });
 
     } catch (err) {
       console.error('Erro ao carregar camadas GeoJSON:', err);
@@ -2515,7 +2625,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Map Labels Switch
   document.getElementById('toggle-labels').addEventListener('change', (e) => {
     state.showLabels = e.target.checked;
-    renderAllLayers();
+    renderMapLabels();
   });
 
   // Category Selector
@@ -2528,6 +2638,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('select-season').addEventListener('change', (e) => {
     state.activeSeason = e.target.value;
     renderAllLayers();
+    renderMapLabels();
     updateGlobalStats();
     populateCensoTable();
     if (state.selectedFeature) {
@@ -3957,7 +4068,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (selLabelDensity) {
       selLabelDensity.addEventListener('change', (e) => {
         state.labelDensity = e.target.value;
-        renderAllLayers();
+        renderMapLabels();
       });
     }
 

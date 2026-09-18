@@ -18,7 +18,7 @@
   <link rel="stylesheet" href="./vendor/leaflet.css">
   
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="styles.css?v=20260916_v22">
+  <link rel="stylesheet" href="styles.css?v=20260918_v24">
 </head>
 <body>
   <div class="app-container">
@@ -346,9 +346,9 @@
               <div style="margin-top: 8px;">
                 <label class="control-sublabel" data-i18n="lbl_label_mode">Densidade dos Rótulos (Sem Confusão):</label>
                 <select id="select-label-density" class="select-control">
-                  <option value="smart" selected>🎯 Inteligente (Províncias sempre + Municípios no Zoom)</option>
-                  <option value="prov_only">🗺️ Apenas Províncias (Visual Limpo)</option>
-                  <option value="all">📍 Províncias e Municípios Sempre</option>
+                  <option value="smart" selected>🎯 Inteligente (Províncias no mapa geral; Municípios só com Zoom)</option>
+                  <option value="prov_only">🗺️ Apenas Províncias (Sem Municípios / Máxima Clareza)</option>
+                  <option value="all">📍 Forçar Todos os Nomes (Pode sobrepor no mapa geral)</option>
                 </select>
               </div>
             </div>
@@ -1544,6 +1544,6 @@
   <!-- SheetJS for Native Excel (.xlsx) Generation -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <!-- Main App Script -->
-  <script src="app.js?v=20260916_v22"></script>
+  <script src="app.js?v=20260918_v24"></script>
 </body>
 </html>

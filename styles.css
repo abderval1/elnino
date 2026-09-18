@@ -1658,3 +1658,86 @@ path.leaflet-sarcof-hatch,
   visibility: visible !important;
   opacity: 0.92 !important;
 }
+
+
+/* ==========================================================================
+   Clean Anti-Clutter Map Label DivIcons & Tooltips
+   ========================================================================== */
+
+.map-label-prov-wrapper,
+.map-label-mun-wrapper,
+.map-label-com-wrapper {
+  background: transparent !important;
+  border: none !important;
+}
+
+/* Province Label (Large, Bold, Prominent, Centered) */
+.map-label-prov-div {
+  background: rgba(15, 23, 42, 0.90);
+  border: 1.5px solid #38bdf8;
+  border-radius: 5px;
+  color: #ffffff;
+  font-family: 'Outfit', 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  padding: 2px 7px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  display: inline-block;
+  user-select: none;
+}
+
+/* Municipal Label (Fine, Compact, Subtle, Only when Zoomed in) */
+.map-label-mun-div {
+  background: rgba(15, 23, 42, 0.72);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: 3px;
+  color: #f1f5f9;
+  font-family: 'Inter', sans-serif;
+  font-size: 8.5px;
+  font-weight: 600;
+  font-style: italic;
+  padding: 1px 4px;
+  line-height: 1.15;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+  white-space: nowrap;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  display: inline-block;
+  user-select: none;
+}
+
+/* Commune Label (Nano, Only at High Zoom) */
+.map-label-com-div {
+  background: rgba(15, 23, 42, 0.60);
+  border: 1px solid rgba(100, 116, 139, 0.3);
+  border-radius: 2px;
+  color: #cbd5e1;
+  font-family: 'Inter', sans-serif;
+  font-size: 7.5px;
+  font-weight: 400;
+  padding: 0px 3px;
+  white-space: nowrap;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  display: inline-block;
+  user-select: none;
+}
+
+/* Dynamic Hover Tooltip on Map Polygons */
+.leaflet-tooltip.map-hover-tooltip {
+  background: rgba(15, 23, 42, 0.95) !important;
+  border: 1px solid #38bdf8 !important;
+  border-radius: 4px !important;
+  color: #f8fafc !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  padding: 3px 8px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+  pointer-events: none !important;
+}
