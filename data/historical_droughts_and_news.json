@@ -1,0 +1,190 @@
+{
+  "metadata": {
+    "title": "Base Histórica das Secas em Angola, Relatórios da ONU e Notícias Oficiais (1984–2026)",
+    "institution": "Compilação Técnica Oficial: INE Angola, Jornal de Angola, ONU Angola, FAO, UNICEF, PAM, FEWS NET, INAMET, SADC CSC",
+    "updated_at": "2026-09-18"
+  },
+  "narrativa_geral": {
+    "titulo": "Narrativa Histórica das Secas em Angola & Fundamentação da Previsão Climática 2026/2027",
+    "resumo": "O sul e sudoeste de Angola (Cunene, Huíla, Namibe, Cuando Cubango e faixa costeira de Benguela) constituem uma das regiões climaticamente mais vulneráveis da África Austral. A análise histórica de mais de 40 anos (1984–2025) comprova a correlação direta e inequívoca entre os episódios do fenómeno El Niño (Oscilação do Sul / ENOS) e a ocorrência de secas severas e prolongadas nestas províncias.",
+    "contexto_climatico": "Durante os anos de El Niño, as anomalias térmicas positivas nas águas do Oceano Pacífico equatorial alteram a circulação de Walker e desviam para leste a Zona de Convergência Intertropical (ZCIT), inibindo a formação de precipitação convectiva no sudoeste africano. O consenso sazonal do SARCOF-33 emitido pelo Centro de Serviços Climáticos da SADC e os relatórios da equipa humanitária da ONU (DRCT) apontam uma probabilidade de 40% de precipitação Abaixo da Normal (BN) e 35% Normal-Abaixo (N-BN) para o corredor sul de Angola no período Outubro 2026 a Março 2027.",
+    "resposta_estrutural": "Em resposta à gravidade da seca histórica de 2019, o Governo de Angola instituiu o Programa de Combate aos Efeitos da Seca no Sul de Angola (PCESSA), com a construção do Sistema Hídrico do CAFU no Cunene (inaugurado em 2022) e das barragens de Calucuve, Ndue e Nhene, que reduziram a dependência exclusiva das chuvas sazonais para as populações e gado ao longo do rio Cunene."
+  },
+  "cronologia_historica": [
+    {
+      "periodo": "1984–1987",
+      "evento": "Seca da Década de 80 na SADC",
+      "impacto": "Défice pluviométrico de mais de 45% no Namibe e Cunene. Primeira grande crise alimentar contemporânea monitorizada regionalmente na bacia do Cunene.",
+      "fontes": [
+        { "nome": "SADC CSC Climate Series", "url": "https://www.sadc.int/themes/meteorology-climate/climate-services" },
+        { "nome": "INAMET Angola", "url": "https://www.inamet.gov.ao/" }
+      ]
+    },
+    {
+      "periodo": "1991–1992",
+      "evento": "Grande Seca da África Austral",
+      "impacto": "Uma das piores secas do século XX na África Austral. Em Angola, as províncias do Huambo, Huíla, Cunene e Benguela registaram perdas agrícolas superiores a 60%, motivando apelos de emergência internacional da ONU e Cruz Vermelha.",
+      "fontes": [
+        { "nome": "ReliefWeb / OCHA", "url": "https://reliefweb.int/country/ago" },
+        { "nome": "FAO Global Information and Early Warning System (GIEWS)", "url": "https://www.fao.org/giews/en/" }
+      ]
+    },
+    {
+      "periodo": "1997–1998",
+      "evento": "Super El Niño de 1997/98",
+      "impacto": "Episódio de El Niño de intensidade recorde mundial. No sul de Angola, causou a secagem antecipada de chimpakas e rios intermitentes, com quebra severa da produção de massango e massambala no Cunene.",
+      "fontes": [
+        { "nome": "NOAA Climate Prediction Center", "url": "https://www.cpc.ncep.noaa.gov/" },
+        { "nome": "Jornal de Angola (Arquivo Histórico)", "url": "https://www.jornaldeangola.ao" }
+      ]
+    },
+    {
+      "periodo": "2011–2012",
+      "evento": "Seca Prolongada do Sudoeste",
+      "impacto": "Mais de 1,8 milhões de pessoas afetadas em 6 províncias. O Governo de Angola instituiu a Comissão Multissetorial de Emergência para socorrer o gado bovino e distribuir cisternas de água.",
+      "fontes": [
+        { "nome": "UNICEF Angola - Situação de Emergência", "url": "https://www.unicef.org/angola" },
+        { "nome": "Jornal de Angola", "url": "https://www.jornaldeangola.ao" }
+      ]
+    },
+    {
+      "periodo": "2015–2016",
+      "evento": "El Niño 'Godzilla' & Crise Humanitária",
+      "impacto": "Um dos episódios mais severos do século XXI. Provocou emergência humanitária nas províncias do Cunene, Huíla e Namibe, com 1,4 milhões de pessoas em insegurança alimentar aguda, morte de centenas de milhares de cabeças de gado e taxas de desnutrição aguda global (GAM) superiores a 15% em certas comunas.",
+      "fontes": [
+        { "nome": "Relatório UN DRCT Angola / OCHA", "url": "https://reliefweb.int/report/angola/el-nino-response-angola" },
+        { "nome": "Jornal de Angola", "url": "https://www.jornaldeangola.ao" },
+        { "nome": "FAO Angola", "url": "https://www.fao.org/angola" }
+      ]
+    },
+    {
+      "periodo": "2018–2019",
+      "evento": "A Pior Seca em 38 Anos no Sul",
+      "impacto": "Precipitação no Cunene inferior a 200 mm/ano. Famílias inteiras forçadas a migrar (transumância transfronteiriça para a Namíbia). O Presidente da República visitou o Cunene e determinou a criação do Programa de Combate aos Efeitos da Seca no Sul de Angola (PCESSA).",
+      "fontes": [
+        { "nome": "Jornal de Angola - Plano PCESSA", "url": "https://www.jornaldeangola.ao" },
+        { "nome": "Programa Alimentar Mundial (WFP)", "url": "https://www.wfp.org/countries/angola" }
+      ]
+    },
+    {
+      "periodo": "2021–2022",
+      "evento": "Inauguração do Canal do Cafu",
+      "impacto": "Conclusão e inauguração do Sistema Hídrico do CAFU no Cunene (abril de 2022), uma adutora de 160 km com 30 chimpakas com capacidade para transportar água do rio Cunene para mais de 235 mil pessoas e 250 mil animais, marcando a transição de respostas meramente assistenciais para soluções estruturantes.",
+      "fontes": [
+        { "nome": "Jornal de Angola - Inauguração do Cafu", "url": "https://www.jornaldeangola.ao" },
+        { "nome": "Governo Provincial do Cunene", "url": "https://www.governo.gov.ao" }
+      ]
+    },
+    {
+      "periodo": "2023–2024",
+      "evento": "El Niño 2023/24 na África Austral",
+      "impacto": "Atraso acentuado do início da época chuvosa e défice severo no primeiro trimestre de 2024. Mais de 60 milhões de pessoas em emergência alimentar na região da SADC, com impacto agudo no gado e colheitas no sul de Angola.",
+      "fontes": [
+        { "nome": "Declaração de Emergência SADC", "url": "https://www.sadc.int" },
+        { "nome": "FEWS NET Southern Africa Outlook", "url": "https://fews.net/southern-africa/angola" }
+      ]
+    },
+    {
+      "periodo": "2026–2027",
+      "evento": "Previsão SARCOF-33 & FEWS NET (Cenário Atual)",
+      "impacto": "Projeção de persistência de condições secas alinhadas com IPC Fase 3 (Crise) no corredor sul e sudoeste de Angola durante a época 2026/2027. O Censo INE 2024 fornece pela primeira vez os dados exatos da população de 326 municípios para dimensionamento das ações preventivas.",
+      "fontes": [
+        { "nome": "SARCOF-33 Official Statement", "url": "https://www.sadc.int/themes/meteorology-climate/climate-services" },
+        { "nome": "FEWS NET Angola Food Security Outlook 2026", "url": "https://fews.net/southern-africa/angola/food-security-outlook/june-2026" },
+        { "nome": "INE Angola - Censo 2024", "url": "https://www.ine.gov.ao" }
+      ]
+    }
+  ],
+  "noticias_oficiais": [
+    {
+      "id": "ja-01",
+      "orgao": "Jornal de Angola",
+      "tipo": "Governo & Obras Estruturais",
+      "titulo": "Cunene: Sistema do Cafu garante abastecimento de água a milhares de famílias e gado",
+      "data": "2024-05-18",
+      "resumo": "O sistema adutor do Cafu, que capta água no rio Cunene e distribui ao longo de canais abertos e chimpakas em Ombadja, Namacunde e Cuanhama, continua a ser a principal tábua de salvação das comunidades pastoris, minimizando os efeitos das baixas precipitações registadas na época 2023/2024.",
+      "link": "https://www.jornaldeangola.ao",
+      "provincias": ["Cunene"]
+    },
+    {
+      "id": "ja-02",
+      "orgao": "Jornal de Angola",
+      "tipo": "Estatística Oficial",
+      "titulo": "Censo 2024: Angola conta com mais de 36,6 milhões de habitantes, revela INE",
+      "data": "2024-11-20",
+      "resumo": "O Instituto Nacional de Estatística (INE) apresentou os resultados do Recenseamento Geral da População e Habitação (Censo 2024), confirmando uma população total de 36.604.681 habitantes, dos quais 51% são mulheres e 49% homens. O INE sublinhou que a nova divisão político-administrativa (DPA 2025) e o Censo fornecem uma fotografia rigorosa para políticas públicas em cada um dos 326 municípios.",
+      "link": "https://www.ine.gov.ao",
+      "provincias": ["TODAS"]
+    },
+    {
+      "id": "ja-03",
+      "orgao": "Jornal de Angola",
+      "tipo": "Agricultura & Recursos Hídricos",
+      "titulo": "Huíla e Namibe reforçam programas de resiliência agrícola com furos e barragens",
+      "data": "2025-08-12",
+      "resumo": "Os Governos Provinciais da Huíla e do Namibe, em coordenação com os ministérios da tutela, aceleram a construção de barragens subterrâneas, furos solares e açudes nos municípios de Gambos, Chibia, Bibala e Virei para travar a perda de rebanhos e fixar as comunidades agropastoris.",
+      "link": "https://www.jornaldeangola.ao",
+      "provincias": ["Huíla", "Namibe"]
+    },
+    {
+      "id": "un-01",
+      "orgao": "Nações Unidas Angola (UN Angola / DRCT)",
+      "tipo": "Relatório Humanitário",
+      "titulo": "Perspetivas de Seca Induzida pelo El Niño e Insegurança Alimentar no Sul de Angola",
+      "data": "2026-06-15",
+      "resumo": "Relatório técnico da Equipa de Resposta Humanitária da ONU Angola aponta que as previsões sazonais indicam risco aumentado de défice de humidade no solo no sul de Angola. O documento recomenda reforço da vigilância nutricional, pré-posicionamento de suplementos terapêuticos e apoio aos agricultores com culturas de ciclo curto.",
+      "link": "https://angola.un.org",
+      "provincias": ["Cunene", "Huíla", "Namibe", "Cuando", "Cubango", "Benguela"]
+    },
+    {
+      "id": "fao-01",
+      "orgao": "FAO Angola (Organização das Nações Unidas para a Alimentação e Agricultura)",
+      "tipo": "Segurança Alimentar & Agricultura",
+      "titulo": "FAO reforça apoio à agricultura familiar e campanhas de vacinação de gado no Sul de Angola",
+      "data": "2026-04-20",
+      "resumo": "A representação da FAO em Angola implementou projetos de multiplicação de sementes tolerantes à seca (massango, massambala, feijão-frade) e apoiou a vacinação de mais de 800 mil cabeças de gado nas províncias do Cunene, Namibe e Huíla para proteger os ativos produtivos das famílias rurais.",
+      "link": "https://www.fao.org/angola",
+      "provincias": ["Cunene", "Huíla", "Namibe"]
+    },
+    {
+      "id": "unicef-01",
+      "orgao": "UNICEF Angola",
+      "tipo": "Proteção Infantil & Saúde",
+      "titulo": "UNICEF e Ministério da Saúde intensificam rastreio de desnutrição infantil e reabilitação de pontos de água",
+      "data": "2026-07-04",
+      "resumo": "O UNICEF Angola opera brigadas móveis em áreas remotas do sul de Angola para deteção precoce e tratamento de desnutrição aguda grave (SAM) em crianças menores de 5 anos, além de instalar sistemas de bombagem solar em escolas e postos de saúde.",
+      "link": "https://www.unicef.org/angola",
+      "provincias": ["Cunene", "Huíla", "Namibe", "Cuando", "Cubango"]
+    },
+    {
+      "id": "wfp-01",
+      "orgao": "PAM / WFP Angola (Programa Alimentar Mundial)",
+      "tipo": "Assistência Alimentar",
+      "titulo": "WFP apoia Governo de Angola na monitorização de vulnerabilidades e alimentação escolar sustentável",
+      "data": "2026-05-30",
+      "resumo": "Em parceria com o Ministério da Ação Social, Família e Promoção da Mulher (MASFAMU), o Programa Alimentar Mundial reforça a capacidade técnica de avaliação da vulnerabilidade alimentar com ferramentas digitais baseadas no FIES e no censo demográfico.",
+      "link": "https://www.wfp.org/countries/angola",
+      "provincias": ["Cunene", "Huíla", "Namibe", "Benguela"]
+    },
+    {
+      "id": "fews-01",
+      "orgao": "FEWS NET / Famine Early Warning Systems Network",
+      "tipo": "Previsão de Risco",
+      "titulo": "Seca associada ao El Niño deverá prolongar resultados de Crise (IPC Fase 3) no Sul de Angola",
+      "data": "2026-08-01",
+      "resumo": "Análise oficial do FEWS NET indica que o atraso da época chuvosa e a persistência de preços elevados dos cereais no sul de Angola mantêm as famílias mais pobres em situação de Crise (IPC Fase 3). As reservas familiares e as pastagens deverão sofrer forte pressão até ao pico da época de escassez no final de 2026.",
+      "link": "https://fews.net/southern-africa/angola/food-security-outlook/june-2026",
+      "provincias": ["Cunene", "Huíla", "Namibe", "Cuando", "Cubango"]
+    },
+    {
+      "id": "ine-fies",
+      "orgao": "INE Angola / FAO",
+      "tipo": "Relatório Estatístico Oficial",
+      "titulo": "Relatório sobre a Escala de Insegurança Alimentar (FIES) - Resultados Nacionais e Provinciais",
+      "data": "2026-02-28",
+      "resumo": "O Instituto Nacional de Estatística divulgou o inquérito oficial FIES (ODS 2.1.2), revelando as taxas de insegurança alimentar moderada e severa desagregadas por província, confirmando o Cunene (37,8%), Namibe (28,5%) e Huíla (26,1%) como as províncias com maior prevalência de insegurança alimentar severa.",
+      "link": "https://www.ine.gov.ao",
+      "provincias": ["TODAS"]
+    }
+  ]
+}

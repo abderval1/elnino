@@ -424,10 +424,12 @@ path.leaflet-sarcof-hatch,
 
 /* Inspector Card */
 .inspector-card {
-  position: absolute; top: 24px; right: 24px; width: 360px;
-  background: var(--bg-glass); backdrop-filter: blur(16px);
-  border: 1px solid var(--border-color); border-radius: var(--radius-md);
-  padding: 16px; z-index: 850; box-shadow: var(--shadow-main); display: none;
+  position: absolute; top: 20px; right: 20px; width: 440px; max-width: calc(100vw - 40px);
+  max-height: calc(100vh - 40px);
+  background: rgba(15, 23, 42, 0.94); backdrop-filter: blur(20px);
+  border: 1px solid rgba(56, 189, 248, 0.35); border-radius: var(--radius-md);
+  padding: 14px; z-index: 850; box-shadow: 0 10px 35px rgba(0, 0, 0, 0.6);
+  display: none; flex-direction: column; overflow-y: auto;
 }
 .inspector-card.active { display: block; animation: fadeIn 0.3s ease; }
 
@@ -1738,4 +1740,219 @@ path.leaflet-sarcof-hatch,
   padding: 3px 8px !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
   pointer-events: none !important;
+}
+
+
+/* ==========================================================================
+   Inspector Card Sub-Tabs, Demographics, News & Historical Timeline
+   ========================================================================== */
+
+.insp-tabs-bar {
+  display: flex;
+  gap: 4px;
+  background: rgba(11, 15, 25, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 3px;
+  margin: 10px 0;
+}
+
+.insp-tab-btn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 0.70rem;
+  font-weight: 600;
+  padding: 6px 2px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.insp-tab-btn:hover {
+  color: #f8fafc;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.insp-tab-btn.active {
+  background: #38bdf8;
+  color: #0b0f19;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(56, 189, 248, 0.4);
+}
+
+.insp-pane {
+  display: none;
+  animation: fadeIn 0.25s ease;
+}
+
+.insp-pane.active {
+  display: block;
+}
+
+/* Bi-color Split Distribution Bar (Male/Female, Urban/Rural) */
+.split-bar-container {
+  margin: 6px 0 10px 0;
+}
+.split-bar-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.70rem;
+  margin-bottom: 3px;
+  color: #cbd5e1;
+}
+.split-bar {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  overflow: hidden;
+  display: flex;
+}
+.split-bar-segment {
+  height: 100%;
+  transition: width 0.4s ease;
+}
+
+/* Metric Small Cards Grid */
+.insp-metrics-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin: 8px 0;
+}
+.insp-metric-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 6px;
+  padding: 6px 8px;
+}
+.insp-metric-title {
+  font-size: 0.65rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+.insp-metric-value {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+/* News Cards */
+.insp-news-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 8px;
+  transition: all 0.2s ease;
+}
+.insp-news-card:hover {
+  border-color: rgba(56, 189, 248, 0.35);
+  background: rgba(56, 189, 248, 0.04);
+}
+.insp-news-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+.insp-news-source {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.12);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.insp-news-date {
+  font-size: 0.65rem;
+  color: #64748b;
+}
+.insp-news-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #f8fafc;
+  margin-bottom: 4px;
+  line-height: 1.35;
+}
+.insp-news-desc {
+  font-size: 0.70rem;
+  color: #94a3b8;
+  line-height: 1.4;
+  margin-bottom: 6px;
+}
+.insp-news-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.68rem;
+  color: #38bdf8;
+  text-decoration: none;
+  font-weight: 600;
+}
+.insp-news-link:hover {
+  text-decoration: underline;
+  color: #7dd3fc;
+}
+
+/* Timeline */
+.insp-timeline {
+  position: relative;
+  padding-left: 18px;
+  margin-top: 8px;
+}
+.insp-timeline::before {
+  content: '';
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 5px;
+  width: 2px;
+  background: rgba(56, 189, 248, 0.3);
+}
+.insp-timeline-item {
+  position: relative;
+  margin-bottom: 12px;
+}
+.insp-timeline-dot {
+  position: absolute;
+  left: -18px;
+  top: 3px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #38bdf8;
+  border: 2px solid #0f172a;
+}
+.insp-timeline-year {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #38bdf8;
+}
+.insp-timeline-title {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #f8fafc;
+  margin: 1px 0 3px 0;
+}
+.insp-timeline-text {
+  font-size: 0.68rem;
+  color: #94a3b8;
+  line-height: 1.35;
+}
+.insp-timeline-links {
+  margin-top: 4px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
 }
