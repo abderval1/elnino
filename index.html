@@ -18,7 +18,7 @@
   <link rel="stylesheet" href="./vendor/leaflet.css">
   
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="styles.css?v=20260918_v27">
+  <link rel="stylesheet" href="styles.css?v=20260918_v28">
 </head>
 <body>
   <div class="app-container">
@@ -82,7 +82,42 @@
           <span data-i18n="btn_reports_pdf">Relatórios PDF</span>
         </button>
       </div>
-    </header>
+        </header>
+
+    <!-- Top Horizontal Navigation Menu Bar -->
+    <nav class="top-nav-bar" id="top-nav-bar">
+      <div class="top-nav-container">
+        <button type="button" class="top-nav-btn active" data-view="view-map" id="nav-btn-map">
+          <i class="fa-solid fa-map-location-dot"></i>
+          <span data-i18n="nav_map">Mapa Interativo (SIG)</span>
+        </button>
+        <button type="button" class="top-nav-btn" data-view="view-dashboard" id="nav-btn-dashboard">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span data-i18n="nav_dashboard">Dashboard & Estatísticas</span>
+        </button>
+        <button type="button" class="top-nav-btn" data-view="view-formulas" id="nav-btn-formulas">
+          <i class="fa-solid fa-square-root-variable"></i>
+          <span data-i18n="nav_formulas">Modelos de Risco & Fórmulas</span>
+        </button>
+        <button type="button" class="top-nav-btn" data-view="view-narrative" id="nav-btn-narrative">
+          <i class="fa-solid fa-timeline"></i>
+          <span data-i18n="nav_narrative">Histórico & Narrativa da Seca</span>
+        </button>
+        <button type="button" class="top-nav-btn" data-view="view-news" id="nav-btn-news">
+          <i class="fa-solid fa-newspaper"></i>
+          <span data-i18n="nav_news">Notícias & Boletins Oficiais</span>
+        </button>
+        <button type="button" class="top-nav-btn" data-view="view-export" id="nav-btn-export">
+          <i class="fa-solid fa-file-excel"></i>
+          <span data-i18n="nav_export">Exportador Excel</span>
+        </button>
+        <button type="button" class="top-nav-btn" data-view="view-docs" id="nav-btn-docs">
+          <i class="fa-solid fa-book-bookmark"></i>
+          <span data-i18n="nav_docs">Biblioteca de Relatórios</span>
+        </button>
+      </div>
+    </nav>
+
 
     <!-- Main Workspace -->
     <div class="main-workspace">
@@ -91,7 +126,9 @@
       <div class="mobile-overlay" id="mobile-overlay"></div>
 
       <!-- Sidebar Control Panel -->
-      <aside class="sidebar" id="sidebar">
+      <!-- VIEW 1: MAPA INTERATIVO SIG (100% LARGURA) -->
+      <section class="app-view active" id="view-map">
+        <aside class="sidebar" id="sidebar">
         <div class="sidebar-tabs">
           <button class="tab-btn active" data-tab="tab-layers">
             <i class="fa-solid fa-layer-group"></i> <span data-i18n="tab_layers">Camadas</span>
@@ -577,9 +614,8 @@
               </div>
             </div>
 
-          </div>
+            <!-- Global Historical Drought Narrative Card -->
 
-                      <!-- Global Historical Drought Narrative Card -->
             <div class="chart-card" style="border-color: rgba(56, 189, 248, 0.4); background: rgba(15, 23, 42, 0.85);">
               <div class="control-title" style="color: #38bdf8;">
                 <i class="fa-solid fa-timeline"></i> Narrativa Histórica das Secas em Angola & Previsão 2026/2027
@@ -651,7 +687,11 @@
 
         <!-- Floating Map Quick Action Toolbar -->
         <div class="map-floating-toolbar" id="map-floating-toolbar">
-          <button type="button" class="map-float-btn" id="btn-center-angola" title="Centrar Mapa em Angola">
+          <button type="button" class="map-float-btn map-float-btn-primary" id="btn-toggle-layers-drawer" title="Abrir Camadas e Filtros">
+            <i class="fa-solid fa-layer-group"></i> <span data-i18n="btn_drawer_layers">Camadas & Filtros</span>
+          </button>
+          <button type="button" class="map-float-btn" id="btn-center-angola"
+ title="Centrar Mapa em Angola">
             <i class="fa-solid fa-crosshairs"></i> <span data-i18n="btn_center_angola">Centrar Angola</span>
           </button>
           <button type="button" class="map-float-btn" id="btn-toggle-shapes" title="Alternar Mapa Base / Modo Apenas Shapes">
@@ -858,7 +898,408 @@
 
         </div>
 
-      </main>
+            </main>
+      </section>
+
+      <!-- VIEW 2: DASHBOARD & ESTATÃSTICAS NACIONAIS -->
+      <section class="app-view" id="view-dashboard">
+        <div class="view-container">
+          <div class="view-header">
+            <div class="view-header-main">
+              <h2 class="view-title"><i class="fa-solid fa-chart-pie" style="color:#38bdf8;"></i> <span data-i18n="dash_title">Dashboard Demográfico & Monitor de Risco El NiÃ±o</span></h2>
+              <p class="view-subtitle" data-i18n="dash_subtitle">Resultados Oficiais do Censo 2024 (INE Angola), Projeções 2025–2027 e Cruzamento Espacial com SARCOF-33</p>
+            </div>
+            <div class="view-header-actions">
+              <div class="dash-year-selector">
+                <span style="font-size:0.8rem; font-weight:600; color:#94a3b8;"><i class="fa-regular fa-calendar"></i> Ano de Referência:</span>
+                <div class="btn-group-pill" id="dash-year-pills">
+                  <button class="pill-btn active" data-year="2024">2024 (Censo)</button>
+                  <button class="pill-btn" data-year="2025">2025</button>
+                  <button class="pill-btn" data-year="2026">2026</button>
+                  <button class="pill-btn" data-year="2027">2027</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- National Key Indicators Grid -->
+          <div class="dash-kpi-grid">
+            <div class="dash-kpi-card kpi-pop">
+              <div class="kpi-icon"><i class="fa-solid fa-users"></i></div>
+              <div class="kpi-body">
+                <span class="kpi-label" data-i18n="dash_kpi_pop">População Nacional (INE)</span>
+                <h3 class="kpi-value" id="dash-kpi-total-pop">36.604.598</h3>
+                <span class="kpi-subtext" id="dash-kpi-growth"><i class="fa-solid fa-arrow-trend-up"></i> +3,4% crescimento anual est.</span>
+              </div>
+            </div>
+
+            <div class="dash-kpi-card kpi-risk">
+              <div class="kpi-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+              <div class="kpi-body">
+                <span class="kpi-label" data-i18n="dash_kpi_at_risk">População em Risco Alto/Crítico</span>
+                <h3 class="kpi-value" id="dash-kpi-risk-pop" style="color:#f43f5e;">12.450.200</h3>
+                <span class="kpi-subtext" id="dash-kpi-risk-pct"><i class="fa-solid fa-cloud-sun-rain"></i> Zonas 1 e 2 SARCOF (Corredor Sul/Sudoeste)</span>
+              </div>
+            </div>
+
+            <div class="dash-kpi-card kpi-water">
+              <div class="kpi-icon"><i class="fa-solid fa-faucet-drip"></i></div>
+              <div class="kpi-body">
+                <span class="kpi-label" data-i18n="dash_kpi_water">Sem Acesso a Água Potável</span>
+                <h3 class="kpi-value" id="dash-kpi-water-pct" style="color:#38bdf8;">46,8%</h3>
+                <span class="kpi-subtext">Média nacional Censo INE (ODS 6.1)</span>
+              </div>
+            </div>
+
+            <div class="dash-kpi-card kpi-fies">
+              <div class="kpi-icon"><i class="fa-solid fa-wheat-awn-circle-exclamation"></i></div>
+              <div class="kpi-body">
+                <span class="kpi-label" data-i18n="dash_kpi_fies">Insegurança Alimentar FIES</span>
+                <h3 class="kpi-value" id="dash-kpi-fies-pct" style="color:#fbbf24;">24,3%</h3>
+                <span class="kpi-subtext">Agregados familiares em carência alimentar severa</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Demographic Breakdown Quick Bar -->
+          <div class="dash-demog-row">
+            <div class="demog-box">
+              <div class="demog-box-header">
+                <span><i class="fa-solid fa-venus-mars" style="color:#ec4899;"></i> Estrutura por Género</span>
+                <strong id="dash-gender-ratio">49,4% H / 50,6% M</strong>
+              </div>
+              <div class="demog-bar">
+                <div class="demog-bar-seg" style="background:#38bdf8; width:49.4%;" title="Homens: 49.4%"></div>
+                <div class="demog-bar-seg" style="background:#ec4899; width:50.6%;" title="Mulheres: 50.6%"></div>
+              </div>
+            </div>
+
+            <div class="demog-box">
+              <div class="demog-box-header">
+                <span><i class="fa-solid fa-city" style="color:#a855f7;"></i> Distribuição Urbana vs Rural</span>
+                <strong id="dash-urban-ratio">67,4% Urb / 32,6% Rur</strong>
+              </div>
+              <div class="demog-bar">
+                <div class="demog-bar-seg" style="background:#a855f7; width:67.4%;" title="Urbana: 67.4%"></div>
+                <div class="demog-bar-seg" style="background:#10b981; width:32.6%;" title="Rural: 32.6%"></div>
+              </div>
+            </div>
+
+            <div class="demog-box">
+              <div class="demog-box-header">
+                <span><i class="fa-solid fa-child" style="color:#f59e0b;"></i> Faixa Etária Vulnerável (0–14 anos)</span>
+                <strong id="dash-children-ratio">47,0% Crianças</strong>
+              </div>
+              <div class="demog-bar">
+                <div class="demog-bar-seg" style="background:#f59e0b; width:47%;" title="Crianças 0-14: 47%"></div>
+                <div class="demog-bar-seg" style="background:#64748b; width:53%;" title="15+ anos: 53%"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Charts Row -->
+          <div class="dash-charts-grid">
+            <div class="dash-chart-card">
+              <div class="chart-header">
+                <h4><i class="fa-solid fa-chart-column" style="color:#38bdf8;"></i> População por Província & Nível de Risco El NiÃ±o</h4>
+                <span class="badge" style="background:rgba(56,189,248,0.15); color:#38bdf8;">21 Províncias (DPA 2025)</span>
+              </div>
+              <div class="chart-canvas-wrapper" style="height:360px;">
+                <canvas id="chart-dash-provinces"></canvas>
+              </div>
+            </div>
+
+            <div class="dash-chart-card">
+              <div class="chart-header">
+                <h4><i class="fa-solid fa-chart-radar" style="color:#10b981;"></i> Vulnerabilidade Hídrica & Alimentar por Província</h4>
+                <span class="badge" style="background:rgba(16,185,129,0.15); color:#34d399;">ODS 2.1 & ODS 6.1</span>
+              </div>
+              <div class="chart-canvas-wrapper" style="height:360px;">
+                <canvas id="chart-dash-vulnerability"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Provincial Ranking & Vulnerability Table -->
+          <div class="dash-table-card">
+            <div class="table-card-header">
+              <div class="table-card-title">
+                <h4><i class="fa-solid fa-table-list" style="color:#38bdf8;"></i> Matriz Provincial de Exposição e Risco El NiÃ±o (21 Províncias)</h4>
+                <p>Tabela comparativa com cruzamento de dados demográficos oficiais INE e indicadores de risco climático</p>
+              </div>
+              <div class="table-card-actions">
+                <input type="text" id="input-dash-prov-search" class="dash-search-input" placeholder="ð Filtrar província...">
+                <button type="button" class="btn-primary-mini" id="btn-dash-export-excel"><i class="fa-solid fa-file-excel"></i> Exportar</button>
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table class="dash-data-table" id="table-dash-provinces">
+                <thead>
+                  <tr>
+                    <th>Província</th>
+                    <th>Capital</th>
+                    <th>Pop. Censo 2024</th>
+                    <th>Projeção 2026</th>
+                    <th>Zona SARCOF-33</th>
+                    <th>Score Risco</th>
+                    <th>Sem Água (%)</th>
+                    <th>FIES Severa (%)</th>
+                    <th>Ação</th>
+                  </tr>
+                </thead>
+                <tbody id="tbody-dash-provinces">
+                  <!-- Populated dynamically via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- VIEW 3: MODELOS DE RISCO & FÓRMULAS OFICIAIS -->
+      <section class="app-view" id="view-formulas">
+        <div class="view-container">
+          <div class="view-header">
+            <div class="view-header-main">
+              <h2 class="view-title"><i class="fa-solid fa-square-root-variable" style="color:#34d399;"></i> <span data-i18n="form_title">Modelos Metodológicos de Risco & Laboratório de Equações</span></h2>
+              <p class="view-subtitle" data-i18n="form_subtitle">Quadro Teórico e Formulações Oficiais das Nações Unidas (UNDRR/IPCC), IPC/FEWS NET e FAO/PAM para Seca e El NiÃ±o</p>
+            </div>
+          </div>
+
+          <!-- Methodological Frameworks Cards Grid -->
+          <div class="formulas-grid">
+            
+            <!-- Card 1: UNDRR / IPCC -->
+            <div class="formula-card active" id="card-formula-undrr">
+              <div class="formula-badge"><i class="fa-solid fa-landmark"></i> Padrão Internacional Oficial</div>
+              <h3 class="formula-name">1. Quadro de Sendai (UNDRR / IPCC WGII)</h3>
+              <p class="formula-desc">Base do Relatório de Avaliação Global sobre Redução do Risco de Desastres (GAR). O risco é determinado pela interação entre a Ameaça (perigo físico), a Exposição de vidas e bens, e a Vulnerabilidade, moderado pela Capacidade de Adaptação local.</p>
+              <div class="formula-math-box">
+                <div class="math-expression">
+                  Risco = [ Perigo Ã (Exposição Â· w_e + Vulnerabilidade Â· w_v) ] / (Capacidade Â· w_c)
+                </div>
+              </div>
+              <div class="formula-params-list">
+                <div class="param-row"><span><strong>Perigo (H):</strong> Zona Climática SARCOF (BN=5, N-BN=3.5, N-AN=2, AN=1)</span></div>
+                <div class="param-row"><span><strong>Exposição (E):</strong> População Oficial INE e Densidade Habitacional</span></div>
+                <div class="param-row"><span><strong>Vulnerabilidade (V):</strong> Carência de água tratada, saneamento e dependência agrícola</span></div>
+                <div class="param-row"><span><strong>Capacidade (C):</strong> Presença de infraestruturas hídricas (ex: Canal do Cafu, barragens)</span></div>
+              </div>
+              <div class="formula-footer">
+                <span class="formula-source"><i class="fa-solid fa-link"></i> Fonte: <a href="https://www.undrr.org/implementing-sendai-framework/what-sendai-framework" target="_blank" rel="noopener">UNDRR Sendai Framework 2015-2030</a></span>
+              </div>
+            </div>
+
+            <!-- Card 2: IPC / FEWS NET -->
+            <div class="formula-card" id="card-formula-ipc">
+              <div class="formula-badge" style="color:#f59e0b; border-color:rgba(245,158,11,0.4);"><i class="fa-solid fa-wheat-awn"></i> Segurança Alimentar</div>
+              <h3 class="formula-name">2. IPC / FEWS NET (Integrated Phase Classification)</h3>
+              <p class="formula-desc">Modelo normativo utilizado pelas agências da ONU (FAO, PAM, UNICEF) e FEWS NET para classificar a severidade da insegurança alimentar aguda induzida por secas e quebras de colheita em 5 fases (Fase 1 Mínima a Fase 5 Catástrofe).</p>
+              <div class="formula-math-box">
+                <div class="math-expression">
+                  Score IPC = Ameaça_SARCOF Ã (0.40 Â· Défice Hídrico + 0.35 Â· FIES Severa + 0.25 Â· Pobreza Multidimensional)
+                </div>
+              </div>
+              <div class="formula-params-list">
+                <div class="param-row"><span><strong>Défice Hídrico:</strong> Anomalia de precipitação acumulada na bacia hidrográfica</span></div>
+                <div class="param-row"><span><strong>FIES Severa:</strong> Escala de Experiência de Insegurança Alimentar (Indicador ODS 2.1)</span></div>
+                <div class="param-row"><span><strong>Pobreza Multidimensional:</strong> Taxa de privação em bens, saúde e habitação (INE Angola)</span></div>
+              </div>
+              <div class="formula-footer">
+                <span class="formula-source"><i class="fa-solid fa-link"></i> Fonte: <a href="https://www.ipcinfo.org/ipc-manual-interactive/en/" target="_blank" rel="noopener">IPC Global Partners Technical Manual v3.1</a></span>
+              </div>
+            </div>
+
+            <!-- Card 3: WFP / FAO Consolidated -->
+            <div class="formula-card" id="card-formula-wfp">
+              <div class="formula-badge" style="color:#06b6d4; border-color:rgba(6,182,212,0.4);"><i class="fa-solid fa-hand-holding-heart"></i> Vulnerabilidade Humana</div>
+              <h3 class="formula-name">3. Modelo Consolidado WFP / FAO</h3>
+              <p class="formula-desc">Avaliação composta focada no impacto humanitário sobre populações rurais vulneráveis, priorizando agregados com crianças menores de 5 anos, mulheres grávidas e comunidades sem fontes de água perenes.</p>
+              <div class="formula-math-box">
+                <div class="math-expression">
+                  Ãndice WFP = Perigo Ã (0.20 Â· Densidade + 0.30 Â· Carência Água + 0.25 Â· Crianças 0-14 + 0.25 Â· Agrícola)
+                </div>
+              </div>
+              <div class="formula-params-list">
+                <div class="param-row"><span><strong>Crianças 0–14 anos:</strong> Cerca de 47% da população de Angola (Censo 2024)</span></div>
+                <div class="param-row"><span><strong>Acesso à Água:</strong> Privação de água canalizada e furos protegidos (ODS 6.1)</span></div>
+                <div class="param-row"><span><strong>Dependência Agrícola:</strong> Percentagem da população dependente de agricultura de sequeiro</span></div>
+              </div>
+              <div class="formula-footer">
+                <span class="formula-source"><i class="fa-solid fa-link"></i> Fonte: <a href="https://www.wfp.org/countries/angola" target="_blank" rel="noopener">WFP Comprehensive Food Security & Vulnerability Analysis (CFSVA)</a></span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Live Formula Customizer & Sensitivity Simulator -->
+          <div class="formula-simulator-card">
+            <div class="sim-header">
+              <h4><i class="fa-solid fa-sliders" style="color:#38bdf8;"></i> Simulador Interativo de Ponderações (Pesos de Sensibilidade)</h4>
+              <p>Ajuste os pesos dos fatores na fórmula ativa e observe como a classificação de risco das 21 províncias responde dinamicamente.</p>
+            </div>
+            <div class="sim-body">
+              <div class="sim-controls-grid">
+                <div class="sim-slider-group">
+                  <div class="sim-slider-label">
+                    <span>Peso da Ameaça SARCOF (<span id="sim-val-hazard">1.0</span>)</span>
+                  </div>
+                  <input type="range" class="range-slider" id="sim-range-hazard" min="0.5" max="2.0" step="0.1" value="1.0">
+                </div>
+                <div class="sim-slider-group">
+                  <div class="sim-slider-label">
+                    <span>Peso da População / Densidade (<span id="sim-val-expo">0.35</span>)</span>
+                  </div>
+                  <input type="range" class="range-slider" id="sim-range-expo" min="0.1" max="0.8" step="0.05" value="0.35">
+                </div>
+                <div class="sim-slider-group">
+                  <div class="sim-slider-label">
+                    <span>Peso da Carência de Água (<span id="sim-val-water">0.35</span>)</span>
+                  </div>
+                  <input type="range" class="range-slider" id="sim-range-water" min="0.1" max="0.8" step="0.05" value="0.35">
+                </div>
+                <div class="sim-slider-group">
+                  <div class="sim-slider-label">
+                    <span>Peso da Insegurança Alimentar FIES (<span id="sim-val-fies">0.30</span>)</span>
+                  </div>
+                  <input type="range" class="range-slider" id="sim-range-fies" min="0.1" max="0.8" step="0.05" value="0.30">
+                </div>
+              </div>
+              <div class="sim-actions">
+                <button type="button" class="btn-header" id="btn-apply-sim-formula" style="background:#10b981; color:#fff; font-weight:700;"><i class="fa-solid fa-check"></i> Aplicar Ponderação ao Mapa & Tabelas</button>
+                <button type="button" class="btn-header" id="btn-reset-sim-formula"><i class="fa-solid fa-rotate-left"></i> Restaurar Valores Oficiais Sendai</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- VIEW 4: HISTÓRICO & NARRATIVA DA SECA -->
+      <section class="app-view" id="view-narrative">
+        <div class="view-container">
+          <div class="view-header">
+            <div class="view-header-main">
+              <h2 class="view-title"><i class="fa-solid fa-timeline" style="color:#f59e0b;"></i> <span data-i18n="narr_title">Histórico das Secas em Angola & Narrativa Climática (1984–2026)</span></h2>
+              <p class="view-subtitle" data-i18n="narr_subtitle">Análise Retrospetiva de 40 Anos de El NiÃ±o, Impactos Socioeconómicos e Respostas Estruturais (PCESSA & Canal do Cafu)</p>
+            </div>
+          </div>
+
+          <!-- Editorial Summary Card -->
+          <div class="narrative-editorial-card">
+            <div class="editorial-badge"><i class="fa-solid fa-book-open"></i> Enquadramento Histórico e Físico</div>
+            <h3>A Vulnerabilidade Climática Estrutural do Sul de Angola</h3>
+            <p>As províncias do sul e sudoeste de Angola — nomeadamente <strong>Cunene, Huíla, Namibe, Cuando Cubango e a faixa sul de Benguela</strong> — encontram-se na transição entre os climas tropical semiárido e árido do Deserto do Namibe. Historicamente, os registos pluviométricos do INAMET e do Centro Climático da SADC comprovam que todos os grandes episódios de seca severa no sul coincidem com fases quentes do <strong>ENSO (El NiÃ±o Oscilação do Sul)</strong>.</p>
+            <p>Durante os anos de El NiÃ±o, as águas quentes anómalas no Oceano Pacífico perturbam as células de circulação atmosférica global, deslocando os sistemas convectivos para o Oceano Ãndico e desértico sudoeste africano. O resultado é o atraso crónico das chuvas (habitualmente de Outubro a Dezembro) e veranicos prolongados em pleno Janeiro e Fevereiro, justamente na fase crítica de floração e enchimento de grão das culturas de subsistência (massango, massambala e milho).</p>
+            <div class="editorial-quote">
+              <i class="fa-solid fa-quote-left"></i>
+              <span>"A resposta às secas no sul de Angola evoluiu decisivamente de um modelo de ajuda humanitária de emergência para projetos de engenharia hidráulica estruturante de longo prazo, simbolizados pelo Canal do Cafu e pelas barragens de retenção."</span>
+            </div>
+          </div>
+
+          <!-- Structural Projects Highlight Box -->
+          <div class="projects-highlight-card">
+            <div class="project-header">
+              <h4><i class="fa-solid fa-water" style="color:#38bdf8;"></i> Programa de Combate aos Efeitos da Seca no Sul de Angola (PCESSA)</h4>
+              <span class="badge" style="background:rgba(16,185,129,0.2); color:#34d399; font-weight:700;">Em Operação & Obras Estruturais</span>
+            </div>
+            <div class="projects-grid">
+              <div class="project-item">
+                <h5><i class="fa-solid fa-bridge-water" style="color:#38bdf8;"></i> Sistema Hídrico do CAFU (Cunene)</h5>
+                <p>Inaugurado em abril de 2022. Capta água no rio Cunene na localidade do Cafu e distribui ao longo de cerca de <strong>160 km de canal adutor a céu aberto</strong> até Cuvelai e Namacunde. Integra <strong>30 chimpakas</strong> (reservatórios escavados para gado), beneficiando mais de <strong>235.000 pessoas</strong> e <strong>250.000 cabeças de gado bovino</strong>.</p>
+              </div>
+              <div class="project-item">
+                <h5><i class="fa-solid fa-dam" style="color:#f59e0b;"></i> Barragens de Calucuve e Ndue (Cuvelai)</h5>
+                <p>Obras estruturais em execução no rio Cuvelai com capacidade combinada de retenção superior a <strong>245 milhões de metros cúbicos de água</strong>, destinadas a perenizar o abastecimento hídrico e alimentar uma rede de canais secundários nas comunas de Ondjiva, MÃ´ngua e arredores.</p>
+              </div>
+              <div class="project-item">
+                <h5><i class="fa-solid fa-droplet" style="color:#a855f7;"></i> Projetos Estruturantes do Namibe</h5>
+                <p>Transferência de água da bacia do Rio Bero e construção das barragens de Carunjamba e Inamangando para salvar os perímetros irrigados agrícolas e pecuários nos municípios de Moçâmedes, Bibala e Virei.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 40-Year Timeline of Droughts -->
+          <h3 class="timeline-section-title"><i class="fa-solid fa-clock-rotate-left"></i> Cronologia dos Grandes Episódios de Seca em Angola (1984–2026)</h3>
+          <div class="timeline-container" id="narrative-timeline-container">
+            <!-- Populated dynamically via JS from data/historical_droughts_and_news.json -->
+          </div>
+
+        </div>
+      </section>
+
+      <!-- VIEW 5: NOTÃCIAS & BOLETINS OFICIAIS -->
+      <section class="app-view" id="view-news">
+        <div class="view-container">
+          <div class="view-header">
+            <div class="view-header-main">
+              <h2 class="view-title"><i class="fa-solid fa-newspaper" style="color:#38bdf8;"></i> <span data-i18n="news_title">Notícias, Boletins Oficiais & Relatórios das Agências da ONU</span></h2>
+              <p class="view-subtitle" data-i18n="news_subtitle">Compilação Oficial de Notícias do Jornal de Angola, ANGOP, Agências das Nações Unidas (FAO, UNICEF, PAM, OCHA) e FEWS NET com Fontes e Links Clicáveis</p>
+            </div>
+          </div>
+
+          <!-- Filters & Search Bar -->
+          <div class="news-filter-bar">
+            <div class="news-source-chips" id="news-source-chips">
+              <button class="chip-btn active" data-source="ALL">Todas as Fontes</button>
+              <button class="chip-btn" data-source="Jornal de Angola">Jornal de Angola</button>
+              <button class="chip-btn" data-source="ONU">Nações Unidas / DRCT</button>
+              <button class="chip-btn" data-source="FAO">FAO Angola</button>
+              <button class="chip-btn" data-source="UNICEF">UNICEF</button>
+              <button class="chip-btn" data-source="WFP">PAM / WFP</button>
+              <button class="chip-btn" data-source="FEWS NET">FEWS NET</button>
+              <button class="chip-btn" data-source="INE">INE Angola</button>
+            </div>
+            <div class="news-search-box">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" id="input-news-search" placeholder="Buscar por palavra-chave, província, tema...">
+            </div>
+          </div>
+
+          <!-- News Cards Grid -->
+          <div class="news-cards-grid" id="news-cards-container">
+            <!-- Dynamically generated from data/historical_droughts_and_news.json -->
+          </div>
+
+        </div>
+      </section>
+
+      <!-- VIEW 6: BIBLIOTECA DE DOCUMENTOS & PDFS -->
+      <section class="app-view" id="view-docs">
+        <div class="view-container">
+          <div class="view-header">
+            <div class="view-header-main">
+              <h2 class="view-title"><i class="fa-solid fa-book-bookmark" style="color:#818cf8;"></i> <span data-i18n="docs_title">Biblioteca de Relatórios Técnicos & Repositório de Documentos</span></h2>
+              <p class="view-subtitle" data-i18n="docs_subtitle">Acesso a Relatórios Oficiais em PDF, Guias Metodológicos Internacionais, Boletins SARCOF e Carregador de Ficheiros</p>
+            </div>
+          </div>
+
+          <div class="docs-library-grid">
+            <!-- Documents list -->
+            <div class="docs-list-card">
+              <h4><i class="fa-solid fa-file-pdf" style="color:#f43f5e;"></i> Publicações & Relatórios Oficiais Disponíveis</h4>
+              <div class="docs-grid-items" id="docs-full-grid">
+                <!-- Populated from state.documents -->
+              </div>
+            </div>
+
+            <!-- Upload Zone card -->
+            <div class="docs-upload-card">
+              <h4><i class="fa-solid fa-cloud-arrow-up" style="color:#38bdf8;"></i> Carregar Novos Documentos ou Shapefiles</h4>
+              <p style="font-size:0.8rem; color:#94a3b8; margin-bottom:12px;">Carregue relatórios técnicos em PDF ou ficheiros GeoJSON locais para sobreposição e consulta offline.</p>
+              <div class="upload-dropzone" id="view-docs-dropzone" style="min-height: 180px;">
+                <i class="fa-solid fa-file-arrow-up" style="font-size: 36px; color:#38bdf8; margin-bottom:8px;"></i>
+                <p>Arraste ficheiros PDF ou GeoJSON aqui</p>
+                <span style="font-size:0.75rem; color:#64748b;">ou clique para selecionar do computador</span>
+                <input type="file" id="view-docs-file-input" style="display:none;" multiple accept=".pdf,.json,.geojson">
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
     </div>
   </div>
 
@@ -1777,6 +2218,6 @@
   <!-- SheetJS for Native Excel (.xlsx) Generation -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <!-- Main App Script -->
-  <script src="app.js?v=20260918_v27"></script>
+  <script src="app.js?v=20260918_v28"></script>
 </body>
 </html>

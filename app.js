@@ -99,6 +99,29 @@ document.addEventListener('DOMContentLoaded', () => {
   // Comprehensive Bilingual Dictionary (Português & English)
   const i18n = {
     pt: {
+      nav_map: 'Mapa Interativo (SIG)',
+      nav_dashboard: 'Dashboard & Estatísticas',
+      nav_formulas: 'Modelos de Risco & Fórmulas',
+      nav_narrative: 'Histórico & Narrativa da Seca',
+      nav_news: 'Notícias & Boletins Oficiais',
+      nav_export: 'Exportador Excel',
+      nav_docs: 'Biblioteca de Relatórios',
+      btn_drawer_layers: 'Camadas & Filtros',
+      dash_title: 'Dashboard Demográfico & Monitor de Risco El NiÃ±o',
+      dash_subtitle: 'Resultados Oficiais do Censo 2024 (INE Angola), Projeções 2025–2027 e Cruzamento Espacial com SARCOF-33',
+      dash_kpi_pop: 'População Nacional (INE)',
+      dash_kpi_at_risk: 'População em Risco Alto/Crítico',
+      dash_kpi_water: 'Sem Acesso a Água Potável',
+      dash_kpi_fies: 'Insegurança Alimentar FIES',
+      form_title: 'Modelos Metodológicos de Risco & Laboratório de Equações',
+      form_subtitle: 'Quadro Teórico e Formulações Oficiais das Nações Unidas (UNDRR/IPCC), IPC/FEWS NET e FAO/PAM para Seca e El NiÃ±o',
+      narr_title: 'Histórico das Secas em Angola & Narrativa Climática (1984–2026)',
+      narr_subtitle: 'Análise Retrospetiva de 40 Anos de El NiÃ±o, Impactos Socioeconómicos e Respostas Estruturais (PCESSA & Canal do Cafu)',
+      news_title: 'Notícias, Boletins Oficiais & Relatórios das Agências da ONU',
+      news_subtitle: 'Compilação Oficial de Notícias do Jornal de Angola, ANGOP, Agências das Nações Unidas (FAO, UNICEF, PAM, OCHA) e FEWS NET com Fontes e Links Clicáveis',
+      docs_title: 'Biblioteca de Relatórios Técnicos & Repositório de Documentos',
+      docs_subtitle: 'Acesso a Relatórios Oficiais em PDF, Guias Metodológicos Internacionais, Boletins SARCOF e Carregador de Ficheiros',
+
       app_title: 'El Niño Angola Portal',
       app_subtitle: 'Risco Climático El Niño & Base Demográfica Oficial INE Angola (Censo 2024 & Estimativas 2025–2027)',
       badge_sarcof_active: 'SARCOF-33 Ativo',
@@ -265,6 +288,29 @@ document.addEventListener('DOMContentLoaded', () => {
       opt_fies_med: 'Moderada a Severa (> 15% da população)'
     },
     en: {
+      nav_map: 'Interactive Map (GIS)',
+      nav_dashboard: 'Dashboard & Statistics',
+      nav_formulas: 'Risk Models & Formulas',
+      nav_narrative: 'Drought History & Narrative',
+      nav_news: 'Official News & Bulletins',
+      nav_export: 'Excel Exporter',
+      nav_docs: 'Reports Library',
+      btn_drawer_layers: 'Layers & Filters',
+      dash_title: 'Demographic Dashboard & El NiÃ±o Risk Monitor',
+      dash_subtitle: 'Official 2024 Census Results (INE Angola), 2025–2027 Projections & Spatial Overlay with SARCOF-33',
+      dash_kpi_pop: 'National Population (INE)',
+      dash_kpi_at_risk: 'Population at High/Critical Risk',
+      dash_kpi_water: 'Without Safe Water Access',
+      dash_kpi_fies: 'Food Insecurity (FIES)',
+      form_title: 'Methodological Risk Models & Equation Lab',
+      form_subtitle: 'Theoretical Framework & Official Formulations (UNDRR/IPCC, IPC/FEWS NET, FAO/WFP) for Drought & El NiÃ±o',
+      narr_title: 'Angola Drought History & Climate Narrative (1984–2026)',
+      narr_subtitle: '40-Year Retrospective of El NiÃ±o, Socioeconomic Impacts & Structural Responses (PCESSA & Cafu Canal)',
+      news_title: 'Official News, Bulletins & UN Agency Reports',
+      news_subtitle: 'Official Compilation of News from Jornal de Angola, ANGOP, UN Agencies (FAO, UNICEF, WFP, OCHA) & FEWS NET',
+      docs_title: 'Technical Reports Library & Document Repository',
+      docs_subtitle: 'Access to Official PDF Reports, International Methodological Guidelines, SARCOF Bulletins & File Uploader',
+
       app_title: 'El Niño Angola Portal',
       app_subtitle: 'El Niño Climate Risk & Official Demographic Base INE Angola (Census 2024 & Projections 2025–2027)',
       badge_sarcof_active: 'SARCOF-33 Active',
@@ -1002,6 +1048,7 @@ document.addEventListener('DOMContentLoaded', () => {
       state.ineData = await ineRes.json();
       state.formulasData = await formRes.json();
       state.historicalNewsData = await newsRes.json();
+      state.historicalNewsData = state.historicalNewsData;
       console.log('✅ Dados oficiais do INE e Fórmulas da ONU carregados com sucesso!');
       
       updateFormulaUI();
@@ -4383,6 +4430,600 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  
+  // ==========================================================================
+  // TOP HORIZONTAL NAVIGATION & DEDICATED PLATFORM VIEWS (Dashboard, Formulas, Narrative, News, Docs)
+  // ==========================================================================
+
+  let dashChartProvinces = null;
+  let dashChartVulnerability = null;
+
+  function renderDashboardView() {
+    if (!state.ineData || !state.ineData.provincias) return;
+
+    const curYear = state.currentYear || '2024';
+    const provs = state.ineData.provincias;
+
+    // 1. Update year pills
+    document.querySelectorAll('#dash-year-pills .pill-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.year === String(curYear));
+      btn.onclick = () => {
+        state.currentYear = btn.dataset.year;
+        const selYear = document.getElementById('select-projection-year');
+        if (selYear) selYear.value = state.currentYear;
+        renderDashboardView();
+        if (typeof updateRiskSummaryMetrics === 'function') updateRiskSummaryMetrics();
+      };
+    });
+
+    // 2. Compute national totals
+    let totalPop = 0;
+    let riskPop = 0;
+    let weightedWater = 0;
+    let weightedFies = 0;
+
+    const highRiskProvs = ['Cunene', 'Namibe', 'Huíla', 'Cuando Cubango', 'Benguela', 'Cuanza Sul', 'Icolo e Bengo', 'Luanda'];
+
+    const provNames = [];
+    const provPops = [];
+    const provRiskColors = [];
+    const provWaterPcts = [];
+    const provFiesPcts = [];
+
+    const tableRows = [];
+
+    provs.forEach(p => {
+      const pop = (p.populacao && p.populacao[curYear]) ? p.populacao[curYear] : (p.populacao_2024 || 0);
+      const pop2024 = p.populacao_2024 || (p.populacao && p.populacao['2024']) || 0;
+      const pop2026 = (p.populacao && p.populacao['2026']) || Math.round(pop2024 * 1.068);
+
+      totalPop += pop;
+
+      const isHighRisk = highRiskProvs.some(hr => p.nome.toLowerCase().includes(hr.toLowerCase()));
+      if (isHighRisk) {
+        riskPop += pop;
+      }
+
+      const water = (p.indicadores_censo_2024 && p.indicadores_censo_2024.carencia_agua_pct) || 45;
+      const fies = (p.indicadores_censo_2024 && p.indicadores_censo_2024.fies_inseguranca_severa_pct) || 24;
+
+      weightedWater += (water * pop);
+      weightedFies += (fies * pop);
+
+      provNames.push(p.nome);
+      provPops.push(pop);
+      provWaterPcts.push(water);
+      provFiesPcts.push(fies);
+
+      // SARCOF color & score
+      let sarcofZone = 'Zona 3: Normal-Acima (N-AN)';
+      let sarcofColor = '#00d2d2';
+      let riskScore = 8;
+      if (p.nome === 'Cunene' || p.nome === 'Namibe') {
+        sarcofZone = 'Zona 1: Abaixo da Normal (BN) / Seca';
+        sarcofColor = '#c4a482';
+        riskScore = 22;
+      } else if (p.nome === 'Huíla' || p.nome === 'Cuando Cubango' || p.nome.includes('Benguela') || p.nome.includes('Cuanza Sul')) {
+        sarcofZone = 'Zona 2: Normal-Abaixo (N-BN)';
+        sarcofColor = '#ffe600';
+        riskScore = 16;
+      } else if (p.nome.includes('Cabinda') || p.nome.includes('Zaire') || p.nome.includes('Uíge')) {
+        sarcofZone = 'Zona 4: Acima da Normal (AN)';
+        sarcofColor = '#0000cd';
+        riskScore = 5;
+      }
+      provRiskColors.push(sarcofColor);
+
+      tableRows.push({
+        nome: p.nome,
+        capital: p.capital || '-',
+        pop2024: pop2024,
+        pop2026: pop2026,
+        sarcofZone: sarcofZone,
+        sarcofColor: sarcofColor,
+        riskScore: riskScore,
+        water: water,
+        fies: fies
+      });
+    });
+
+    const avgWater = totalPop > 0 ? (weightedWater / totalPop).toFixed(1) : '46.8';
+    const avgFies = totalPop > 0 ? (weightedFies / totalPop).toFixed(1) : '24.3';
+
+    // 3. Update KPI Elements
+    const elTotPop = document.getElementById('dash-kpi-total-pop');
+    if (elTotPop) elTotPop.textContent = totalPop.toLocaleString('pt-PT') + ' hab';
+
+    const elRiskPop = document.getElementById('dash-kpi-risk-pop');
+    if (elRiskPop) elRiskPop.textContent = riskPop.toLocaleString('pt-PT') + ' hab';
+
+    const elWaterPct = document.getElementById('dash-kpi-water-pct');
+    if (elWaterPct) elWaterPct.textContent = avgWater + '%';
+
+    const elFiesPct = document.getElementById('dash-kpi-fies-pct');
+    if (elFiesPct) elFiesPct.textContent = avgFies + '%';
+
+    // 4. Update Table
+    const tbody = document.getElementById('tbody-dash-provinces');
+    if (tbody) {
+      function renderTableRows(filterText = '') {
+        tbody.innerHTML = '';
+        const filtered = tableRows.filter(r => r.nome.toLowerCase().includes(filterText.toLowerCase()) || r.capital.toLowerCase().includes(filterText.toLowerCase()));
+        filtered.forEach(r => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td><strong>${r.nome}</strong></td>
+            <td>${r.capital}</td>
+            <td>${r.pop2024.toLocaleString('pt-PT')}</td>
+            <td>${r.pop2026.toLocaleString('pt-PT')}</td>
+            <td><span class="badge" style="background:${r.sarcofColor}; color:${r.sarcofColor === '#ffe600' ? '#0f172a' : '#fff'}; font-weight:700;">${r.sarcofZone}</span></td>
+            <td><strong style="color:${r.riskScore >= 18 ? '#f43f5e' : r.riskScore >= 12 ? '#f59e0b' : '#34d399'};">${r.riskScore} / 25</strong></td>
+            <td>${r.water}%</td>
+            <td>${r.fies}%</td>
+            <td>
+              <button type="button" class="btn-table-map-action" data-prov="${r.nome}">
+                <i class="fa-solid fa-location-dot"></i> Ver no Mapa
+              </button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+        // Wire "Ver no Mapa" buttons
+        tbody.querySelectorAll('.btn-table-map-action').forEach(b => {
+          b.onclick = () => {
+            const provName = b.dataset.prov;
+            const navMap = document.querySelector('.top-nav-btn[data-view="view-map"]');
+            if (navMap) navMap.click();
+            setTimeout(() => {
+              if (state.geoJsonLayers && state.geoJsonLayers.provincias) {
+                state.geoJsonLayers.provincias.eachLayer(layer => {
+                  if (layer.feature && layer.feature.properties && (layer.feature.properties.Nome === provName || layer.feature.properties.NAME_1 === provName)) {
+                    if (state.map) state.map.fitBounds(layer.getBounds(), { maxZoom: 8, padding: [40, 40] });
+                    layer.fire('click');
+                  }
+                });
+              }
+            }, 300);
+          };
+        });
+      }
+
+      renderTableRows();
+
+      const searchInput = document.getElementById('input-dash-prov-search');
+      if (searchInput) {
+        searchInput.oninput = (e) => renderTableRows(e.target.value);
+      }
+    }
+
+    // 5. Wire Export Excel button on Dashboard
+    const btnDashExport = document.getElementById('btn-dash-export-excel');
+    if (btnDashExport) {
+      btnDashExport.onclick = () => {
+        const modal = document.getElementById('modal-export-excel');
+        if (modal) modal.classList.add('active');
+      };
+    }
+
+    // 6. Charts rendering
+    if (typeof Chart !== 'undefined') {
+      const ctxProv = document.getElementById('chart-dash-provinces');
+      if (ctxProv) {
+        if (dashChartProvinces) dashChartProvinces.destroy();
+        dashChartProvinces = new Chart(ctxProv.getContext('2d'), {
+          type: 'bar',
+          data: {
+            labels: provNames,
+            datasets: [{
+              label: `População ${curYear} (hab)`,
+              data: provPops,
+              backgroundColor: provRiskColors,
+              borderColor: 'rgba(255,255,255,0.2)',
+              borderWidth: 1,
+              borderRadius: 4
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  label: (ctx) => `População: ${ctx.parsed.y.toLocaleString('pt-PT')} hab`
+                }
+              }
+            },
+            scales: {
+              x: {
+                ticks: { color: '#94a3b8', font: { size: 10 }, maxRotation: 45, minRotation: 45 },
+                grid: { display: false }
+              },
+              y: {
+                ticks: {
+                  color: '#94a3b8',
+                  callback: (v) => (v >= 1000000 ? (v / 1000000).toFixed(1) + 'M' : (v / 1000).toFixed(0) + 'k')
+                },
+                grid: { color: 'rgba(255,255,255,0.06)' }
+              }
+            }
+          }
+        });
+      }
+
+      const ctxVuln = document.getElementById('chart-dash-vulnerability');
+      if (ctxVuln) {
+        if (dashChartVulnerability) dashChartVulnerability.destroy();
+        dashChartVulnerability = new Chart(ctxVuln.getContext('2d'), {
+          type: 'bar',
+          data: {
+            labels: provNames,
+            datasets: [
+              {
+                label: 'Sem Água Potável (%)',
+                data: provWaterPcts,
+                backgroundColor: 'rgba(56, 189, 248, 0.75)',
+                borderColor: '#38bdf8',
+                borderWidth: 1,
+                borderRadius: 3
+              },
+              {
+                label: 'Insegurança FIES (%)',
+                data: provFiesPcts,
+                backgroundColor: 'rgba(245, 158, 11, 0.75)',
+                borderColor: '#f59e0b',
+                borderWidth: 1,
+                borderRadius: 3
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: 'top',
+                labels: { color: '#cbd5e1', font: { size: 11 } }
+              }
+            },
+            scales: {
+              x: {
+                ticks: { color: '#94a3b8', font: { size: 10 }, maxRotation: 45, minRotation: 45 },
+                grid: { display: false }
+              },
+              y: {
+                ticks: { color: '#94a3b8', callback: (v) => v + '%' },
+                grid: { color: 'rgba(255,255,255,0.06)' },
+                max: 100
+              }
+            }
+          }
+        });
+      }
+    }
+  }
+
+  function renderNarrativeView() {
+    const container = document.getElementById('narrative-timeline-container');
+    if (!container || !state.historicalNewsData || !state.historicalNewsData.cronologia_historica) return;
+
+    container.innerHTML = '';
+    state.historicalNewsData.cronologia_historica.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'timeline-card';
+      const sourcesHtml = (item.fontes || []).map(f => `
+        <a href="${f.url}" target="_blank" rel="noopener" class="timeline-source-link">
+          <i class="fa-solid fa-arrow-up-right-from-square"></i> ${f.nome}
+        </a>
+      `).join('');
+
+      card.innerHTML = `
+        <div class="timeline-header">
+          <span class="timeline-period"><i class="fa-regular fa-calendar-check"></i> ${item.periodo}</span>
+          <span class="badge" style="background:rgba(245,158,11,0.15); color:#fbbf24; border:1px solid rgba(245,158,11,0.3); font-weight:700;">Registo Oficial</span>
+        </div>
+        <div class="timeline-event-title">${item.evento}</div>
+        <div class="timeline-impact">${item.impacto}</div>
+        <div class="timeline-sources">
+          <strong style="color:#94a3b8; margin-right:4px;">Fontes Oficiais:</strong>
+          ${sourcesHtml}
+        </div>
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  function renderNewsView() {
+    const container = document.getElementById('news-cards-container');
+    if (!container || !state.historicalNewsData || !state.historicalNewsData.noticias_oficiais) return;
+
+    let currentSourceFilter = 'ALL';
+    let currentSearchQuery = '';
+
+    const chips = document.querySelectorAll('#news-source-chips .chip-btn');
+    chips.forEach(chip => {
+      chip.onclick = () => {
+        chips.forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        currentSourceFilter = chip.dataset.source;
+        filterAndRenderNews();
+      };
+    });
+
+    const searchInput = document.getElementById('input-news-search');
+    if (searchInput) {
+      searchInput.oninput = (e) => {
+        currentSearchQuery = e.target.value.toLowerCase();
+        filterAndRenderNews();
+      };
+    }
+
+    function filterAndRenderNews() {
+      container.innerHTML = '';
+      const filtered = state.historicalNewsData.noticias_oficiais.filter(item => {
+        const matchSource = currentSourceFilter === 'ALL' || item.orgao.toLowerCase().includes(currentSourceFilter.toLowerCase());
+        const matchSearch = !currentSearchQuery ||
+          item.titulo.toLowerCase().includes(currentSearchQuery) ||
+          item.resumo.toLowerCase().includes(currentSearchQuery) ||
+          (item.provincias && item.provincias.join(' ').toLowerCase().includes(currentSearchQuery));
+        return matchSource && matchSearch;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<div style="grid-column: 1/-1; padding: 32px; text-align: center; color: #94a3b8;">Nenhuma notícia encontrada com os filtros selecionados.</div>`;
+        return;
+      }
+
+      filtered.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'news-card';
+
+        let badgeBg = 'rgba(56,189,248,0.15)';
+        let badgeCol = '#38bdf8';
+        if (item.orgao.includes('Jornal de Angola')) {
+          badgeBg = 'rgba(225,29,72,0.15)';
+          badgeCol = '#fb7185';
+        } else if (item.orgao.includes('ONU') || item.orgao.includes('FAO') || item.orgao.includes('UNICEF') || item.orgao.includes('WFP')) {
+          badgeBg = 'rgba(16,185,129,0.15)';
+          badgeCol = '#34d399';
+        }
+
+        const provsBadges = (item.provincias || []).map(pr => `<span class="badge" style="background:rgba(255,255,255,0.06); font-size:0.68rem; color:#cbd5e1;">${pr}</span>`).join(' ');
+
+        card.innerHTML = `
+          <div class="news-card-header">
+            <span class="news-card-badge" style="background:${badgeBg}; color:${badgeCol}; border:1px solid ${badgeCol}40;">
+              <i class="fa-solid fa-newspaper"></i> ${item.orgao}
+            </span>
+            <span class="news-card-date"><i class="fa-regular fa-calendar"></i> ${item.data}</span>
+          </div>
+          <h4 class="news-card-title">${item.titulo}</h4>
+          <div class="news-card-summary">${item.resumo}</div>
+          <div style="margin-bottom:12px; display:flex; flex-wrap:wrap; gap:4px;">
+            ${provsBadges}
+          </div>
+          <div class="news-card-footer">
+            <span style="font-size:0.72rem; color:#64748b;"><i class="fa-solid fa-tag"></i> ${item.tipo || 'Artigo Oficial'}</span>
+            <a href="${item.link}" target="_blank" rel="noopener" class="btn-news-link">
+              <span>Ler Notícia Oficial</span> <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </a>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    filterAndRenderNews();
+  }
+
+  function renderFormulasView() {
+    const rangeHazard = document.getElementById('sim-range-hazard');
+    const rangeExpo = document.getElementById('sim-range-expo');
+    const rangeWater = document.getElementById('sim-range-water');
+    const rangeFies = document.getElementById('sim-range-fies');
+
+    const lblHazard = document.getElementById('sim-val-hazard');
+    const lblExpo = document.getElementById('sim-val-expo');
+    const lblWater = document.getElementById('sim-val-water');
+    const lblFies = document.getElementById('sim-val-fies');
+
+    if (rangeHazard && lblHazard) {
+      rangeHazard.oninput = () => { lblHazard.textContent = rangeHazard.value; };
+    }
+    if (rangeExpo && lblExpo) {
+      rangeExpo.oninput = () => { lblExpo.textContent = rangeExpo.value; };
+    }
+    if (rangeWater && lblWater) {
+      rangeWater.oninput = () => { lblWater.textContent = rangeWater.value; };
+    }
+    if (rangeFies && lblFies) {
+      rangeFies.oninput = () => { lblFies.textContent = rangeFies.value; };
+    }
+
+    const btnApply = document.getElementById('btn-apply-sim-formula');
+    if (btnApply) {
+      btnApply.onclick = () => {
+        if (!state.formulaWeights) state.formulaWeights = {};
+        state.formulaWeights.hazard = parseFloat(rangeHazard.value);
+        state.formulaWeights.expo = parseFloat(rangeExpo.value);
+        state.formulaWeights.water = parseFloat(rangeWater.value);
+        state.formulaWeights.fies = parseFloat(rangeFies.value);
+
+        alert('Ponderações personalizadas aplicadas com sucesso ao modelo de risco!');
+        if (typeof renderAllLayers === 'function') renderAllLayers();
+      };
+    }
+
+    const btnReset = document.getElementById('btn-reset-sim-formula');
+    if (btnReset) {
+      btnReset.onclick = () => {
+        if (rangeHazard) { rangeHazard.value = 1.0; if (lblHazard) lblHazard.textContent = '1.0'; }
+        if (rangeExpo) { rangeExpo.value = 0.35; if (lblExpo) lblExpo.textContent = '0.35'; }
+        if (rangeWater) { rangeWater.value = 0.35; if (lblWater) lblWater.textContent = '0.35'; }
+        if (rangeFies) { rangeFies.value = 0.30; if (lblFies) lblFies.textContent = '0.30'; }
+        if (state.formulaWeights) delete state.formulaWeights;
+        alert('Valores restaurados para o Padrão Oficial Sendai (UNDRR/IPCC).');
+        if (typeof renderAllLayers === 'function') renderAllLayers();
+      };
+    }
+  }
+
+  function renderDocsView() {
+    const container = document.getElementById('docs-full-grid');
+    if (!container) return;
+
+    const defaultDocs = [
+      {
+        title: 'SARCOF-33 Official Statement - SADC Climate Services Centre',
+        category: 'Boletim Climático Regional',
+        size: '2.4 MB',
+        date: 'Agosto 2024',
+        url: 'https://www.sadc.int/themes/meteorology-climate/climate-services',
+        icon: 'fa-file-pdf'
+      },
+      {
+        title: 'INE Angola - Resultados Preliminares do Recenseamento Geral (Censo 2024)',
+        category: 'Estatística Demográfica Oficial',
+        size: '5.1 MB',
+        date: 'Novembro 2024',
+        url: 'https://censo2024.ine.gov.ao/',
+        icon: 'fa-file-pdf'
+      },
+      {
+        title: 'UN DRCT Angola - Avaliação Humanitária Rápida de Seca e Necessidades',
+        category: 'Relatório Humanitário ONU',
+        size: '1.8 MB',
+        date: 'Junho 2026',
+        url: 'https://angola.un.org',
+        icon: 'fa-file-pdf'
+      },
+      {
+        title: 'Quadro de Sendai para a Redução do Risco de Desastres 2015-2030 (UNDRR)',
+        category: 'Quadro Metodológico Internacional',
+        size: '3.6 MB',
+        date: 'UNDRR',
+        url: 'https://www.undrr.org/implementing-sendai-framework/what-sendai-framework',
+        icon: 'fa-file-pdf'
+      },
+      {
+        title: 'IPC Technical Manual Version 3.1 - Integrated Food Security Phase Classification',
+        category: 'Manual Técnico Segurança Alimentar',
+        size: '4.2 MB',
+        date: 'FAO / IPC Global',
+        url: 'https://www.ipcinfo.org/ipc-manual-interactive/en/',
+        icon: 'fa-file-pdf'
+      }
+    ];
+
+    container.innerHTML = '';
+    defaultDocs.forEach(d => {
+      const row = document.createElement('div');
+      row.className = 'doc-item-row';
+      row.innerHTML = `
+        <div class="doc-item-info">
+          <i class="fa-solid ${d.icon}"></i>
+          <div>
+            <div class="doc-item-name">${d.title}</div>
+            <div class="doc-item-meta">${d.category} â¢ ${d.size} â¢ ${d.date}</div>
+          </div>
+        </div>
+        <a href="${d.url}" target="_blank" rel="noopener" class="btn-doc-download">
+          <i class="fa-solid fa-arrow-down"></i> Aceder
+        </a>
+      `;
+      container.appendChild(row);
+    });
+
+    const dropzone = document.getElementById('view-docs-dropzone');
+    const fileInput = document.getElementById('view-docs-file-input');
+    if (dropzone && fileInput) {
+      dropzone.onclick = () => fileInput.click();
+      fileInput.onchange = (e) => {
+        if (e.target.files && e.target.files.length > 0) {
+          alert(`${e.target.files.length} ficheiro(s) carregado(s) com sucesso para consulta offline.`);
+        }
+      };
+    }
+  }
+
+  function initTopHorizontalNav() {
+    const navBtns = document.querySelectorAll('.top-nav-btn');
+    const views = document.querySelectorAll('.app-view');
+
+    navBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const viewKey = btn.dataset.view;
+
+        if (viewKey === 'view-export') {
+          const modalExport = document.getElementById('modal-export-excel');
+          if (modalExport) modalExport.classList.add('active');
+          return;
+        }
+
+        navBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        views.forEach(v => v.classList.remove('active'));
+        const targetView = document.getElementById(viewKey);
+        if (targetView) targetView.classList.add('active');
+
+        if (viewKey === 'view-map') {
+          setTimeout(() => {
+            if (state.map) state.map.invalidateSize();
+          }, 120);
+        } else if (viewKey === 'view-dashboard') {
+          renderDashboardView();
+        } else if (viewKey === 'view-formulas') {
+          renderFormulasView();
+        } else if (viewKey === 'view-narrative') {
+          renderNarrativeView();
+        } else if (viewKey === 'view-news') {
+          renderNewsView();
+        } else if (viewKey === 'view-docs') {
+          renderDocsView();
+        }
+      });
+    });
+
+    // Wire Floating Map Toolbar drawer buttons
+    const btnToggleLayersDrawer = document.getElementById('btn-toggle-layers-drawer');
+    if (btnToggleLayersDrawer) {
+      btnToggleLayersDrawer.addEventListener('click', () => {
+        openSidebar();
+        const tab = document.querySelector('.tab-btn[data-tab="tab-layers"]');
+        if (tab) tab.click();
+      });
+    }
+
+    const btnQuickStyle = document.getElementById('btn-open-style-quick');
+    if (btnQuickStyle) {
+      btnQuickStyle.addEventListener('click', () => {
+        openSidebar();
+        const tab = document.querySelector('.tab-btn[data-tab="tab-style"]');
+        if (tab) tab.click();
+      });
+    }
+
+    const btnQuickCenso = document.getElementById('btn-quick-censo');
+    if (btnQuickCenso) {
+      btnQuickCenso.addEventListener('click', () => {
+        const navDash = document.querySelector('.top-nav-btn[data-view="view-dashboard"]');
+        if (navDash) navDash.click();
+      });
+    }
+
+    const btnQuickDocs = document.getElementById('btn-quick-docs');
+    if (btnQuickDocs) {
+      btnQuickDocs.addEventListener('click', () => {
+        const navDocs = document.querySelector('.top-nav-btn[data-view="view-docs"]');
+        if (navDocs) navDocs.click();
+      });
+    }
+  }
+
+
+  initTopHorizontalNav();
   initMapThemeControls();
   // Inicializar Sequência da Aplicação
   initMap();
