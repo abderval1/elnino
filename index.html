@@ -18,7 +18,7 @@
   <link rel="stylesheet" href="./vendor/leaflet.css">
   
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="styles.css?v=20260920_v30">
+  <link rel="stylesheet" href="styles.css?v=20260920_v31">
 <style id="weather-live-css">
 .weather-mini-card {
   background: rgba(2,6,23,0.6);
@@ -129,6 +129,10 @@
         <button type="button" class="top-nav-btn" data-view="view-docs" id="nav-btn-docs">
           <i class="fa-solid fa-book-bookmark"></i>
           <span data-i18n="nav_docs">Biblioteca de Relatórios</span>
+        </button>
+        <button type="button" class="top-nav-btn" data-view="view-elnino" id="nav-btn-elnino" style="border-color:rgba(239,68,68,0.5); color:#f87171; background:rgba(239,68,68,0.07);">
+          <i class="fa-solid fa-fire-flame-curved" style="color:#ef4444;"></i>
+          <span>El Ni&#xf1;o Angola &amp; Prov&iacute;ncias</span>
         </button>
       </div>
     </nav>
@@ -971,45 +975,51 @@
               </div>
 
               <!-- Live SST Anomaly Map via Copernicus/ERDDAP -->
+                            <!-- NASA GIBS Satellite Layers Panel (replaces broken Copernicus iframe) -->
               <div class="sat-chart-card">
                 <div class="sat-chart-header">
                   <div>
-                    <h5><i class="fa-solid fa-satellite" style="color:#a855f7;"></i> Mapa SST — Sentinel-3 SLSTR | Copernicus Marine Service</h5>
-                    <p>Temperatura Superficial do Mar em tempo real. Fonte: <strong>Copernicus Marine Environment Monitoring Service (CMEMS)</strong>.</p>
+                    <h5><i class="fa-solid fa-satellite" style="color:#a855f7;"></i> Camadas Sat&#xe9;lite no Mapa — NASA GIBS / MODIS (gratuito)</h5>
+                    <p>Seleccione uma camada para activar <strong>directamente no mapa principal</strong> acima. <a href="https://worldview.earthdata.nasa.gov/?v=-25,-38,55,10&t=2026-09-01-T00:00:00Z&l=MODIS_Terra_CorrectedReflectance_TrueColor,MODIS_Terra_L3_NDVI_8Day,Coastlines_15m&lg=false" target="_blank" rel="noopener" style="color:#38bdf8;">NASA Worldview</a></p>
                   </div>
-                  <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
-                    <button type="button" class="sat-toggle-btn active" data-sat-layer="sst" id="btn-sat-sst">SST Anomalia</button>
-                    <button type="button" class="sat-toggle-btn" data-sat-layer="ndvi" id="btn-sat-ndvi">NDVI / Vegetação</button>
-                    <button type="button" class="sat-toggle-btn" data-sat-layer="drought" id="btn-sat-drought">Índice de Seca</button>
-                    <a href="https://marine.copernicus.eu" target="_blank" rel="noopener" class="sat-source-link">
-                      <i class="fa-solid fa-arrow-up-right-from-square"></i> Copernicus
-                    </a>
+                  <div style="display:flex; gap:5px; align-items:center; flex-wrap:wrap;">
+                    <button type="button" class="sat-toggle-btn active" data-sat-layer="none" id="btn-sat-none">Sem Camada</button>
+                    <button type="button" class="sat-toggle-btn" data-sat-layer="sst_modis" id="btn-sat-sst">SST Temp. Mar</button>
+                    <button type="button" class="sat-toggle-btn" data-sat-layer="ndvi_terra" id="btn-sat-ndvi">NDVI Vegeta&#xe7;&#xe3;o</button>
+                    <button type="button" class="sat-toggle-btn" data-sat-layer="lst_terra" id="btn-sat-lst">LST Solo</button>
+                    <button type="button" class="sat-toggle-btn" data-sat-layer="true_color_terra" id="btn-sat-rgb">Cor Natural</button>
+                    <button type="button" class="sat-toggle-btn" data-sat-layer="precip_gpm" id="btn-sat-precip" style="color:#818cf8; border-color:rgba(99,102,241,0.4);">Precipita&#xe7;&#xe3;o</button>
                   </div>
                 </div>
-                <div class="sat-map-embed" id="sat-map-container">
-                  <!-- Default: SST Copernicus via NCEI viewer -->
-                  <iframe id="sat-map-iframe" class="sat-iframe"
-                    src="https://resources.marine.copernicus.eu/viewer/expert?dataset=SST_GLO_SST_L4_NRT_OBSERVATIONS_010_001"
-                    title="Copernicus Marine SST Viewer"
-                    loading="lazy"
-                    sandbox="allow-scripts allow-same-origin allow-popups allow-forms">
-                  </iframe>
-                  <div class="sat-iframe-fallback" id="sat-iframe-fallback" style="display:none;">
-                    <i class="fa-solid fa-satellite" style="font-size:2rem; color:#38bdf8; margin-bottom:8px;"></i>
-                    <p>Visualizador Copernicus CMEMS carregando...</p>
-                    <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:center;">
-                      <a href="https://resources.marine.copernicus.eu/viewer/expert?dataset=SST_GLO_SST_L4_NRT_OBSERVATIONS_010_001" target="_blank" rel="noopener" class="btn-sat-external">
-                        <i class="fa-solid fa-water"></i> Abrir SST Copernicus
+                <div id="sat-layer-info" style="background:rgba(2,6,23,0.7); border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:10px 12px; display:flex; align-items:flex-start; gap:10px; min-height:80px;">
+                  <i class="fa-solid fa-info-circle" style="color:#38bdf8; margin-top:2px; flex-shrink:0;"></i>
+                  <div style="flex:1;">
+                    <p style="font-size:0.78rem; font-weight:700; color:#e2e8f0; margin:0 0 3px 0;" id="sat-layer-name">Nenhuma camada activa</p>
+                    <p style="font-size:0.72rem; color:#94a3b8; margin:0 0 8px 0; line-height:1.4;" id="sat-layer-desc">Seleccione uma camada acima para a visualizar sobre o mapa Leaflet principal. Fonte: NASA GIBS (WMTS p&#xfa;blico, sem autentica&#xe7;&#xe3;o).</p>
+                    <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                      <button type="button" onclick="document.getElementById('modal-satellite').style.display='flex'" class="btn-sat-external" style="font-size:0.72rem;">
+                        <i class="fa-solid fa-up-right-and-down-left-from-center"></i> Maximizar NASA Worldview
+                      </button>
+                      <a href="https://worldview.earthdata.nasa.gov/?v=-25,-38,55,10&t=2026-09-01-T00:00:00Z&l=MODIS_Terra_CorrectedReflectance_TrueColor,MODIS_Terra_L3_NDVI_8Day,Coastlines_15m,Reference_Labels_15m&lg=false" target="_blank" rel="noopener" class="btn-sat-external" style="font-size:0.72rem; color:#fbbf24; border-color:rgba(251,191,36,0.4);">
+                        <i class="fa-solid fa-globe"></i> Abrir Worldview
                       </a>
-                      <a href="https://apps.sentinel-hub.com/sentinel-playground/?source=S3SLSTR&zoom=3&lat=-11.5&lng=17&time=2024-06-01|2024-09-01&preset=2_NATURAL_COLOUR" target="_blank" rel="noopener" class="btn-sat-external" style="background:rgba(168,85,247,0.15); border-color:rgba(168,85,247,0.4); color:#a855f7;">
-                        <i class="fa-solid fa-satellite-dish"></i> Sentinel-3 Hub
+                      <a href="https://apps.sentinel-hub.com/eo-browser/?zoom=5&lat=-12&lng=18&themeId=DEFAULT-THEME" target="_blank" rel="noopener" class="btn-sat-external" style="font-size:0.72rem; color:#c084fc; border-color:rgba(168,85,247,0.4);">
+                        <i class="fa-solid fa-satellite-dish"></i> Sentinel EO Browser
                       </a>
-                      <a href="https://worldview.earthdata.nasa.gov/?v=-30,-40,60,10&t=2024-09-01-T00:00:00Z&l=MODIS_Aqua_L3_SST_MidIR_9km_Night_Daily,Coastlines_15m,Reference_Labels_15m&lg=false" target="_blank" rel="noopener" class="btn-sat-external" style="background:rgba(245,158,11,0.15); border-color:rgba(245,158,11,0.4); color:#fbbf24;">
-                        <i class="fa-solid fa-globe"></i> NASA Worldview SST
+                      <a href="https://marine.copernicus.eu/access-data" target="_blank" rel="noopener" class="btn-sat-external" style="font-size:0.72rem; color:#34d399; border-color:rgba(52,211,153,0.4);">
+                        <i class="fa-solid fa-water"></i> Copernicus Marine
                       </a>
                     </div>
                   </div>
+                  <!-- Opacity / Opacity slider -->
+                  <div style="display:flex; flex-direction:column; align-items:center; gap:4px; flex-shrink:0;">
+                    <label style="font-size:0.66rem; color:#64748b; text-align:center;">Opacidade</label>
+                    <input type="range" id="sat-layer-opacity" min="10" max="100" value="70" step="5"
+                      style="width:60px; accent-color:#38bdf8; writing-mode:vertical-lr; direction:rtl; height:70px;">
+                    <span style="font-size:0.66rem; color:#64748b;" id="sat-opacity-label">70%</span>
+                  </div>
                 </div>
+              </div>
               </div>
             </div>
 
@@ -1571,6 +1581,71 @@
             </div>
           </div>
 
+        </div>
+      </section>
+
+
+      <!-- VIEW: EL NINO ANGOLA PROVINCÍAS E MUNICÍPIOS -->
+      <section class="app-view" id="view-elnino">
+        <div class="view-container">
+          <div class="view-header">
+            <div class="view-header-main">
+              <h2 class="view-title">
+                <i class="fa-solid fa-fire-flame-curved" style="color:#ef4444;"></i>
+                Monitor El Ni&#xf1;o Angola 2026/2027 &#x2014; Impacto por Prov&#xed;ncias e Munic&#xed;pios
+              </h2>
+              <p class="view-subtitle">
+                Dados oficiais: FEWS NET IPC Phase, SARCOF-33, INE Censo 2024, WFP, UNICEF, NOAA CPC
+                &mdash; ONI Atual: <strong id="elnino-view-oni-val" style="color:#ef4444;">+2.52&#xb0;C &#x2014; El Ni&#xf1;o Muito Forte</strong>
+              </p>
+            </div>
+            <div class="view-header-actions" style="display:flex; gap:8px; flex-wrap:wrap;">
+              <a href="https://fews.net/southern-africa/angola" target="_blank" rel="noopener" class="sat-source-link">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i> FEWS NET Angola
+              </a>
+              <a href="https://www.cpc.ncep.noaa.gov/products/analysis_monitoring/enso_advisory/ensodisc.shtml" target="_blank" rel="noopener" class="sat-source-link" style="border-color:rgba(251,191,36,0.4); color:#fbbf24;">
+                <i class="fa-solid fa-file-lines"></i> Boletim ENSO NOAA
+              </a>
+              <a href="https://censo2024.ine.gov.ao/" target="_blank" rel="noopener" class="sat-source-link" style="border-color:rgba(16,185,129,0.4); color:#34d399;">
+                <i class="fa-solid fa-users"></i> INE Censo 2024
+              </a>
+            </div>
+          </div>
+
+          <!-- National KPI summary row -->
+          <div id="elnino-kpis" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:10px; margin-bottom:18px;">
+            <!-- JS populated -->
+          </div>
+
+          <!-- IPC Legend bar -->
+          <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:14px; padding:9px 14px; background:rgba(15,23,42,0.6); border-radius:8px; border:1px solid rgba(255,255,255,0.06);">
+            <span style="font-size:0.74rem; font-weight:700; color:#94a3b8;"><i class="fa-solid fa-circle-info"></i> Escala IPC:</span>
+            <span style="background:#2e7d32; color:#fff; padding:2px 9px; border-radius:10px; font-size:0.71rem; font-weight:700;">1 M&#xed;nimo</span>
+            <span style="background:#f9a825; color:#000; padding:2px 9px; border-radius:10px; font-size:0.71rem; font-weight:700;">2 Stress</span>
+            <span style="background:#e06c00; color:#fff; padding:2px 9px; border-radius:10px; font-size:0.71rem; font-weight:700;">3 Crise</span>
+            <span style="background:#c00000; color:#fff; padding:2px 9px; border-radius:10px; font-size:0.71rem; font-weight:700;">4 Emerg&#xea;ncia</span>
+            <span style="background:#4a0000; color:#fff; padding:2px 9px; border-radius:10px; font-size:0.71rem; font-weight:700;">5 Cat&#xe1;strofe</span>
+            <span style="margin-left:auto; font-size:0.67rem; color:#475569;">
+              Fonte: <a href="https://fews.net/southern-africa/angola" target="_blank" rel="noopener" style="color:#38bdf8;">FEWS NET / IPC Global</a>
+            </span>
+          </div>
+
+          <!-- Province + Municipality cards - JS populated -->
+          <div id="elnino-provinces-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(400px, 1fr)); gap:14px; margin-bottom:16px;">
+          </div>
+
+          <!-- Footer sources -->
+          <div style="padding:10px 14px; background:rgba(15,23,42,0.5); border-radius:8px; border:1px solid rgba(255,255,255,0.05); font-size:0.71rem; color:#475569; line-height:1.6;">
+            <i class="fa-solid fa-circle-check" style="color:#10b981;"></i>
+            <strong style="color:#64748b;">Fontes:</strong>
+            FEWS NET Angola Food Security Outlook Ago 2026 &middot;
+            SARCOF-33 (SADC CSC) &middot;
+            INE Angola Censo 2024 &middot;
+            UNICEF Angola Nutrition Report 2026 &middot;
+            WFP Angola VAM 2025 &middot;
+            NOAA CPC SST Ni&#xf1;o3.4 (+2.52&#xb0;C Ago 2026) &middot;
+            INAMET Boletim Agrometeorol&#xf3;gico 2026
+          </div>
         </div>
       </section>
 
@@ -2492,6 +2567,40 @@
   <!-- SheetJS for Native Excel (.xlsx) Generation -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <!-- Main App Script -->
-  <script src="app.js?v=20260920_v30"></script>
+  <script src="app.js?v=20260920_v31"></script>
+
+        <!-- Satellite Maximize Modal -->
+        <div id="modal-satellite" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:9999; align-items:center; justify-content:center; padding:20px;">
+          <div style="width:95vw; height:92vh; background:#0a0f1a; border:1px solid rgba(56,189,248,0.3); border-radius:12px; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 25px 80px rgba(0,0,0,0.8);">
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 16px; border-bottom:1px solid rgba(255,255,255,0.08); background:rgba(2,6,23,0.6); flex-shrink:0;">
+              <div style="display:flex; align-items:center; gap:10px; font-size:0.85rem; font-weight:700; color:#e2e8f0;">
+                <i class="fa-solid fa-satellite" style="color:#a855f7;"></i>
+                NASA Worldview — Sat&#xe9;lite Angola | El Ni&#xf1;o Monitor
+                <span style="font-size:0.68rem; color:#64748b; font-weight:400;">Use os controlos da NASA para navegar, alterar camadas, datas e exportar imagens</span>
+              </div>
+              <div style="display:flex; gap:8px;">
+                <select id="sat-modal-layer-select" onchange="document.getElementById('sat-worldview-iframe').src=this.value" style="background:rgba(15,23,42,0.9); border:1px solid rgba(56,189,248,0.3); color:#e2e8f0; font-size:0.75rem; padding:4px 8px; border-radius:6px;">
+                  <option value="https://worldview.earthdata.nasa.gov/?v=-25,-38,55,10&t=2026-09-01-T00:00:00Z&l=MODIS_Terra_CorrectedReflectance_TrueColor,MODIS_Terra_L3_NDVI_8Day,Coastlines_15m,Reference_Labels_15m&lg=false">NDVI + Cor Natural (Angola)</option>
+                  <option value="https://worldview.earthdata.nasa.gov/?v=-25,-38,55,10&t=2026-09-01-T00:00:00Z&l=MODIS_Aqua_L3_SST_MidIR_9km_Night_Daily,Coastlines_15m,Reference_Labels_15m&lg=false">SST Temperatura Mar</option>
+                  <option value="https://worldview.earthdata.nasa.gov/?v=-180,-90,180,90&t=2026-09-01-T00:00:00Z&l=MODIS_Terra_CorrectedReflectance_TrueColor,Coastlines_15m&lg=false">Vista Global El Ni&#xf1;o (Pac&#xed;fico)</option>
+                  <option value="https://worldview.earthdata.nasa.gov/?v=-25,-38,55,10&t=2026-09-01-T00:00:00Z&l=MODIS_Terra_Land_Surface_Temp_Day,Coastlines_15m,Reference_Labels_15m&lg=false">Temperatura Superf&#xed;cie Terrestre (LST)</option>
+                </select>
+                <a href="https://worldview.earthdata.nasa.gov/?v=-25,-38,55,10&t=2026-09-01-T00:00:00Z&l=MODIS_Terra_CorrectedReflectance_TrueColor,MODIS_Terra_L3_NDVI_8Day,Coastlines_15m&lg=false" target="_blank" rel="noopener" class="btn-sat-external" style="font-size:0.75rem;">
+                  <i class="fa-solid fa-arrow-up-right-from-square"></i> Abrir em Nova Janela
+                </a>
+                <button type="button" onclick="document.getElementById('modal-satellite').style.display='none';" style="background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.4); color:#f87171; padding:5px 14px; border-radius:6px; cursor:pointer; font-size:0.82rem; font-weight:700;">
+                  <i class="fa-solid fa-xmark"></i> Fechar
+                </button>
+              </div>
+            </div>
+            <iframe id="sat-worldview-iframe"
+              src="https://worldview.earthdata.nasa.gov/?v=-25,-38,55,10&t=2026-09-01-T00:00:00Z&l=MODIS_Terra_CorrectedReflectance_TrueColor,MODIS_Terra_L3_NDVI_8Day,Coastlines_15m,Reference_Labels_15m&lg=false"
+              style="flex:1; border:none; width:100%; height:100%;"
+              title="NASA Worldview Satellite Angola"
+              loading="lazy"
+              allow="fullscreen">
+            </iframe>
+          </div>
+        </div>
 </body>
 </html>

@@ -4949,6 +4949,142 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   // ============================================================
+  // EL NIÑO ANGOLA VIEW — Province & Municipality Impact Renderer
+  // Data: data/elnino_angola_impact.json
+  // ============================================================
+  async function loadAndRenderElNinoView() {
+    if (state.elninoImpactData) { renderElNinoView(state.elninoImpactData); return; }
+    try {
+      const resp = await fetch('data/elnino_angola_impact.json?v=' + Date.now());
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      state.elninoImpactData = await resp.json();
+      renderElNinoView(state.elninoImpactData);
+    } catch(e) {
+      console.error('Could not load elnino_angola_impact.json', e);
+      const grid = document.getElementById('elnino-provinces-grid');
+      if (grid) grid.innerHTML = '<div style="color:#ef4444; padding:20px;">Erro a carregar dados. Tente recarregar a página.</div>';
+    }
+  }
+
+  function renderElNinoView(data) {
+    if (!data) return;
+
+    // Update ONI value in header
+    const oniEl = document.getElementById('elnino-view-oni-val');
+    if (oniEl && state.elninoCurrentONI !== undefined) {
+      const oni = state.elninoCurrentONI;
+      oniEl.textContent = (oni > 0 ? '+' : '') + oni.toFixed(2) + '°C — ' + (state.elninoCurrentPhase || 'El Niño Muito Forte');
+    }
+
+    const rn = data.resumo_nacional;
+    const fmt = n => n ? n.toLocaleString('pt-AO') : 'N/D';
+
+    // KPI cards
+    const kpiContainer = document.getElementById('elnino-kpis');
+    if (kpiContainer && rn) {
+      const kpis = [
+        { icon: 'fa-users', label: 'Pop. em Risco', value: fmt(rn.populacao_risco_total), color: '#ef4444', suffix: 'pessoas' },
+        { icon: 'fa-map-location-dot', label: 'Províncias Afectadas', value: rn.provincias_afetadas, color: '#f97316', suffix: 'de 21' },
+        { icon: 'fa-triangle-exclamation', label: 'Municípios IPC 3+', value: rn.municipios_ipc_fase3_4, color: '#c00000', suffix: 'municípios' },
+        { icon: 'fa-cloud-rain', label: 'Défice Chuva Médio', value: rn.deficit_precipitacao_medio_pct + '%', color: '#38bdf8', suffix: 'abaixo normal' },
+        { icon: 'fa-child', label: 'Crianças Desnutrição', value: fmt(rn.criancas_desnutricao_aguda), color: '#fbbf24', suffix: 'IPC Fase 3+' },
+        { icon: 'fa-wheat-awn-circle-exclamation', label: 'Inseg. Alimentar Severa', value: fmt(rn.pessoas_inseguranca_alimentar_severa), color: '#f43f5e', suffix: 'pessoas' },
+        { icon: 'fa-cow', label: 'Perda de Gado Est.', value: fmt(rn.perdas_gado_estimado), color: '#a855f7', suffix: 'cabeças' },
+        { icon: 'fa-house-crack', label: 'GAM Nacional Média', value: rn.gam_prevalencia_media_pct + '%', color: '#fb923c', suffix: 'desnutrição aguda' },
+      ];
+      kpiContainer.innerHTML = kpis.map(k => `
+        <div style="background:rgba(15,23,42,0.7); border:1px solid rgba(${k.color === '#ef4444' ? '239,68,68' : '255,255,255'},0.1); border-left:3px solid ${k.color}; border-radius:8px; padding:10px 12px;">
+          <i class="fa-solid ${k.icon}" style="color:${k.color}; font-size:1.1rem; margin-bottom:6px; display:block;"></i>
+          <div style="font-size:0.67rem; font-weight:600; color:#64748b; text-transform:uppercase; letter-spacing:0.4px; margin-bottom:2px;">${k.label}</div>
+          <div style="font-size:1.4rem; font-weight:800; color:${k.color}; font-family:'Outfit',sans-serif; line-height:1;">${k.value}</div>
+          <div style="font-size:0.65rem; color:#475569; margin-top:2px;">${k.suffix}</div>
+        </div>`).join('');
+    }
+
+    // Province cards
+    const grid = document.getElementById('elnino-provinces-grid');
+    if (!grid || !data.provincias) return;
+
+    grid.innerHTML = data.provincias.map(prov => {
+      const riskColors = { 'critico': '#c00000', 'elevado': '#e06c00', 'moderado': '#f9a825', 'baixo': '#2e7d32', 'minimo': '#1565c0' };
+      const riskLabels = { 'critico': '🔴 Crítico', 'elevado': '🟠 Elevado', 'moderado': '🟡 Moderado', 'baixo': '🟢 Baixo', 'minimo': '🔵 Mínimo' };
+
+      const municipiosHTML = prov.municipios ? prov.municipios.slice(0, 8).map(m => `
+        <div style="display:flex; align-items:center; justify-content:space-between; padding:5px 8px; background:rgba(2,6,23,0.5); border-radius:6px; border:1px solid rgba(255,255,255,0.04); margin-bottom:4px;">
+          <div style="display:flex; align-items:center; gap:7px;">
+            <div style="width:8px; height:8px; border-radius:2px; flex-shrink:0; background:${riskColors[m.risco] || '#94a3b8'};"></div>
+            <span style="font-size:0.74rem; font-weight:600; color:#e2e8f0;">${m.nome}</span>
+            <span style="font-size:0.67rem; padding:1px 6px; border-radius:8px; background:${m.ipc >= 4 ? 'rgba(192,0,0,0.2)' : m.ipc >= 3 ? 'rgba(224,108,0,0.2)' : 'rgba(249,168,37,0.15)'}; color:${m.ipc >= 4 ? '#f87171' : m.ipc >= 3 ? '#fb923c' : '#fbbf24'}; font-weight:700;">IPC ${m.ipc}</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span style="font-size:0.68rem; color:#38bdf8; font-weight:600;">${m.deficit_chuva_pct}% chuva</span>
+            <span style="font-size:0.68rem; color:#94a3b8;">${(m.populacao/1000).toFixed(0)}k hab</span>
+          </div>
+        </div>`).join('') : '';
+
+      const projetos = prov.projetos_mitigacao && prov.projetos_mitigacao.length ? `
+        <div style="margin-top:8px; padding:7px 10px; background:rgba(16,185,129,0.07); border:1px solid rgba(16,185,129,0.2); border-radius:6px;">
+          <div style="font-size:0.69rem; font-weight:700; color:#34d399; margin-bottom:4px;"><i class="fa-solid fa-screwdriver-wrench"></i> Projectos de Mitigação:</div>
+          ${prov.projetos_mitigacao.map(p => `<div style="font-size:0.68rem; color:#6ee7b7;">• ${p}</div>`).join('')}
+        </div>` : '';
+
+      return `
+      <div style="background:rgba(15,23,42,0.7); border:1px solid rgba(255,255,255,0.07); border-top:3px solid ${prov.ipc_cor}; border-radius:10px; padding:14px; display:flex; flex-direction:column; gap:0;">
+        <!-- Province header -->
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;">
+          <div>
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:3px;">
+              <h4 style="font-size:1rem; font-weight:800; color:#f1f5f9; margin:0;">${prov.nome}</h4>
+              <span style="background:${prov.ipc_cor}; color:#fff; padding:2px 8px; border-radius:10px; font-size:0.72rem; font-weight:700;">IPC ${prov.ipc_fase} — ${prov.ipc_descricao}</span>
+            </div>
+            <div style="font-size:0.7rem; color:#64748b;">Capital: ${prov.capital} · ${(prov.populacao_2024/1000000).toFixed(2)}M hab (Censo 2024)</div>
+          </div>
+          <a href="${prov.fonte_ipc}" target="_blank" rel="noopener" style="font-size:0.68rem; color:#38bdf8; border:1px solid rgba(56,189,248,0.3); padding:3px 8px; border-radius:4px; text-decoration:none; white-space:nowrap; flex-shrink:0;">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i> FEWS NET
+          </a>
+        </div>
+
+        <!-- Key indicators row -->
+        <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:10px;">
+          <div style="text-align:center; background:rgba(56,189,248,0.07); border-radius:6px; padding:7px 4px; border:1px solid rgba(56,189,248,0.15);">
+            <div style="font-size:0.64rem; color:#64748b; margin-bottom:2px;">Défice Chuva</div>
+            <div style="font-size:1.1rem; font-weight:800; color:#38bdf8; font-family:'Outfit',sans-serif;">${prov.deficit_precipitacao_pct}%</div>
+          </div>
+          <div style="text-align:center; background:rgba(239,68,68,0.07); border-radius:6px; padding:7px 4px; border:1px solid rgba(239,68,68,0.15);">
+            <div style="font-size:0.64rem; color:#64748b; margin-bottom:2px;">Pop. em Risco</div>
+            <div style="font-size:1.1rem; font-weight:800; color:#f87171; font-family:'Outfit',sans-serif;">${(prov.populacao_risco/1000).toFixed(0)}k</div>
+          </div>
+          <div style="text-align:center; background:rgba(251,191,36,0.07); border-radius:6px; padding:7px 4px; border:1px solid rgba(251,191,36,0.15);">
+            <div style="font-size:0.64rem; color:#64748b; margin-bottom:2px;">GAM (%)</div>
+            <div style="font-size:1.1rem; font-weight:800; color:#fbbf24; font-family:'Outfit',sans-serif;">${prov.gam_pct}%</div>
+          </div>
+          <div style="text-align:center; background:rgba(168,85,247,0.07); border-radius:6px; padding:7px 4px; border:1px solid rgba(168,85,247,0.15);">
+            <div style="font-size:0.64rem; color:#64748b; margin-bottom:2px;">NDVI Anom.</div>
+            <div style="font-size:1.1rem; font-weight:800; color:#a855f7; font-family:'Outfit',sans-serif;">${prov.ndvi_anomalia.toFixed(2)}</div>
+          </div>
+        </div>
+
+        <!-- Extra indicators -->
+        <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px; font-size:0.7rem;">
+          <span style="background:rgba(249,115,22,0.1); border:1px solid rgba(249,115,22,0.3); color:#fb923c; padding:2px 8px; border-radius:10px;"><i class="fa-solid fa-temperature-arrow-up"></i> LST +${prov.temperatura_anomalia_c}°C</span>
+          <span style="background:rgba(99,102,241,0.1); border:1px solid rgba(99,102,241,0.3); color:#818cf8; padding:2px 8px; border-radius:10px;"><i class="fa-solid fa-droplet-slash"></i> SPEI-3: ${prov.spei_3meses}</span>
+          <span style="background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.2); color:#fca5a5; padding:2px 8px; border-radius:10px;"><i class="fa-solid fa-wheat-awn-circle-exclamation"></i> Ins. Alim. Severa: ${prov.inseg_alimentar_severa_pct}%</span>
+          <span style="background:rgba(15,23,42,0.8); border:1px solid rgba(255,255,255,0.08); color:#94a3b8; padding:2px 8px; border-radius:10px;"><i class="fa-solid fa-cloud-showers-water"></i> SARCOF BN: ${prov.sarcof_probabilidade_bn_pct}%</span>
+          ${prov.municipios_criticos && prov.municipios_criticos.length ? `<span style="background:rgba(192,0,0,0.1); border:1px solid rgba(192,0,0,0.3); color:#f87171; padding:2px 8px; border-radius:10px;"><i class="fa-solid fa-triangle-exclamation"></i> Críticos: ${prov.municipios_criticos.join(', ')}</span>` : ''}
+        </div>
+
+        <!-- Municipalities -->
+        <div style="font-size:0.72rem; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px;">
+          <i class="fa-solid fa-map-pin"></i> Municípios (${prov.municipios ? prov.municipios.length : 0} registados)
+        </div>
+        ${municipiosHTML}
+        ${projetos}
+      </div>`;
+    }).join('');
+  }
+
+
+  // ============================================================
   // LIVE WEATHER — Open-Meteo API (free, no key, CORS-safe)
   // Fetches real-time temperature, rain, wind for 3 Angola cities
   // Source: https://open-meteo.com / WMO ERA5
@@ -5111,6 +5247,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const phase = getPhase(currentONI);
+    state.elninoCurrentONI = currentONI;
+    state.elninoCurrentPhase = phase.label;
 
     // Update badges in the panel
     const oniValEl = document.getElementById('oni-current-val');
@@ -5265,72 +5403,76 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 8000);
     }
 
-    // --- Satellite layer toggle buttons ---
-    const satLayers = {
-      sst: 'https://resources.marine.copernicus.eu/viewer/expert?dataset=SST_GLO_SST_L4_NRT_OBSERVATIONS_010_001',
-      ndvi: 'https://apps.sentinel-hub.com/sentinel-playground/?source=S2&zoom=5&lat=-15&lng=18&time=2026-06-01|2026-09-01&preset=3_NDVI',
-      drought: 'https://apps.sentinel-hub.com/sentinel-playground/?source=S2&zoom=5&lat=-15&lng=18&time=2026-06-01|2026-09-01&preset=4-FALSE-COLOR-URBAN',
+    // --- NASA GIBS Satellite Layers (free, no auth, CORS-safe) ---
+    // Loaded from elnino_angola_impact.json or hardcoded definitions
+    const NASA_GIBS_LAYERS = {
+      'none':             { name: 'Sem camada', desc: 'Sem camada de sat00e9lite activa. Use o mapa para explorar Angola.', url: null, opacity: 0 },
+      'sst_modis':        { name: 'SST 2014 MODIS Aqua (Temperatura Superficial do Mar)', desc: 'Temperatura Superficial do Mar (SST) da NASA/MODIS Aqua. Permite monitorizar o aquecimento do Pac00edfico equatorial (El Ni00f1o) e da costa de Angola. Resolu00e700e3o: 9km.', url: 'https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/MODIS_Aqua_L3_SST_MidIR_9km_Night_Daily/default/2026-09-01/GoogleMapsCompatible_Level7/{z}/{y}/{x}.png', attribution: 'NASA GIBS / MODIS Aqua SST', opacity: 0.7, maxZoom: 7, color: '#ef4444' },
+      'ndvi_terra':       { name: 'NDVI 2014 MODIS Terra (Vegeta00e700e3o)', desc: 'Normalized Difference Vegetation Index (NDVI) de 8 dias. Valores baixos (vermelho) = vegeta00e700e3o degradada por seca. Fundamental para monitorizar pastagens no sul de Angola.', url: 'https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/MODIS_Terra_L3_NDVI_8Day/default/2026-09-01/GoogleMapsCompatible_Level9/{z}/{y}/{x}.png', attribution: 'NASA GIBS / MODIS Terra NDVI', opacity: 0.75, maxZoom: 9, color: '#10b981' },
+      'lst_terra':        { name: 'LST 2014 MODIS Terra (Temperatura Solo)', desc: 'Land Surface Temperature diurna. Anomalias > +200b0C indicam stress h00edtrico e seca severa no solo. Usado pelo INAMET e FEWS NET para classifica00e700e3o IPC.', url: 'https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/MODIS_Terra_L3_Land_Surface_Temp_Day/default/2026-09-01/GoogleMapsCompatible_Level7/{z}/{y}/{x}.png', attribution: 'NASA GIBS / MODIS Terra LST', opacity: 0.7, maxZoom: 7, color: '#f97316' },
+      'true_color_terra': { name: 'Imagem Real 2014 MODIS Terra (Cor Natural)', desc: 'Imagem de sat00e9lite em cor natural RGB (reflect00e2ncia corrigida). Permite ver nuvens, fumo de qu00e9imas, cobertura do solo e linhas de costa de Angola.', url: 'https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/MODIS_Terra_CorrectedReflectance_TrueColor/default/2026-09-01/GoogleMapsCompatible_Level9/{z}/{y}/{x}.jpg', attribution: 'NASA GIBS / MODIS Terra True Color', opacity: 0.85, maxZoom: 9, color: '#38bdf8' },
+      'precip_gpm':       { name: 'Precipita00e700e3o 2014 GPM IMERG (Ac. Mensal)', desc: 'Precipita00e700e3o acumulada mensal da miss00e3o GPM (Global Precipitation Measurement). Permite identificar os d00e9fices de chuva no sul de Angola em compara00e700e3o com a m00e9dia hist00f3rica.', url: 'https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/GPM_L3_Monthly_2014-present/default/2026-08-01/GoogleMapsCompatible_Level9/{z}/{y}/{x}.png', attribution: 'NASA GIBS / GPM IMERG', opacity: 0.75, maxZoom: 9, color: '#6366f1' },
     };
-    document.querySelectorAll('.sat-toggle-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.sat-toggle-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        const layer = btn.dataset.satLayer;
-        if (satIframe && satLayers[layer]) {
-          satIframe.src = satLayers[layer];
-          satIframe.style.display = 'block';
-          if (satFallback) satFallback.style.display = 'none';
-        }
-      });
-    });
 
-    // --- Copernicus SST Leaflet Tile Layer ---
-    // NASA GIBS provides free, no-auth WMTS tiles for SST and NDVI
-    let sstLeafletLayer = null;
-    let ndviLeafletLayer = null;
-    let droughtLeafletLayer = null;
+    let activeSatLayer = null;
 
-    function addCopernicusLayerToMap(type) {
-      if (!state.map) return;
-      // Remove any existing overlay layers
-      [sstLeafletLayer, ndviLeafletLayer, droughtLeafletLayer].forEach(l => { if (l) state.map.removeLayer(l); });
-
-      if (type === 'sst') {
-        // NOAA CoastWatch SST WMS (public, no key)
-        sstLeafletLayer = L.tileLayer.wms('https://coastwatch.pfeg.noaa.gov/erddap/wms/jplMURSST41/request', {
-          layers: 'jplMURSST41:analysed_sst',
-          format: 'image/png',
-          transparent: true,
-          colorscalerange: '271.15,304.15',
-          logscale: false,
-          styles: 'boxfill/rainbow',
-          belowmincolor: 'transparent',
-          abovemaxcolor: 'transparent',
-          opacity: 0.65,
-          attribution: 'NOAA CoastWatch / MUR SST'
-        });
-        try { sstLeafletLayer.addTo(state.map); } catch(e) { console.warn('SST layer failed', e); }
-      } else if (type === 'ndvi') {
-        // NASA GIBS MODIS NDVI 8-day
-        ndviLeafletLayer = L.tileLayer(
-          'https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/MODIS_Terra_L3_NDVI_8Day/default/2026-08-28/GoogleMapsCompatible_Level9/{z}/{y}/{x}.png',
-          { attribution: 'NASA GIBS / MODIS NDVI', opacity: 0.7, maxZoom: 9 }
-        );
-        try { ndviLeafletLayer.addTo(state.map); } catch(e) { console.warn('NDVI layer failed', e); }
+    function setSatLayer(layerId) {
+      // Remove existing layer
+      if (activeSatLayer && state.map) {
+        try { state.map.removeLayer(activeSatLayer); } catch(e) {}
+        activeSatLayer = null;
       }
+
+      const def = NASA_GIBS_LAYERS[layerId];
+      if (!def) return;
+
+      // Update info panel
+      const nameEl = document.getElementById('sat-layer-name');
+      const descEl = document.getElementById('sat-layer-desc');
+      if (nameEl) nameEl.textContent = def.name;
+      if (descEl) descEl.textContent = def.desc;
+
+      // Add Leaflet tile layer
+      if (def.url && state.map) {
+        const opacitySlider = document.getElementById('sat-layer-opacity');
+        const opacityVal = opacitySlider ? parseFloat(opacitySlider.value) / 100 : def.opacity;
+        try {
+          activeSatLayer = L.tileLayer(def.url, {
+            attribution: def.attribution || 'NASA GIBS',
+            opacity: opacityVal,
+            maxZoom: def.maxZoom || 9,
+            tileSize: 256,
+            crossOrigin: true
+          });
+          activeSatLayer.addTo(state.map);
+          // Bring SARCOF/Angola layers on top
+          if (state.geoJsonLayers) {
+            Object.values(state.geoJsonLayers).forEach(l => { if (l && l.bringToFront) l.bringToFront(); });
+          }
+        } catch(e) { console.warn('Satellite layer add failed:', e); }
+      }
+
+      // Toggle button states
+      document.querySelectorAll('.sat-toggle-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.satLayer === layerId);
+      });
     }
 
-    // Wire satellite layer btns to also toggle map layer
+    // Wire toggle buttons
     document.querySelectorAll('.sat-toggle-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const layer = btn.dataset.satLayer;
-        if (layer === 'sst' || layer === 'ndvi') {
-          addCopernicusLayerToMap(layer);
-        } else {
-          [sstLeafletLayer, ndviLeafletLayer, droughtLeafletLayer].forEach(l => { if (l && state.map) state.map.removeLayer(l); });
-        }
-      });
+      btn.addEventListener('click', () => setSatLayer(btn.dataset.satLayer || 'none'));
     });
+
+    // Opacity slider
+    const opacitySlider = document.getElementById('sat-layer-opacity');
+    const opacityLabel = document.getElementById('sat-opacity-label');
+    if (opacitySlider) {
+      opacitySlider.addEventListener('input', () => {
+        const val = parseFloat(opacitySlider.value) / 100;
+        if (opacityLabel) opacityLabel.textContent = opacitySlider.value + '%';
+        if (activeSatLayer) activeSatLayer.setOpacity(val);
+      });
+    }
 
     // --- Satellite panel collapse toggle ---
     const satPanel = document.getElementById('satellite-monitor-panel');
