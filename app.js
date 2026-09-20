@@ -4995,11 +4995,17 @@ document.addEventListener('DOMContentLoaded', () => {
   // ============================================================
   // SATELLITE & ENSO MONITOR — Real NOAA data + Copernicus layer
   // ============================================================
-  function initSatelliteMonitor() {
-    // --- REAL ONI DATA from NOAA sstoi.indices (last fetched 2026-09-20) ---
-    // Source: https://www.cpc.ncep.noaa.gov/data/indices/sstoi.indices
-    // Nino3.4 ANOM column = ONI proxy for recent periods
-    const ONI_DATA = [
+  async function initSatelliteMonitor() {
+    // --- Load NOAA ONI data from daily-updated JSON (GitHub Actions fetches daily at 07:00 UTC) ---
+    // Fallback to embedded static data if fetch fails
+    let oniJson = null;
+    try {
+      const resp = await fetch('data/noaa_oni_live.json?v=' + Date.now());
+      if (resp.ok) oniJson = await resp.json();
+    } catch(e) { console.warn('Could not load noaa_oni_live.json, using fallback', e); }
+
+    // Fallback static ONI data (same real NOAA values)
+    const FALLBACK_ONI = [
       // From El Niño 2015-16 event through 2026-08 (real NOAA values)
       { label: 'Jan 2015', anom: -0.59 }, { label: 'Fev 2015', anom: -0.47 },
       { label: 'Mar 2015', anom: -0.18 }, { label: 'Abr 2015', anom:  0.29 },
@@ -5073,8 +5079,24 @@ document.addEventListener('DOMContentLoaded', () => {
       { label: 'Jul 2026', anom:  2.03 }, { label: 'Ago 2026', anom:  2.52 },
     ];
 
-    const currentONI = ONI_DATA[ONI_DATA.length - 1].anom;
-    const currentMonth = ONI_DATA[ONI_DATA.length - 1].label;
+    // Use live JSON data if available, otherwise use fallback
+    const ONI_DATA = (oniJson && oniJson.chart_data && oniJson.chart_data.length > 0)
+      ? oniJson.chart_data
+      : FALLBACK_ONI;
+
+    const currentONI = (oniJson && oniJson.current) ? oniJson.current.oni_anom : ONI_DATA[ONI_DATA.length - 1].anom;
+    const currentMonth = (oniJson && oniJson.current) ? oniJson.current.oni_label : ONI_DATA[ONI_DATA.length - 1].label;
+    const lastUpdated = (oniJson && oniJson.metadata) ? oniJson.metadata.updated_at_human : 'Dados locais';
+
+    // Show last-updated timestamp in the panel
+    const updatedEl = document.getElementById('oni-last-updated');
+    if (updatedEl) updatedEl.textContent = 'Actualizado: ' + lastUpdated;
+
+    // Show Angola impact from live JSON if available
+    if (oniJson && oniJson.current && oniJson.current.angola_impact) {
+      const insightArea = document.getElementById('enso-angola-insight');
+      if (insightArea) { insightArea.textContent = oniJson.current.angola_impact; }
+    }
 
     // Determine phase
     function getPhase(val) {
