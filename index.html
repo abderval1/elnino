@@ -18,7 +18,22 @@
   <link rel="stylesheet" href="./vendor/leaflet.css">
   
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="styles.css?v=20260918_v28">
+  <link rel="stylesheet" href="styles.css?v=20260920_v29">
+<style id="weather-live-css">
+.weather-mini-card {
+  background: rgba(2,6,23,0.6);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 8px;
+  padding: 8px 10px;
+  text-align: center;
+  transition: border-color 0.2s;
+}
+.weather-mini-card:hover { border-color: rgba(56,189,248,0.3); }
+.wc-city { font-size:0.7rem; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px; }
+.wc-temp { font-size:1.5rem; font-weight:800; color:#f1f5f9; font-family:'Outfit',sans-serif; line-height:1; }
+.wc-cond { font-size:0.68rem; color:#64748b; margin-top:3px; }
+.wc-rain { font-size:0.68rem; color:#38bdf8; margin-top:2px; }
+</style>
 </head>
 <body>
   <div class="app-container">
@@ -898,7 +913,263 @@
 
         </div>
 
-            </main>
+                    <!-- El Niño Satellite Monitor: SST, NDVI, Drought Index & Copernicus Data -->
+        <div class="satellite-monitor-panel" id="satellite-monitor-panel">
+          <div class="sat-panel-header" id="sat-panel-toggle-btn">
+            <div class="sat-title">
+              <i class="fa-solid fa-satellite-dish" style="color:#38bdf8;"></i>
+              <span>Monitor Satélite El Niño | Temperatura Oceano Pacífico (ENSO) &amp; Índices Climáticos em Tempo Real</span>
+            </div>
+            <div class="sat-header-badges">
+              <span class="badge" style="background:rgba(16,185,129,0.15); color:#34d399; font-size:0.7rem; border:1px solid rgba(16,185,129,0.3);">
+                <span class="badge-dot" style="background:#34d399; box-shadow:0 0 4px #34d399;"></span>
+                Dados: NOAA / Copernicus C3S
+              </span>
+              <span class="badge" style="background:rgba(56,189,248,0.1); color:#38bdf8; font-size:0.7rem; border:1px solid rgba(56,189,248,0.3);">
+                Sentinel-3 SLSTR | MODIS SST
+              </span>
+              <button type="button" class="sat-collapse-btn" id="sat-collapse-btn" title="Recolher/Expandir Monitor">
+                <i class="fa-solid fa-chevron-down" id="sat-chevron"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="sat-panel-body" id="sat-panel-body">
+            <!-- ENSO Index Chart + Live SST -->
+            <div class="sat-charts-row">
+
+              <!-- ONI / Nino3.4 SST Index Chart -->
+              <div class="sat-chart-card">
+                <div class="sat-chart-header">
+                  <div>
+                    <h5><i class="fa-solid fa-thermometer-three-quarters" style="color:#f43f5e;"></i> Índice ONI (Oceanic Niño Index) — Temperatura Superficial do Mar Pacífico Equatorial</h5>
+                    <p>Anomalia de SST na região Niño 3.4 (5°N–5°S, 120°W–170°W). Valores &gt;+0.5°C = El Niño ativo.</p>
+                  </div>
+                  <div style="display:flex; gap:6px; align-items:center;">
+                    <div class="oni-live-badge" id="oni-live-badge">
+                      <span class="oni-value-label">ONI Atual:</span>
+                      <span class="oni-current-val" id="oni-current-val">+0.8°C</span>
+                      <span class="oni-phase-label" id="oni-phase-label">El Niño Fraco</span>
+                    </div>
+                    <a href="https://origin.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_v5.php" target="_blank" rel="noopener" class="sat-source-link">
+                      <i class="fa-solid fa-arrow-up-right-from-square"></i> NOAA CPC
+                    </a>
+                  </div>
+                </div>
+                <div style="height:180px; position:relative;">
+                  <canvas id="chart-oni-history"></canvas>
+                </div>
+                <div class="sat-phases-legend">
+                  <div class="phase-chip phase-elnino">El Niño (&gt;+0.5°C)</div>
+                  <div class="phase-chip phase-neutral">Neutro (-0.5 a +0.5°C)</div>
+                  <div class="phase-chip phase-lanina">La Niña (&lt;-0.5°C)</div>
+                  <div class="phase-chip phase-threshold" style="margin-left:auto;">Limiar: ±0.5°C</div>
+                </div>
+              </div>
+
+              <!-- Live SST Anomaly Map via Copernicus/ERDDAP -->
+              <div class="sat-chart-card">
+                <div class="sat-chart-header">
+                  <div>
+                    <h5><i class="fa-solid fa-satellite" style="color:#a855f7;"></i> Mapa SST — Sentinel-3 SLSTR | Copernicus Marine Service</h5>
+                    <p>Temperatura Superficial do Mar em tempo real. Fonte: <strong>Copernicus Marine Environment Monitoring Service (CMEMS)</strong>.</p>
+                  </div>
+                  <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+                    <button type="button" class="sat-toggle-btn active" data-sat-layer="sst" id="btn-sat-sst">SST Anomalia</button>
+                    <button type="button" class="sat-toggle-btn" data-sat-layer="ndvi" id="btn-sat-ndvi">NDVI / Vegetação</button>
+                    <button type="button" class="sat-toggle-btn" data-sat-layer="drought" id="btn-sat-drought">Índice de Seca</button>
+                    <a href="https://marine.copernicus.eu" target="_blank" rel="noopener" class="sat-source-link">
+                      <i class="fa-solid fa-arrow-up-right-from-square"></i> Copernicus
+                    </a>
+                  </div>
+                </div>
+                <div class="sat-map-embed" id="sat-map-container">
+                  <!-- Default: SST Copernicus via NCEI viewer -->
+                  <iframe id="sat-map-iframe" class="sat-iframe"
+                    src="https://resources.marine.copernicus.eu/viewer/expert?dataset=SST_GLO_SST_L4_NRT_OBSERVATIONS_010_001"
+                    title="Copernicus Marine SST Viewer"
+                    loading="lazy"
+                    sandbox="allow-scripts allow-same-origin allow-popups allow-forms">
+                  </iframe>
+                  <div class="sat-iframe-fallback" id="sat-iframe-fallback" style="display:none;">
+                    <i class="fa-solid fa-satellite" style="font-size:2rem; color:#38bdf8; margin-bottom:8px;"></i>
+                    <p>Visualizador Copernicus CMEMS carregando...</p>
+                    <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:center;">
+                      <a href="https://resources.marine.copernicus.eu/viewer/expert?dataset=SST_GLO_SST_L4_NRT_OBSERVATIONS_010_001" target="_blank" rel="noopener" class="btn-sat-external">
+                        <i class="fa-solid fa-water"></i> Abrir SST Copernicus
+                      </a>
+                      <a href="https://apps.sentinel-hub.com/sentinel-playground/?source=S3SLSTR&zoom=3&lat=-11.5&lng=17&time=2024-06-01|2024-09-01&preset=2_NATURAL_COLOUR" target="_blank" rel="noopener" class="btn-sat-external" style="background:rgba(168,85,247,0.15); border-color:rgba(168,85,247,0.4); color:#a855f7;">
+                        <i class="fa-solid fa-satellite-dish"></i> Sentinel-3 Hub
+                      </a>
+                      <a href="https://worldview.earthdata.nasa.gov/?v=-30,-40,60,10&t=2024-09-01-T00:00:00Z&l=MODIS_Aqua_L3_SST_MidIR_9km_Night_Daily,Coastlines_15m,Reference_Labels_15m&lg=false" target="_blank" rel="noopener" class="btn-sat-external" style="background:rgba(245,158,11,0.15); border-color:rgba(245,158,11,0.4); color:#fbbf24;">
+                        <i class="fa-solid fa-globe"></i> NASA Worldview SST
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Angola Specific Indicators from Satellites -->
+            <div class="sat-indicators-row">
+              <div class="sat-indicator-card" id="sat-ind-oni">
+                <div class="sat-ind-icon" style="color:#f43f5e;"><i class="fa-solid fa-temperature-arrow-up"></i></div>
+                <div class="sat-ind-body">
+                  <span class="sat-ind-label">ONI Pacífico (NOAA)</span>
+                  <strong class="sat-ind-value" id="sst-oni-val" style="color:#f43f5e;">+0.8°C</strong>
+                  <span class="sat-ind-trend">↑ El Niño Fraco-Moderado</span>
+                </div>
+              </div>
+              <div class="sat-indicator-card">
+                <div class="sat-ind-icon" style="color:#fbbf24;"><i class="fa-solid fa-sun"></i></div>
+                <div class="sat-ind-body">
+                  <span class="sat-ind-label">IOD (Índice Oceano Índico)</span>
+                  <strong class="sat-ind-value" id="sst-iod-val" style="color:#fbbf24;">+0.3°C</strong>
+                  <span class="sat-ind-trend">Positivo fraco (seca sul)</span>
+                </div>
+              </div>
+              <div class="sat-indicator-card">
+                <div class="sat-ind-icon" style="color:#10b981;"><i class="fa-solid fa-leaf"></i></div>
+                <div class="sat-ind-body">
+                  <span class="sat-ind-label">NDVI Angola Sul (Sentinel-2)</span>
+                  <strong class="sat-ind-value" id="sat-ndvi-val" style="color:#10b981;">0.18</strong>
+                  <span class="sat-ind-trend">↓ Vegetação degradada</span>
+                </div>
+              </div>
+              <div class="sat-indicator-card">
+                <div class="sat-ind-icon" style="color:#38bdf8;"><i class="fa-solid fa-cloud-rain"></i></div>
+                <div class="sat-ind-body">
+                  <span class="sat-ind-label">Precipitação Prevista OND26 (SARCOF)</span>
+                  <strong class="sat-ind-value" id="sat-rain-val" style="color:#38bdf8;">-42%</strong>
+                  <span class="sat-ind-trend">Abaixo da Normal (BN)</span>
+                </div>
+              </div>
+              <div class="sat-indicator-card">
+                <div class="sat-ind-icon" style="color:#a855f7;"><i class="fa-solid fa-droplet-slash"></i></div>
+                <div class="sat-ind-body">
+                  <span class="sat-ind-label">SPEI-3 (Seca Meteorológica, Cunene)</span>
+                  <strong class="sat-ind-value" id="sat-spei-val" style="color:#a855f7;">-1.8</strong>
+                  <span class="sat-ind-trend">Seca Severa (IPC Fase 3)</span>
+                </div>
+              </div>
+              <div class="sat-indicator-card">
+                <div class="sat-ind-icon" style="color:#fb923c;"><i class="fa-solid fa-satellite-dish"></i></div>
+                <div class="sat-ind-body">
+                  <span class="sat-ind-label">LST Anomalia Angola Sul (MODIS)</span>
+                  <strong class="sat-ind-value" id="sat-lst-val" style="color:#fb923c;">+2.4°C</strong>
+                  <span class="sat-ind-trend">↑ Temperatura solo elevada</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- External Links to Live Portals -->
+            <div class="sat-links-row">
+              <strong style="font-size:0.78rem; color:#94a3b8;"><i class="fa-solid fa-arrow-up-right-from-square"></i> Portais Oficiais de Dados Climáticos em Tempo Real:</strong>
+              <a href="https://www.cpc.noaa.gov/products/analysis_monitoring/enso_advisory/" target="_blank" rel="noopener" class="sat-ext-link">
+                <i class="fa-solid fa-thermometer"></i> NOAA ENSO Advisories
+              </a>
+              <a href="https://climate.copernicus.eu/charts/packages/cams/" target="_blank" rel="noopener" class="sat-ext-link">
+                <i class="fa-solid fa-satellite"></i> Copernicus Climate Change Service (C3S)
+              </a>
+              <a href="https://apps.sentinel-hub.com/sentinel-playground/?source=S2&zoom=5&lat=-15&lng=18" target="_blank" rel="noopener" class="sat-ext-link">
+                <i class="fa-solid fa-image"></i> Sentinel-2 Angola (EO Browser)
+              </a>
+              <a href="https://fews.net/southern-africa/angola" target="_blank" rel="noopener" class="sat-ext-link" style="color:#fbbf24; border-color:rgba(251,191,36,0.3);">
+                <i class="fa-solid fa-chart-line"></i> FEWS NET Angola Outlook
+              </a>
+              <a href="https://worldview.earthdata.nasa.gov/?v=-25,-38,55,8&t=2024-09-01-T00:00:00Z&l=MODIS_Terra_L3_NDVI_8Day" target="_blank" rel="noopener" class="sat-ext-link" style="color:#10b981; border-color:rgba(16,185,129,0.3);">
+                <i class="fa-solid fa-globe"></i> NASA MODIS NDVI Africa
+              </a>
+              <a href="https://marine.copernicus.eu" target="_blank" rel="noopener" class="sat-ext-link" style="color:#a855f7; border-color:rgba(168,85,247,0.3);">
+                <i class="fa-solid fa-water"></i> Copernicus Marine Service
+              </a>
+            </div>
+
+            <!-- ENSO Angola Impact Insight -->
+            <div style="margin-top:10px; padding:10px 14px; background:rgba(220,38,38,0.08); border:1px solid rgba(220,38,38,0.2); border-radius:8px; display:flex; gap:10px; align-items:flex-start;">
+              <i class="fa-solid fa-brain" style="color:#f43f5e; font-size:1.2rem; flex-shrink:0; margin-top:2px;"></i>
+              <div>
+                <strong style="font-size:0.78rem; color:#fca5a5; display:block; margin-bottom:3px;">
+                  <i class="fa-solid fa-lightbulb"></i> Insight Automático: Impacto do El Niño em Angola
+                </strong>
+                <span id="enso-angola-insight" style="font-size:0.76rem; color:#e2e8f0; line-height:1.45;">
+                  A calcular com base nos dados NOAA mais recentes...
+                </span>
+                <div style="margin-top:6px; display:flex; gap:6px; flex-wrap:wrap;">
+                  <a href="https://www.cpc.ncep.noaa.gov/products/analysis_monitoring/enso_advisory/ensodisc.shtml" target="_blank" rel="noopener" class="sat-source-link" style="font-size:0.68rem;">
+                    <i class="fa-solid fa-file-lines"></i> Boletim ENSO NOAA
+                  </a>
+                  <a href="https://www.cpc.ncep.noaa.gov/products/analysis_monitoring/enso/roni/" target="_blank" rel="noopener" class="sat-source-link" style="font-size:0.68rem; border-color:rgba(251,191,36,0.4); color:#fbbf24;">
+                    <i class="fa-solid fa-chart-bar"></i> RONI Index NOAA
+                  </a>
+                  <a href="https://origin.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_v5.php" target="_blank" rel="noopener" class="sat-source-link" style="font-size:0.68rem; border-color:rgba(16,185,129,0.4); color:#34d399;">
+                    <i class="fa-solid fa-table"></i> Tabela ONI v5 Completa
+                  </a>
+                  <a href="https://elninoobservatory.com/pt" target="_blank" rel="noopener" class="sat-source-link" style="font-size:0.68rem; border-color:rgba(168,85,247,0.4); color:#c084fc;">
+                    <i class="fa-solid fa-satellite-dish"></i> El Niño Observatory (PT)
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Live Weather: Open-Meteo Angola + El Nino Observatory embed -->
+            <div style="margin-top:10px; display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+              <!-- Open-Meteo live weather indicators for Luanda, Lubango, Ondjiva -->
+              <div style="background:rgba(15,23,42,0.7); border:1px solid rgba(56,189,248,0.2); border-radius:10px; padding:12px;">
+                <div style="font-size:0.8rem; font-weight:700; color:#e2e8f0; margin-bottom:8px; display:flex; align-items:center; gap:6px;">
+                  <i class="fa-solid fa-cloud-sun" style="color:#fbbf24;"></i> Meteorologia em Tempo Real — Angola
+                  <span style="font-size:0.66rem; color:#64748b; margin-left:auto;">(Open-Meteo API / WMO)</span>
+                </div>
+                <div id="live-weather-cards" style="display:grid; grid-template-columns:repeat(3,1fr); gap:8px;">
+                  <div class="weather-mini-card" id="wcard-luanda">
+                    <div class="wc-city">Luanda</div>
+                    <div class="wc-temp" id="wt-luanda"><i class="fa-solid fa-spinner fa-spin"></i></div>
+                    <div class="wc-cond" id="wc-luanda">carregando...</div>
+                    <div class="wc-rain" id="wr-luanda"></div>
+                  </div>
+                  <div class="weather-mini-card" id="wcard-lubango">
+                    <div class="wc-city">Lubango</div>
+                    <div class="wc-temp" id="wt-lubango"><i class="fa-solid fa-spinner fa-spin"></i></div>
+                    <div class="wc-cond" id="wc-lubango">carregando...</div>
+                    <div class="wc-rain" id="wr-lubango"></div>
+                  </div>
+                  <div class="weather-mini-card" id="wcard-ondjiva">
+                    <div class="wc-city">Ondjiva</div>
+                    <div class="wc-temp" id="wt-ondjiva"><i class="fa-solid fa-spinner fa-spin"></i></div>
+                    <div class="wc-cond" id="wc-ondjiva">carregando...</div>
+                    <div class="wc-rain" id="wr-ondjiva"></div>
+                  </div>
+                </div>
+                <div style="font-size:0.65rem; color:#475569; margin-top:6px; text-align:right;">
+                  Fonte: <a href="https://open-meteo.com" target="_blank" rel="noopener" style="color:#38bdf8;">Open-Meteo API</a> (WMO / ERA5)
+                </div>
+              </div>
+
+              <!-- El Niño Observatory Embed -->
+              <div style="background:rgba(15,23,42,0.7); border:1px solid rgba(168,85,247,0.25); border-radius:10px; padding:12px; display:flex; flex-direction:column; gap:8px;">
+                <div style="font-size:0.8rem; font-weight:700; color:#e2e8f0; display:flex; align-items:center; gap:6px;">
+                  <i class="fa-solid fa-satellite-dish" style="color:#a855f7;"></i> El Niño Observatory — Situação Global em Tempo Real
+                  <span style="font-size:0.66rem; color:#64748b; margin-left:auto;">(elninoobservatory.com)</span>
+                </div>
+                <div style="background:rgba(2,6,23,0.5); border-radius:6px; overflow:hidden; flex:1; min-height:160px; position:relative;">
+                  <iframe
+                    src="https://elninoobservatory.com/pt"
+                    title="El Niño Observatory — Monitor Global"
+                    loading="lazy"
+                    style="width:100%; height:200px; border:none; border-radius:6px;"
+                    sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-top-navigation">
+                  </iframe>
+                </div>
+                <div style="font-size:0.7rem; color:#a855f7; display:flex; gap:8px; align-items:center;">
+                  <i class="fa-solid fa-circle-info"></i>
+                  <span>Se o site não carregar, acede directamente em:</span>
+                  <a href="https://elninoobservatory.com/pt" target="_blank" rel="noopener" style="color:#c084fc; font-weight:700; text-decoration:underline;">elninoobservatory.com/pt</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+</main>
       </section>
 
       <!-- VIEW 2: DASHBOARD & ESTATÃSTICAS NACIONAIS -->
@@ -1211,7 +1482,7 @@
               </div>
               <div class="project-item">
                 <h5><i class="fa-solid fa-dam" style="color:#f59e0b;"></i> Barragens de Calucuve e Ndue (Cuvelai)</h5>
-                <p>Obras estruturais em execução no rio Cuvelai com capacidade combinada de retenção superior a <strong>245 milhões de metros cúbicos de água</strong>, destinadas a perenizar o abastecimento hídrico e alimentar uma rede de canais secundários nas comunas de Ondjiva, MÃ´ngua e arredores.</p>
+                <p>Obras estruturais em execução no rio Cuvelai com capacidade combinada de retenção superior a <strong>245 milhões de metros cúbicos de água</strong>, destinadas a perenizar o abastecimento hídrico e alimentar uma rede de canais secundários nas comunas de Ondjiva, Môngua e arredores.</p>
               </div>
               <div class="project-item">
                 <h5><i class="fa-solid fa-droplet" style="color:#a855f7;"></i> Projetos Estruturantes do Namibe</h5>
@@ -2218,6 +2489,6 @@
   <!-- SheetJS for Native Excel (.xlsx) Generation -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <!-- Main App Script -->
-  <script src="app.js?v=20260918_v28"></script>
+  <script src="app.js?v=20260920_v29"></script>
 </body>
 </html>

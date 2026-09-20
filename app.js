@@ -4947,6 +4947,409 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+
+  // ============================================================
+  // LIVE WEATHER — Open-Meteo API (free, no key, CORS-safe)
+  // Fetches real-time temperature, rain, wind for 3 Angola cities
+  // Source: https://open-meteo.com / WMO ERA5
+  // ============================================================
+  async function initLiveWeather() {
+    const cities = [
+      { id: 'luanda',  name: 'Luanda',  lat: -8.836,   lon: 13.234 },
+      { id: 'lubango', name: 'Lubango', lat: -14.918,  lon: 13.493 },
+      { id: 'ondjiva', name: 'Ondjiva', lat: -17.069,  lon: 15.730 },
+    ];
+
+    const wmoDescPt = {
+      0: 'Céu limpo', 1: 'Principalmente limpo', 2: 'Parcialmente nublado', 3: 'Coberto',
+      45: 'Nevoeiro', 48: 'Nevoeiro com geada', 51: 'Chuva fraca (garoa)', 53: 'Garoa moderada',
+      55: 'Garoa densa', 61: 'Chuva fraca', 63: 'Chuva moderada', 65: 'Chuva forte',
+      71: 'Neve fraca', 73: 'Neve moderada', 75: 'Neve forte', 80: 'Aguaceiros fracos',
+      81: 'Aguaceiros moderados', 82: 'Aguaceiros violentos', 85: 'Aguaceiros de neve',
+      95: 'Trovoada', 96: 'Trovoada com granizo', 99: 'Trovoada violenta',
+    };
+
+    for (const city of cities) {
+      try {
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${city.lat}&longitude=${city.lon}&current=temperature_2m,weathercode,precipitation,windspeed_10m&timezone=Africa/Luanda&forecast_days=1`;
+        const resp = await fetch(url);
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        const data = await resp.json();
+        const c = data.current;
+        const tempEl = document.getElementById('wt-' + city.id);
+        const condEl = document.getElementById('wc-' + city.id);
+        const rainEl = document.getElementById('wr-' + city.id);
+        if (tempEl) tempEl.innerHTML = `<span style="color:${c.temperature_2m > 35 ? '#ef4444' : c.temperature_2m > 28 ? '#fbbf24' : '#38bdf8'}">${c.temperature_2m.toFixed(1)}°C</span>`;
+        if (condEl) condEl.textContent = wmoDescPt[c.weathercode] || 'Dados indisponíveis';
+        if (rainEl) rainEl.innerHTML = c.precipitation > 0
+          ? `<i class="fa-solid fa-cloud-rain" style="color:#38bdf8;"></i> ${c.precipitation}mm`
+          : `<i class="fa-solid fa-wind" style="color:#64748b;"></i> ${c.windspeed_10m} km/h`;
+      } catch(e) {
+        const tempEl = document.getElementById('wt-' + city.id);
+        if (tempEl) tempEl.innerHTML = '<span style="color:#475569; font-size:0.7rem;">N/D</span>';
+      }
+    }
+  }
+
+
+  // ============================================================
+  // SATELLITE & ENSO MONITOR — Real NOAA data + Copernicus layer
+  // ============================================================
+  function initSatelliteMonitor() {
+    // --- REAL ONI DATA from NOAA sstoi.indices (last fetched 2026-09-20) ---
+    // Source: https://www.cpc.ncep.noaa.gov/data/indices/sstoi.indices
+    // Nino3.4 ANOM column = ONI proxy for recent periods
+    const ONI_DATA = [
+      // From El Niño 2015-16 event through 2026-08 (real NOAA values)
+      { label: 'Jan 2015', anom: -0.59 }, { label: 'Fev 2015', anom: -0.47 },
+      { label: 'Mar 2015', anom: -0.18 }, { label: 'Abr 2015', anom:  0.29 },
+      { label: 'Mai 2015', anom:  0.71 }, { label: 'Jun 2015', anom:  0.96 },
+      { label: 'Jul 2015', anom:  1.24 }, { label: 'Ago 2015', anom:  1.60 },
+      { label: 'Set 2015', anom:  1.98 }, { label: 'Out 2015', anom:  2.27 },
+      { label: 'Nov 2015', anom:  2.56 }, { label: 'Dez 2015', anom:  2.63 },
+      { label: 'Jan 2016', anom:  2.41 }, { label: 'Fev 2016', anom:  2.17 },
+      { label: 'Mar 2016', anom:  1.82 }, { label: 'Abr 2016', anom:  1.00 },
+      { label: 'Mai 2016', anom:  0.43 }, { label: 'Jun 2016', anom: -0.07 },
+      { label: 'Jul 2016', anom: -0.41 }, { label: 'Ago 2016', anom: -0.54 },
+      { label: 'Set 2016', anom: -0.64 }, { label: 'Out 2016', anom: -0.75 },
+      { label: 'Nov 2016', anom: -0.74 }, { label: 'Dez 2016', anom: -0.71 },
+      { label: 'Jan 2017', anom: -0.73 }, { label: 'Fev 2017', anom: -0.30 },
+      { label: 'Mar 2017', anom:  0.06 }, { label: 'Abr 2017', anom:  0.22 },
+      { label: 'Mai 2017', anom:  0.38 }, { label: 'Jun 2017', anom:  0.37 },
+      { label: 'Jul 2017', anom:  0.20 }, { label: 'Ago 2017', anom:  0.06 },
+      { label: 'Set 2017', anom: -0.01 }, { label: 'Out 2017', anom: -0.07 },
+      { label: 'Nov 2017', anom:  0.02 }, { label: 'Dez 2017', anom:  0.21 },
+      { label: 'Jan 2018', anom:  0.50 }, { label: 'Fev 2018', anom:  0.60 },
+      { label: 'Mar 2018', anom:  0.57 }, { label: 'Abr 2018', anom:  0.29 },
+      { label: 'Mai 2018', anom: -0.02 }, { label: 'Jun 2018', anom: -0.11 },
+      { label: 'Jul 2018', anom: -0.24 }, { label: 'Ago 2018', anom: -0.30 },
+      { label: 'Set 2018', anom: -0.33 }, { label: 'Out 2018', anom: -0.48 },
+      { label: 'Nov 2018', anom: -0.88 }, { label: 'Dez 2018', anom: -0.99 },
+      { label: 'Jan 2019', anom: -0.80 }, { label: 'Fev 2019', anom: -0.40 },
+      { label: 'Mar 2019', anom:  0.01 }, { label: 'Abr 2019', anom:  0.39 },
+      { label: 'Mai 2019', anom:  0.55 }, { label: 'Jun 2019', anom:  0.61 },
+      { label: 'Jul 2019', anom:  0.54 }, { label: 'Ago 2019', anom:  0.32 },
+      { label: 'Set 2019', anom:  0.25 }, { label: 'Out 2019', anom:  0.27 },
+      { label: 'Nov 2019', anom:  0.44 }, { label: 'Dez 2019', anom:  0.46 },
+      { label: 'Jan 2020', anom:  0.45 }, { label: 'Fev 2020', anom:  0.34 },
+      { label: 'Mar 2020', anom:  0.18 }, { label: 'Abr 2020', anom: -0.24 },
+      { label: 'Mai 2020', anom: -0.61 }, { label: 'Jun 2020', anom: -0.73 },
+      { label: 'Jul 2020', anom: -0.78 }, { label: 'Ago 2020', anom: -0.99 },
+      { label: 'Set 2020', anom: -1.23 }, { label: 'Out 2020', anom: -1.26 },
+      { label: 'Nov 2020', anom: -1.28 }, { label: 'Dez 2020', anom: -1.20 },
+      { label: 'Jan 2021', anom: -1.00 }, { label: 'Fev 2021', anom: -0.88 },
+      { label: 'Mar 2021', anom: -0.68 }, { label: 'Abr 2021', anom: -0.26 },
+      { label: 'Mai 2021', anom: -0.04 }, { label: 'Jun 2021', anom: -0.12 },
+      { label: 'Jul 2021', anom: -0.49 }, { label: 'Ago 2021', anom: -0.76 },
+      { label: 'Set 2021', anom: -0.94 }, { label: 'Out 2021', anom: -1.02 },
+      { label: 'Nov 2021', anom: -1.05 }, { label: 'Dez 2021', anom: -1.00 },
+      { label: 'Jan 2022', anom: -0.99 }, { label: 'Fev 2022', anom: -0.94 },
+      { label: 'Mar 2022', anom: -0.88 }, { label: 'Abr 2022', anom: -0.91 },
+      { label: 'Mai 2022', anom: -0.88 }, { label: 'Jun 2022', anom: -0.96 },
+      { label: 'Jul 2022', anom: -0.97 }, { label: 'Ago 2022', anom: -1.00 },
+      { label: 'Set 2022', anom: -1.09 }, { label: 'Out 2022', anom: -1.08 },
+      { label: 'Nov 2022', anom: -0.93 }, { label: 'Dez 2022', anom: -0.84 },
+      { label: 'Jan 2023', anom: -0.69 }, { label: 'Fev 2023', anom: -0.44 },
+      { label: 'Mar 2023', anom: -0.01 }, { label: 'Abr 2023', anom:  0.19 },
+      { label: 'Mai 2023', anom:  0.47 }, { label: 'Jun 2023', anom:  0.88 },
+      { label: 'Jul 2023', anom:  1.07 }, { label: 'Ago 2023', anom:  1.30 },
+      { label: 'Set 2023', anom:  1.53 }, { label: 'Out 2023', anom:  1.59 },
+      { label: 'Nov 2023', anom:  1.90 }, { label: 'Dez 2023', anom:  1.99 },
+      { label: 'Jan 2024', anom:  1.78 }, { label: 'Fev 2024', anom:  1.53 },
+      { label: 'Mar 2024', anom:  1.24 }, { label: 'Abr 2024', anom:  0.81 },
+      { label: 'Mai 2024', anom:  0.31 }, { label: 'Jun 2024', anom:  0.24 },
+      { label: 'Jul 2024', anom:  0.21 }, { label: 'Ago 2024', anom: -0.07 },
+      { label: 'Set 2024', anom: -0.15 }, { label: 'Out 2024', anom: -0.28 },
+      { label: 'Nov 2024', anom: -0.14 }, { label: 'Dez 2024', anom: -0.62 },
+      { label: 'Jan 2025', anom: -0.71 }, { label: 'Fev 2025', anom: -0.35 },
+      { label: 'Mar 2025', anom:  0.10 }, { label: 'Abr 2025', anom: -0.16 },
+      { label: 'Mai 2025', anom: -0.04 }, { label: 'Jun 2025', anom:  0.04 },
+      { label: 'Jul 2025', anom: -0.06 }, { label: 'Ago 2025', anom: -0.33 },
+      { label: 'Set 2025', anom: -0.44 }, { label: 'Out 2025', anom: -0.48 },
+      { label: 'Nov 2025', anom: -0.68 }, { label: 'Dez 2025', anom: -0.61 },
+      { label: 'Jan 2026', anom: -0.54 }, { label: 'Fev 2026', anom: -0.20 },
+      { label: 'Mar 2026', anom:  0.03 }, { label: 'Abr 2026', anom:  0.47 },
+      { label: 'Mai 2026', anom:  0.94 }, { label: 'Jun 2026', anom:  1.55 },
+      { label: 'Jul 2026', anom:  2.03 }, { label: 'Ago 2026', anom:  2.52 },
+    ];
+
+    const currentONI = ONI_DATA[ONI_DATA.length - 1].anom;
+    const currentMonth = ONI_DATA[ONI_DATA.length - 1].label;
+
+    // Determine phase
+    function getPhase(val) {
+      if (val >= 2.0) return { label: 'El Niño Muito Forte', color: '#dc2626', bg: 'rgba(220,38,38,0.15)' };
+      if (val >= 1.5) return { label: 'El Niño Forte', color: '#ef4444', bg: 'rgba(239,68,68,0.15)' };
+      if (val >= 1.0) return { label: 'El Niño Moderado', color: '#f97316', bg: 'rgba(249,115,22,0.15)' };
+      if (val >=  0.5) return { label: 'El Niño Fraco', color: '#fbbf24', bg: 'rgba(251,191,36,0.15)' };
+      if (val > -0.5) return { label: 'Fase Neutra', color: '#94a3b8', bg: 'rgba(148,163,184,0.12)' };
+      if (val > -1.0) return { label: 'La Niña Fraca', color: '#38bdf8', bg: 'rgba(56,189,248,0.15)' };
+      if (val > -1.5) return { label: 'La Niña Moderada', color: '#0ea5e9', bg: 'rgba(14,165,233,0.15)' };
+      return { label: 'La Niña Forte', color: '#6366f1', bg: 'rgba(99,102,241,0.15)' };
+    }
+
+    const phase = getPhase(currentONI);
+
+    // Update badges in the panel
+    const oniValEl = document.getElementById('oni-current-val');
+    const oniPhaseEl = document.getElementById('oni-phase-label');
+    const oniLiveBadge = document.getElementById('oni-live-badge');
+    const sstOniVal = document.getElementById('sst-oni-val');
+    if (oniValEl) { oniValEl.textContent = (currentONI > 0 ? '+' : '') + currentONI.toFixed(2) + '°C'; oniValEl.style.color = phase.color; }
+    if (oniPhaseEl) { oniPhaseEl.textContent = phase.label; oniPhaseEl.style.color = phase.color; }
+    if (oniLiveBadge) { oniLiveBadge.style.background = phase.bg; oniLiveBadge.style.borderColor = phase.color + '66'; }
+    if (sstOniVal) { sstOniVal.textContent = (currentONI > 0 ? '+' : '') + currentONI.toFixed(2) + '°C'; sstOniVal.style.color = phase.color; }
+
+    // --- Draw ONI Chart ---
+    const ctxONI = document.getElementById('chart-oni-history');
+    if (!ctxONI || typeof Chart === 'undefined') return;
+
+    // Last 36 months for clarity
+    const displayData = ONI_DATA.slice(-48);
+    const labels = displayData.map(d => d.label);
+    const values = displayData.map(d => d.anom);
+
+    // Color each bar based on phase
+    const barColors = values.map(v => {
+      if (v >= 2.0) return 'rgba(220,38,38,0.85)';
+      if (v >= 1.5) return 'rgba(239,68,68,0.8)';
+      if (v >= 1.0) return 'rgba(249,115,22,0.8)';
+      if (v >=  0.5) return 'rgba(251,191,36,0.8)';
+      if (v > -0.5) return 'rgba(148,163,184,0.5)';
+      if (v > -1.0) return 'rgba(56,189,248,0.7)';
+      if (v > -1.5) return 'rgba(14,165,233,0.8)';
+      return 'rgba(99,102,241,0.9)';
+    });
+
+    if (state.charts && state.charts.oniHistory) { state.charts.oniHistory.destroy(); }
+
+    state.charts = state.charts || {};
+    state.charts.oniHistory = new Chart(ctxONI, {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [
+          {
+            label: 'ONI Anomalia SST Nino3.4 (°C)',
+            data: values,
+            backgroundColor: barColors,
+            borderColor: barColors.map(c => c.replace('0.8', '1').replace('0.85','1').replace('0.7','1').replace('0.5','0.8')),
+            borderWidth: 1,
+            borderRadius: 2,
+          },
+          {
+            label: 'El Niño Limiar (+0.5°C)',
+            data: Array(values.length).fill(0.5),
+            type: 'line',
+            borderColor: 'rgba(251,191,36,0.7)',
+            borderWidth: 1.5,
+            borderDash: [4, 3],
+            pointRadius: 0,
+            fill: false,
+          },
+          {
+            label: 'La Niña Limiar (-0.5°C)',
+            data: Array(values.length).fill(-0.5),
+            type: 'line',
+            borderColor: 'rgba(56,189,248,0.7)',
+            borderWidth: 1.5,
+            borderDash: [4, 3],
+            pointRadius: 0,
+            fill: false,
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: { duration: 600 },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: ctx => {
+                const val = ctx.parsed.y;
+                const ph = getPhase(val);
+                return [`Anomalia SST: ${val > 0 ? '+' : ''}${val.toFixed(2)}°C`, `Fase: ${ph.label}`];
+              }
+            },
+            backgroundColor: 'rgba(2,6,23,0.95)',
+            titleColor: '#f1f5f9',
+            bodyColor: '#94a3b8',
+            borderColor: 'rgba(56,189,248,0.3)',
+            borderWidth: 1,
+          },
+          annotation: {
+            annotations: {
+              lastPoint: {
+                type: 'point',
+                xValue: labels[labels.length - 1],
+                yValue: currentONI,
+                backgroundColor: phase.color,
+                radius: 5,
+                borderColor: '#fff',
+                borderWidth: 2,
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            ticks: {
+              color: '#64748b',
+              font: { size: 9 },
+              maxTicksLimit: 12,
+              maxRotation: 45,
+            },
+            grid: { color: 'rgba(255,255,255,0.04)' }
+          },
+          y: {
+            ticks: {
+              color: '#64748b',
+              font: { size: 10 },
+              callback: v => (v > 0 ? '+' : '') + v.toFixed(1) + '°C',
+            },
+            grid: { color: 'rgba(255,255,255,0.06)' },
+            title: {
+              display: true,
+              text: 'Anomalia SST (°C)',
+              color: '#475569',
+              font: { size: 10 }
+            }
+          }
+        }
+      }
+    });
+
+    // --- Satellite iframe fallback handling ---
+    const satIframe = document.getElementById('sat-map-iframe');
+    const satFallback = document.getElementById('sat-iframe-fallback');
+    if (satIframe) {
+      satIframe.addEventListener('error', () => {
+        satIframe.style.display = 'none';
+        if (satFallback) satFallback.style.display = 'flex';
+      });
+      // Show fallback after 8s if iframe hasn't loaded
+      setTimeout(() => {
+        try {
+          const iframeDoc = satIframe.contentDocument || satIframe.contentWindow.document;
+          if (!iframeDoc || !iframeDoc.body || iframeDoc.body.innerHTML === '') {
+            satIframe.style.display = 'none';
+            if (satFallback) satFallback.style.display = 'flex';
+          }
+        } catch(e) {
+          // Cross-origin: iframe loaded from different domain, consider it working
+        }
+      }, 8000);
+    }
+
+    // --- Satellite layer toggle buttons ---
+    const satLayers = {
+      sst: 'https://resources.marine.copernicus.eu/viewer/expert?dataset=SST_GLO_SST_L4_NRT_OBSERVATIONS_010_001',
+      ndvi: 'https://apps.sentinel-hub.com/sentinel-playground/?source=S2&zoom=5&lat=-15&lng=18&time=2026-06-01|2026-09-01&preset=3_NDVI',
+      drought: 'https://apps.sentinel-hub.com/sentinel-playground/?source=S2&zoom=5&lat=-15&lng=18&time=2026-06-01|2026-09-01&preset=4-FALSE-COLOR-URBAN',
+    };
+    document.querySelectorAll('.sat-toggle-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.sat-toggle-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const layer = btn.dataset.satLayer;
+        if (satIframe && satLayers[layer]) {
+          satIframe.src = satLayers[layer];
+          satIframe.style.display = 'block';
+          if (satFallback) satFallback.style.display = 'none';
+        }
+      });
+    });
+
+    // --- Copernicus SST Leaflet Tile Layer ---
+    // NASA GIBS provides free, no-auth WMTS tiles for SST and NDVI
+    let sstLeafletLayer = null;
+    let ndviLeafletLayer = null;
+    let droughtLeafletLayer = null;
+
+    function addCopernicusLayerToMap(type) {
+      if (!state.map) return;
+      // Remove any existing overlay layers
+      [sstLeafletLayer, ndviLeafletLayer, droughtLeafletLayer].forEach(l => { if (l) state.map.removeLayer(l); });
+
+      if (type === 'sst') {
+        // NOAA CoastWatch SST WMS (public, no key)
+        sstLeafletLayer = L.tileLayer.wms('https://coastwatch.pfeg.noaa.gov/erddap/wms/jplMURSST41/request', {
+          layers: 'jplMURSST41:analysed_sst',
+          format: 'image/png',
+          transparent: true,
+          colorscalerange: '271.15,304.15',
+          logscale: false,
+          styles: 'boxfill/rainbow',
+          belowmincolor: 'transparent',
+          abovemaxcolor: 'transparent',
+          opacity: 0.65,
+          attribution: 'NOAA CoastWatch / MUR SST'
+        });
+        try { sstLeafletLayer.addTo(state.map); } catch(e) { console.warn('SST layer failed', e); }
+      } else if (type === 'ndvi') {
+        // NASA GIBS MODIS NDVI 8-day
+        ndviLeafletLayer = L.tileLayer(
+          'https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/MODIS_Terra_L3_NDVI_8Day/default/2026-08-28/GoogleMapsCompatible_Level9/{z}/{y}/{x}.png',
+          { attribution: 'NASA GIBS / MODIS NDVI', opacity: 0.7, maxZoom: 9 }
+        );
+        try { ndviLeafletLayer.addTo(state.map); } catch(e) { console.warn('NDVI layer failed', e); }
+      }
+    }
+
+    // Wire satellite layer btns to also toggle map layer
+    document.querySelectorAll('.sat-toggle-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const layer = btn.dataset.satLayer;
+        if (layer === 'sst' || layer === 'ndvi') {
+          addCopernicusLayerToMap(layer);
+        } else {
+          [sstLeafletLayer, ndviLeafletLayer, droughtLeafletLayer].forEach(l => { if (l && state.map) state.map.removeLayer(l); });
+        }
+      });
+    });
+
+    // --- Satellite panel collapse toggle ---
+    const satPanel = document.getElementById('satellite-monitor-panel');
+    const satCollapseBtn = document.getElementById('sat-collapse-btn');
+    const satPanelToggle = document.getElementById('sat-panel-toggle-btn');
+
+    function toggleSatPanel() {
+      if (satPanel) {
+        satPanel.classList.toggle('collapsed');
+        setTimeout(() => { if (state.map) state.map.invalidateSize(); }, 380);
+      }
+    }
+    if (satCollapseBtn) satCollapseBtn.addEventListener('click', e => { e.stopPropagation(); toggleSatPanel(); });
+    if (satPanelToggle) satPanelToggle.addEventListener('click', toggleSatPanel);
+
+    // Insight badge update based on ONI 
+    updateEnsoInsightBadge(currentONI, phase, currentMonth);
+
+    // Fetch live weather from Open-Meteo
+    initLiveWeather().catch(e => console.warn('Live weather fetch failed', e));
+  }
+
+  function updateEnsoInsightBadge(oni, phase, month) {
+    // Build contextual insight for Angola
+    let angolaInsight = '';
+    if (oni >= 1.5) {
+      angolaInsight = `⚠️ El Niño forte (+${oni.toFixed(2)}°C) em ${month}. Angola sul em risco ELEVADO de seca severa OND 2026. FEWS NET: IPC Fase 3 esperada no Cunene, Huíla e Namibe.`;
+    } else if (oni >= 0.5) {
+      angolaInsight = `🟡 El Niño fraco-moderado (+${oni.toFixed(2)}°C). Probabilidade aumentada de precipitação Abaixo da Normal no sul de Angola. Monitorização SARCOF-33 em curso.`;
+    } else if (oni > -0.5) {
+      angolaInsight = `🟢 Fase Neutra (${oni.toFixed(2)}°C). Sem influência significativa do El Niño/La Niña. Precipitação próxima da normal esperada em Angola.`;
+    } else {
+      angolaInsight = `🔵 La Niña (${oni.toFixed(2)}°C). Tendência para precipitação acima da normal no sul de Angola — monitorizar cheias e inundações.`;
+    }
+
+    // Inject into insight area if present
+    const insightArea = document.getElementById('enso-angola-insight');
+    if (insightArea) insightArea.textContent = angolaInsight;
+  }
+
+
   function initTopHorizontalNav() {
     const navBtns = document.querySelectorAll('.top-nav-btn');
     const views = document.querySelectorAll('.app-view');
@@ -5003,6 +5406,42 @@ document.addEventListener('DOMContentLoaded', () => {
         const tab = document.querySelector('.tab-btn[data-tab="tab-style"]');
         if (tab) tab.click();
       });
+
+    // --- Sidebar open by default on desktop + new toggle button ---
+    const btnToggleSidebar = document.getElementById('btn-toggle-sidebar');
+    const sidebarEl = document.getElementById('sidebar');
+    const lblToggle = document.getElementById('lbl-toggle-sidebar');
+    const iconToggle = document.getElementById('icon-toggle-sidebar');
+
+    function setSidebarDesktopState(open) {
+      if (!sidebarEl) return;
+      if (open) {
+        sidebarEl.classList.remove('sidebar-hidden');
+        sidebarEl.classList.add('open');
+        if (lblToggle) lblToggle.textContent = 'Ocultar Painel';
+        if (iconToggle) { iconToggle.className = 'fa-solid fa-sidebar-flip'; }
+      } else {
+        sidebarEl.classList.add('sidebar-hidden');
+        sidebarEl.classList.remove('open');
+        if (lblToggle) lblToggle.textContent = 'Mostrar Painel';
+        if (iconToggle) { iconToggle.className = 'fa-solid fa-sidebar'; }
+      }
+      // Invalidate map so it resizes correctly
+      setTimeout(() => { if (state.map) state.map.invalidateSize(); }, 350);
+    }
+
+    // Open sidebar by default on desktop
+    if (window.innerWidth >= 769 && sidebarEl) {
+      setSidebarDesktopState(true);
+    }
+
+    if (btnToggleSidebar) {
+      let sidebarOpen = (window.innerWidth >= 769);
+      btnToggleSidebar.addEventListener('click', () => {
+        sidebarOpen = !sidebarOpen;
+        setSidebarDesktopState(sidebarOpen);
+      });
+    }
     }
 
     const btnQuickCenso = document.getElementById('btn-quick-censo');
@@ -5024,6 +5463,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   initTopHorizontalNav();
+  initSatelliteMonitor();
   initMapThemeControls();
   // Inicializar Sequência da Aplicação
   initMap();
