@@ -3270,27 +3270,25 @@ path.leaflet-sarcof-hatch,
   color: #7dd3fc;
 }
 
-/* Map View Container needs to account for satellite panel */
+/* ============================================================
+   MAP VIEW LAYOUT — Sidebar (left) + Map (right), satellite panel at bottom of map
+   ============================================================ */
+
+/* #view-map is a horizontal flex: [sidebar] [map-view-container] */
 #view-map.app-view.active {
-  flex-direction: column;
-}
-#view-map .map-view-container {
-  flex: 1;
-  min-height: 0;
-  position: relative;
+  display: flex !important;
+  flex-direction: row !important;
+  overflow: hidden;
+  height: 100%;
 }
 
-/* When sidebar is visible on desktop, map-view is a row; with sat panel at bottom */
-@media (min-width: 769px) {
-  #view-map.app-view.active {
-    flex-direction: column !important;
-  }
-  #view-map .map-view-container-wrapper {
-    display: flex;
-    flex: 1;
-    min-height: 0;
-    flex-direction: row;
-  }
+/* Map container fills remaining width, satellite panel is absolute inside it */
+#view-map .map-view-container {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
 }
 
 /* Float button for toggle sidebar */
