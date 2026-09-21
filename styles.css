@@ -3320,3 +3320,132 @@ path.leaflet-sarcof-hatch,
     max-height: 320px;
   }
 }
+
+
+/* ==========================================================================
+   FULLSCREEN & EXPANDED MAP MODES + HEATMAP VIEWER STYLES
+   ========================================================================== */
+
+/* Fullscreen Map Mode (occupies entire screen) */
+#view-map.map-fullscreen-mode {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 9990 !important;
+  background: #090d16 !important;
+}
+#view-map.map-fullscreen-mode .map-view-container {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Fullscreen toolbar button highlight */
+.map-float-btn-fullscreen {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.35), rgba(56, 189, 248, 0.3)) !important;
+  border-color: #38bdf8 !important;
+  color: #f8fafc !important;
+  font-weight: 700 !important;
+  box-shadow: 0 0 16px rgba(56, 189, 248, 0.35) !important;
+}
+.map-float-btn-fullscreen:hover {
+  background: #38bdf8 !important;
+  color: #0f172a !important;
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.6) !important;
+}
+.map-float-btn-fullscreen.active {
+  background: #f43f5e !important;
+  border-color: #fb7185 !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 18px rgba(244, 63, 94, 0.5) !important;
+}
+
+/* Satellite Monitor Panel - Fullscreen Expanded Mode (88vh) */
+.satellite-monitor-panel.fullscreen-expanded {
+  max-height: 88vh !important;
+  z-index: 1200 !important;
+}
+.satellite-monitor-panel.fullscreen-expanded .sat-panel-body {
+  max-height: calc(88vh - 54px) !important;
+}
+.satellite-monitor-panel.fullscreen-expanded .sat-heatmap-wrapper {
+  height: 380px !important;
+}
+
+/* Satellite Monitor Panel - Fully Hidden */
+.satellite-monitor-panel.panel-hidden {
+  display: none !important;
+}
+
+/* Sat Header Action Buttons */
+.sat-head-action-btn {
+  background: rgba(56, 189, 248, 0.15);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  color: #38bdf8;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+.sat-head-action-btn:hover {
+  background: #38bdf8;
+  color: #0f172a;
+}
+
+.sat-close-btn {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #f87171;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+.sat-close-btn:hover {
+  background: #ef4444;
+  color: #ffffff;
+}
+
+/* Ocean Heatmap Viewer Tab Buttons */
+.sat-view-tab-btn {
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #94a3b8;
+  padding: 4px 9px;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.2s ease;
+}
+.sat-view-tab-btn:hover {
+  border-color: #38bdf8;
+  color: #e2e8f0;
+}
+.sat-view-tab-btn.active {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: #ef4444;
+  color: #fca5a5;
+  font-weight: 700;
+}
+
+/* Responsive Sat Heatmap on smaller screens */
+@media (max-width: 900px) {
+  .sat-heatmap-wrapper {
+    height: 190px !important;
+  }
+}

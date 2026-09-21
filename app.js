@@ -871,11 +871,17 @@ document.addEventListener('DOMContentLoaded', () => {
   // Inicializar o Mapa Leaflet
   function initMap() {
     try {
-      // Centered directly on Angola (lat: -12.35, lon: 17.55, zoom: 5.8)
+      // Centered directly on Angola with UNRESTRICTED ZOOM (level 1 to 26)
       state.map = L.map('map', {
         center: [-12.35, 17.55],
         zoom: 5.8,
-        zoomControl: true
+        minZoom: 1,
+        maxZoom: 26,
+        zoomSnap: 0.1,
+        zoomDelta: 0.5,
+        zoomControl: true,
+        wheelDebounceTime: 30,
+        wheelPxPerZoomLevel: 60
       });
 
       // Strict Map Panes Hierarchy: SADC on bottom (390), Angola layers on top
@@ -925,13 +931,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
       state.baseLayers = {
         osm: L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          maxZoom: 19, attribution: '&copy; OpenStreetMap contributors'
+          maxNativeZoom: 19, maxZoom: 26, attribution: '&copy; OpenStreetMap contributors'
         }),
         'esri-sat': L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-          maxZoom: 19, attribution: '&copy; Esri, Maxar, Earthstar Geographics'
+          maxNativeZoom: 19, maxZoom: 26, attribution: '&copy; Esri, Maxar, Earthstar Geographics'
         }),
         'esri-topo': L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
-          maxZoom: 19, attribution: '&copy; Esri, USGS, Garmin'
+          maxNativeZoom: 19, maxZoom: 26, attribution: '&copy; Esri, USGS, Garmin'
         })
       };
 
@@ -2903,7 +2909,7 @@ document.addEventListener('DOMContentLoaded', () => {
       state.geoJsonLayers.provincias.eachLayer(layer => {
         const name = (layer.feature.properties.Nome_Prov || '').toLowerCase();
         if (name.includes(state.searchQuery)) {
-          state.map.flyToBounds(layer.getBounds(), { maxZoom: 8, duration: 1.2 });
+          state.map.flyToBounds(layer.getBounds(), { maxZoom: 16, duration: 1.2 });
           layer.fire('click');
         }
       });
@@ -4579,7 +4585,7 @@ document.addEventListener('DOMContentLoaded', () => {
               if (state.geoJsonLayers && state.geoJsonLayers.provincias) {
                 state.geoJsonLayers.provincias.eachLayer(layer => {
                   if (layer.feature && layer.feature.properties && (layer.feature.properties.Nome === provName || layer.feature.properties.NAME_1 === provName)) {
-                    if (state.map) state.map.fitBounds(layer.getBounds(), { maxZoom: 8, padding: [40, 40] });
+                    if (state.map) state.map.fitBounds(layer.getBounds(), { maxZoom: 16, padding: [40, 40] });
                     layer.fire('click');
                   }
                 });
@@ -5407,11 +5413,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Loaded from elnino_angola_impact.json or hardcoded definitions
     const NASA_GIBS_LAYERS = {
       'none':             { name: 'Sem camada', desc: 'Sem camada de sat00e9lite activa. Use o mapa para explorar Angola.', url: null, opacity: 0 },
-      'sst_modis':        { name: 'SST 2014 MODIS Aqua (Temperatura Superficial do Mar)', desc: 'Temperatura Superficial do Mar (SST) da NASA/MODIS Aqua. Permite monitorizar o aquecimento do Pac00edfico equatorial (El Ni00f1o) e da costa de Angola. Resolu00e700e3o: 9km.', url: 'https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/MODIS_Aqua_L3_SST_MidIR_9km_Night_Daily/default/2026-09-01/GoogleMapsCompatible_Level7/{z}/{y}/{x}.png', attribution: 'NASA GIBS / MODIS Aqua SST', opacity: 0.7, maxZoom: 7, color: '#ef4444' },
-      'ndvi_terra':       { name: 'NDVI 2014 MODIS Terra (Vegeta00e700e3o)', desc: 'Normalized Difference Vegetation Index (NDVI) de 8 dias. Valores baixos (vermelho) = vegeta00e700e3o degradada por seca. Fundamental para monitorizar pastagens no sul de Angola.', url: 'https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/MODIS_Terra_L3_NDVI_8Day/default/2026-09-01/GoogleMapsCompatible_Level9/{z}/{y}/{x}.png', attribution: 'NASA GIBS / MODIS Terra NDVI', opacity: 0.75, maxZoom: 9, color: '#10b981' },
-      'lst_terra':        { name: 'LST 2014 MODIS Terra (Temperatura Solo)', desc: 'Land Surface Temperature diurna. Anomalias > +200b0C indicam stress h00edtrico e seca severa no solo. Usado pelo INAMET e FEWS NET para classifica00e700e3o IPC.', url: 'https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/MODIS_Terra_L3_Land_Surface_Temp_Day/default/2026-09-01/GoogleMapsCompatible_Level7/{z}/{y}/{x}.png', attribution: 'NASA GIBS / MODIS Terra LST', opacity: 0.7, maxZoom: 7, color: '#f97316' },
-      'true_color_terra': { name: 'Imagem Real 2014 MODIS Terra (Cor Natural)', desc: 'Imagem de sat00e9lite em cor natural RGB (reflect00e2ncia corrigida). Permite ver nuvens, fumo de qu00e9imas, cobertura do solo e linhas de costa de Angola.', url: 'https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/MODIS_Terra_CorrectedReflectance_TrueColor/default/2026-09-01/GoogleMapsCompatible_Level9/{z}/{y}/{x}.jpg', attribution: 'NASA GIBS / MODIS Terra True Color', opacity: 0.85, maxZoom: 9, color: '#38bdf8' },
-      'precip_gpm':       { name: 'Precipita00e700e3o 2014 GPM IMERG (Ac. Mensal)', desc: 'Precipita00e700e3o acumulada mensal da miss00e3o GPM (Global Precipitation Measurement). Permite identificar os d00e9fices de chuva no sul de Angola em compara00e700e3o com a m00e9dia hist00f3rica.', url: 'https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/GPM_L3_Monthly_2014-present/default/2026-08-01/GoogleMapsCompatible_Level9/{z}/{y}/{x}.png', attribution: 'NASA GIBS / GPM IMERG', opacity: 0.75, maxZoom: 9, color: '#6366f1' },
+      'sst_modis':        { name: 'SST 2014 MODIS Aqua (Temperatura Superficial do Mar)', desc: 'Temperatura Superficial do Mar (SST) da NASA/MODIS Aqua. Permite monitorizar o aquecimento do Pac00edfico equatorial (El Ni00f1o) e da costa de Angola. Resolu00e700e3o: 9km.', url: 'https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/MODIS_Aqua_L3_SST_MidIR_9km_Night_Daily/default/2026-09-01/GoogleMapsCompatible_Level7/{z}/{y}/{x}.png', attribution: 'NASA GIBS / MODIS Aqua SST', opacity: 0.7, maxNativeZoom: 7, maxZoom: 26, color: '#ef4444' },
+      'ndvi_terra':       { name: 'NDVI 2014 MODIS Terra (Vegeta00e700e3o)', desc: 'Normalized Difference Vegetation Index (NDVI) de 8 dias. Valores baixos (vermelho) = vegeta00e700e3o degradada por seca. Fundamental para monitorizar pastagens no sul de Angola.', url: 'https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/MODIS_Terra_L3_NDVI_8Day/default/2026-09-01/GoogleMapsCompatible_Level9/{z}/{y}/{x}.png', attribution: 'NASA GIBS / MODIS Terra NDVI', opacity: 0.75, maxNativeZoom: 9, maxZoom: 26, color: '#10b981' },
+      'lst_terra':        { name: 'LST 2014 MODIS Terra (Temperatura Solo)', desc: 'Land Surface Temperature diurna. Anomalias > +200b0C indicam stress h00edtrico e seca severa no solo. Usado pelo INAMET e FEWS NET para classifica00e700e3o IPC.', url: 'https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/MODIS_Terra_L3_Land_Surface_Temp_Day/default/2026-09-01/GoogleMapsCompatible_Level7/{z}/{y}/{x}.png', attribution: 'NASA GIBS / MODIS Terra LST', opacity: 0.7, maxNativeZoom: 7, maxZoom: 26, color: '#f97316' },
+      'true_color_terra': { name: 'Imagem Real 2014 MODIS Terra (Cor Natural)', desc: 'Imagem de sat00e9lite em cor natural RGB (reflect00e2ncia corrigida). Permite ver nuvens, fumo de qu00e9imas, cobertura do solo e linhas de costa de Angola.', url: 'https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/MODIS_Terra_CorrectedReflectance_TrueColor/default/2026-09-01/GoogleMapsCompatible_Level9/{z}/{y}/{x}.jpg', attribution: 'NASA GIBS / MODIS Terra True Color', opacity: 0.85, maxNativeZoom: 9, maxZoom: 26, color: '#38bdf8' },
+      'precip_gpm':       { name: 'Precipita00e700e3o 2014 GPM IMERG (Ac. Mensal)', desc: 'Precipita00e700e3o acumulada mensal da miss00e3o GPM (Global Precipitation Measurement). Permite identificar os d00e9fices de chuva no sul de Angola em compara00e700e3o com a m00e9dia hist00f3rica.', url: 'https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/GPM_L3_Monthly_2014-present/default/2026-08-01/GoogleMapsCompatible_Level9/{z}/{y}/{x}.png', attribution: 'NASA GIBS / GPM IMERG', opacity: 0.75, maxNativeZoom: 9, maxZoom: 26, color: '#6366f1' },
     };
 
     let activeSatLayer = null;
@@ -5440,7 +5446,7 @@ document.addEventListener('DOMContentLoaded', () => {
           activeSatLayer = L.tileLayer(def.url, {
             attribution: def.attribution || 'NASA GIBS',
             opacity: opacityVal,
-            maxZoom: def.maxZoom || 9,
+            maxNativeZoom: def.maxNativeZoom || 9, maxZoom: 26,
             tileSize: 256,
             crossOrigin: true
           });
@@ -5474,19 +5480,167 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // --- Satellite panel collapse toggle ---
+    // --- Satellite & Heatmap Panel Controls (Expand, Fullscreen, Collapse, Hide) ---
     const satPanel = document.getElementById('satellite-monitor-panel');
     const satCollapseBtn = document.getElementById('sat-collapse-btn');
+    const satExpandFullBtn = document.getElementById('sat-expand-full-btn');
+    const satCloseBtn = document.getElementById('sat-close-btn');
     const satPanelToggle = document.getElementById('sat-panel-toggle-btn');
+    const satExpandIcon = document.getElementById('sat-expand-icon');
+
+    function refreshMapSize() {
+      if (!state.map) return;
+      [50, 150, 300, 500].forEach(ms => setTimeout(() => state.map.invalidateSize(), ms));
+    }
 
     function toggleSatPanel() {
-      if (satPanel) {
-        satPanel.classList.toggle('collapsed');
-        setTimeout(() => { if (state.map) state.map.invalidateSize(); }, 380);
-      }
+      if (!satPanel) return;
+      satPanel.classList.remove('panel-hidden');
+      satPanel.classList.toggle('collapsed');
+      refreshMapSize();
     }
+
+    function toggleSatExpandFullscreen(e) {
+      if (e) e.stopPropagation();
+      if (!satPanel) return;
+      satPanel.classList.remove('collapsed');
+      satPanel.classList.remove('panel-hidden');
+      satPanel.classList.toggle('fullscreen-expanded');
+      const isExpanded = satPanel.classList.contains('fullscreen-expanded');
+      if (satExpandIcon) {
+        satExpandIcon.className = isExpanded ? 'fa-solid fa-compress' : 'fa-solid fa-expand';
+      }
+      refreshMapSize();
+    }
+
+    function hideSatPanel(e) {
+      if (e) e.stopPropagation();
+      if (!satPanel) return;
+      satPanel.classList.add('panel-hidden');
+      refreshMapSize();
+    }
+
     if (satCollapseBtn) satCollapseBtn.addEventListener('click', e => { e.stopPropagation(); toggleSatPanel(); });
-    if (satPanelToggle) satPanelToggle.addEventListener('click', toggleSatPanel);
+    if (satExpandFullBtn) satExpandFullBtn.addEventListener('click', toggleSatExpandFullscreen);
+    if (satCloseBtn) satCloseBtn.addEventListener('click', hideSatPanel);
+    if (satPanelToggle) satPanelToggle.addEventListener('click', (e) => {
+      // Don't toggle if clicking buttons inside header
+      if (e.target.closest('button') || e.target.closest('a') || e.target.closest('select')) return;
+      toggleSatPanel();
+    });
+
+    // --- Ocean Heatmap Real-Time Viewer Tabs ---
+    const heatmapUrls = {
+      pacific: 'https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=default&metricTemp=%C2%B0C&metricWind=default&zoom=3&overlay=sst&product=ecmwf&level=surface&lat=0&lon=-140',
+      angola:  'https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=default&metricTemp=%C2%B0C&metricWind=default&zoom=4&overlay=sst&product=ecmwf&level=surface&lat=-12.5&lon=13.5',
+      nasa:    'https://worldview.earthdata.nasa.gov/?v=-160,-50,20,50&t=2026-09-01-T00:00:00Z&l=MODIS_Aqua_L3_SST_MidIR_9km_Night_Daily,Coastlines_15m&lg=false'
+    };
+    const heatmapLabels = {
+      pacific: 'Pacífico Equatorial (Região Niño 3.4 — +2.52°C El Niño Muito Forte)',
+      angola:  'Costa de Angola & Atlântico Sul — Temperatura Superficial do Mar (SST)',
+      nasa:    'NASA Worldview Global SST (MODIS Aqua L3 — Anomalias Térmicas)'
+    };
+
+    const heatmapIframe = document.getElementById('iframe-ocean-heatmap');
+    const heatmapLabelEl = document.getElementById('heatmap-area-label');
+
+    document.querySelectorAll('.sat-view-tab-btn[data-target]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.sat-view-tab-btn[data-target]').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const target = btn.dataset.target;
+        if (heatmapIframe && heatmapUrls[target]) {
+          heatmapIframe.src = heatmapUrls[target];
+        }
+        if (heatmapLabelEl && heatmapLabels[target]) {
+          heatmapLabelEl.textContent = heatmapLabels[target];
+        }
+      });
+    });
+
+    // Heatmap Fullscreen button
+    const btnHeatFullscreen = document.getElementById('btn-heat-fullscreen-modal');
+    if (btnHeatFullscreen) {
+      btnHeatFullscreen.addEventListener('click', () => {
+        const modal = document.getElementById('modal-satellite');
+        if (modal) {
+          modal.style.display = 'flex';
+          const modalIframe = document.getElementById('sat-worldview-iframe');
+          if (modalIframe && heatmapIframe) {
+            modalIframe.src = heatmapIframe.src;
+          }
+        }
+      });
+    }
+
+    // Button to project SST heatmap directly onto Angola Leaflet map
+    const btnApplySstLeaflet = document.getElementById('btn-apply-sst-leaflet');
+    if (btnApplySstLeaflet) {
+      btnApplySstLeaflet.addEventListener('click', () => {
+        setSatLayer('sst_modis');
+        const mapEl = document.getElementById('map');
+        if (mapEl) mapEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+    }
+
+    // --- Main Map Fullscreen / Screen-occupying Mode ---
+    const btnFullscreenMap = document.getElementById('btn-toggle-fullscreen-map');
+    const lblFullscreenMap = document.getElementById('lbl-btn-fullscreen');
+    const iconFullscreenMap = document.getElementById('icon-fullscreen-map');
+    const viewMapSection = document.getElementById('view-map');
+
+    function toggleMapFullscreen() {
+      if (!viewMapSection) return;
+      viewMapSection.classList.toggle('map-fullscreen-mode');
+      const isFull = viewMapSection.classList.contains('map-fullscreen-mode');
+
+      // In fullscreen mode, automatically collapse side panel and sat monitor
+      const sidebar = document.querySelector('.sidebar');
+      if (sidebar) {
+        if (isFull) sidebar.classList.add('sidebar-hidden');
+      }
+      if (satPanel) {
+        if (isFull) satPanel.classList.add('collapsed');
+      }
+
+      if (lblFullscreenMap) lblFullscreenMap.textContent = isFull ? 'Restaurar Tela' : 'Ocupar Tela';
+      if (iconFullscreenMap) iconFullscreenMap.className = isFull ? 'fa-solid fa-compress' : 'fa-solid fa-expand';
+      if (btnFullscreenMap) btnFullscreenMap.classList.toggle('active', isFull);
+
+      refreshMapSize();
+    }
+
+    if (btnFullscreenMap) {
+      btnFullscreenMap.addEventListener('click', toggleMapFullscreen);
+    }
+
+    // Toolbar button to toggle desktop sidebar
+    const btnToggleSidebarMap = document.getElementById('btn-toggle-desktop-sidebar');
+    if (btnToggleSidebarMap) {
+      btnToggleSidebarMap.addEventListener('click', () => {
+        const sidebar = document.querySelector('.sidebar');
+        if (sidebar) {
+          sidebar.classList.toggle('sidebar-hidden');
+          refreshMapSize();
+        }
+      });
+    }
+
+    // Toolbar button to show/hide satellite monitor panel
+    const btnToggleSatMonitor = document.getElementById('btn-toggle-sat-monitor-btn');
+    if (btnToggleSatMonitor) {
+      btnToggleSatMonitor.addEventListener('click', () => {
+        if (!satPanel) return;
+        if (satPanel.classList.contains('panel-hidden') || satPanel.classList.contains('collapsed')) {
+          satPanel.classList.remove('panel-hidden');
+          satPanel.classList.remove('collapsed');
+        } else {
+          satPanel.classList.add('collapsed');
+        }
+        refreshMapSize();
+      });
+    }
+
 
     // Insight badge update based on ONI 
     updateEnsoInsightBadge(currentONI, phase, currentMonth);
